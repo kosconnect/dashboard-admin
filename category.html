@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori | Kosconnect</title>
+    <link rel="shortcut icon" href="/img/logokos.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <!-- Ganti dengan gambar -->
+                <img src="img/logokos.png" alt="Kosconnect Logo" style="width: 40px; height: 40px; margin-right: 10px;">
+                <h2>Kosconnect</h2>
+            </div>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Beranda</span></a></li>
+                <li>
+                    <h2 style="font-size: 14px; color: #b0bec5;">Interface</h2>
+                    <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
+                        <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a></li>
+                        <li><a href="usermanajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
+                        <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
+                        <li><a href="facilities.html"><i class="fas fa-bed"></i> <span>Fasilitas</span></a></li>
+                        <li><a href="roomfacility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li>
+                    </ul>
+                </li>
+            </ul>         
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1>Kategori</h1>
+                <div class="header-icons">
+                    <a href="#"><i class="fas fa-bell"></i></a>
+                    <a href="#"><i class="fas fa-cog"></i></a>
+                    <div class="user-dropdown">
+                        <div class="user-info" onclick="toggleDropdown()">
+                            <div class="top-row">
+                                <span class="name">Balqis Rosa Sekamayang</span>
+                                <i class="fas fa-user"></i>
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                            <span class="role">Admin</span>
+                        </div>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>                    
+                </div>
+            </div>
+
+            <!-- Category Management Table -->
+            <div class="category-management">
+                <h2>Manajemen Kategori</h2>
+                <div style="text-align: right; margin-bottom: 10px;">
+                    <button class="btn btn-primary">Tambah Kategori</button>
+                    <!-- <button class="btn btn-primary" onclick="window.location.href='tambah_category.html'">Tambah Kategori</button> -->
+                </div>                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Kategori</th>
+                            <th>Slug</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Kos Eksekutif</td>
+                            <td>Fasilitas lengkap untuk profesional</td>
+                            <td>
+                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Kos Mahasiswa</td>
+                            <td>Kamar ekonomis untuk pelajar</td>
+                            <td>
+                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
