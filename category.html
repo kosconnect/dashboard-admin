@@ -31,10 +31,10 @@
                     <h2 style="font-size: 14px; color: #b0bec5;">Interface</h2>
                     <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
                         <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a></li>
-                        <li><a href="usermanajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
+                        <li><a href="user_manajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
                         <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
                         <li><a href="facilities.html"><i class="fas fa-bed"></i> <span>Fasilitas</span></a></li>
-                        <li><a href="roomfacility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li>
+                        <li><a href="room_facility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li>
                     </ul>
                 </li>
             </ul>         
@@ -105,7 +105,7 @@
     </div>
 
     <!-- Popup Tambah Kategori -->
-    <div id="popupTambahFasilitas" class="popup">
+    <div id="popupTambahKategori" class="popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2 class="popup-title">KosConnect</h2>
@@ -114,9 +114,9 @@
                 </a>
             </div>
             <h3 class="popup-subtitle">Tambah Kategori</h3>
-            <form id="formTambahFasilitas">
-                <label for="namaFasilitas" class="form-label">Masukkan nama kategori!</label>
-                <input type="text" id="namaFasilitas" name="namaFasilitas" placeholder="Nama Kategori " required>
+            <form id="formTambahKategori">
+                <label for="namaKategori" class="form-label">Masukkan nama kategori!</label>
+                <input type="text" id="namaKategori" name="namaKategori" placeholder="Nama Kategori " required>
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan</button>
                 </div>
@@ -125,7 +125,7 @@
     </div>
 
     <!-- Popup Edit Kategori -->
-    <div id="popupEditFasilitas" class="popup">
+    <div id="popupEditKategori" class="popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2 class="popup-title">KosConnect</h2>
@@ -134,9 +134,9 @@
                 </a>
             </div>
             <h3 class="popup-subtitle">Edit Kategori</h3>
-            <form id="formEditFasilitas">
-                <label for="editNamaFasilitas" class="form-label">Perbarui nama kategori!</label>
-                <input type="text" id="editNamaFasilitas" name="editNamaFasilitas" placeholder="Nama kategori"
+            <form id="formEditKategori">
+                <label for="editNamaKategori" class="form-label">Perbarui nama kategori!</label>
+                <input type="text" id="editNamaKategori" name="editNamakategori" placeholder="Nama kategori"
                     required>
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
@@ -146,7 +146,7 @@
     </div>
 
     <!-- Popup Hapus Kategori -->
-    <div id="popupHapusFasilitas" class="popup">
+    <div id="popupHapusKategori" class="popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2 class="popup-title">KosConnect</h2>
@@ -162,6 +162,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/category.js"></script>
 </body>
 </html>
