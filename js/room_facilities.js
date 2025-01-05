@@ -36,23 +36,28 @@ function confirmDelete() {
     closePopup();
 }
 
-// Fungsi untuk mendapatkan JWT token dari cookie
+// Fungsi untuk mendapatkan token JWT dari cookie
 function getJwtToken() {
-    const cookies = document.cookie.split('; ').map(cookie => cookie.split('='));
-    const authTokenCookie = cookies.find(([key]) => key === 'authToken');
-    return authTokenCookie ? authTokenCookie[1] : null;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('authToken=')) {
+            return cookie.substring('authToken='.length);
+        }
+    }
+    console.error("Token tidak ditemukan");
+    return null;
 }
 
-// Fungsi untuk melakukan fetch data room facilities
+// Fungsi untuk mengambil data fasilitas kamar
 function fetchRoomFacilities() {
     const jwtToken = getJwtToken();
-
     if (!jwtToken) {
-        alert("Tidak ada token JWT, silakan login kembali.");
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/roomfacilities', {
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -61,12 +66,13 @@ function fetchRoomFacilities() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
-        displayRoomFacilities(data);  // Menampilkan data ke UI
+        console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
+        // TODO: Tampilkan data fasilitas di halaman
     })
     .catch(error => {
         console.error("Gagal mengambil data fasilitas kamar:", error);
@@ -75,14 +81,3 @@ function fetchRoomFacilities() {
 
 // Panggil fetchRoomFacilities saat halaman dimuat
 window.addEventListener('load', fetchRoomFacilities);
-
-// Contoh fungsi untuk menampilkan data ke UI
-function displayRoomFacilities(data) {
-    const roomFacilitiesContainer = document.getElementById('roomFacilities');
-    roomFacilitiesContainer.innerHTML = data.map(facility => `
-        <div class="facility-item">
-            <h3>${facility.name}</h3>
-            <p>${facility.description}</p>
-        </div>
-    `).join('');
-}
