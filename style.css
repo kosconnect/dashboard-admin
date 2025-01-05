@@ -1,12 +1,9 @@
-/* body {
-    font-family: 'Merriweather', 'Merriweather Sans';
-    margin: 0;
-    background: linear-gradient(to bottom right, #e3f2fd, #eceff1);
-    color: #333;
-} */
+
+*{
+    font-family: 'Poppins', 'sans-serif';
+}
 
 body {
-    font-family: 'Merriweather Sans', sans-serif;
     margin: 0;
     background: linear-gradient(to bottom right, #e3f2fd, #eceff1);
     color: #333;
@@ -20,7 +17,7 @@ body {
 
 .sidebar {
     width: 180px;
-    background: #002b5b;
+    background: #005f73;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -41,7 +38,7 @@ body {
 }
 
 .sidebar-header h2 {
-    font-family: 'Merriweather', serif;
+    font-family: 'Merriweather';
     font-weight: 600;
     font-size: 18px;
     margin: 0;
@@ -103,6 +100,7 @@ body {
 }
 
 .dashboard-header h1 {
+    font-family: 'Poppins';
     font-weight: 600;
 }
 
@@ -129,20 +127,20 @@ body {
 
 /* Section Headers (like dashboard title) */
 h1, .widget h3 {
-    font-family: 'Merriweather', serif;
+    font-family: 'Poppins', 'sans-serif';
     font-weight: 600;
 }
 
 /* Widget Information Text */
 .widget-info {
-    font-family: 'Merriweather Sans', sans-serif;
+    font-family: 'Poppins', 'sans-serif';
     font-size: 14px;
     font-weight: 400;
 }
 
 /* Dropdown and user roles */
 .user-info .name, .user-info .role {
-    font-family: 'Merriweather Sans', sans-serif;
+    font-family: 'Poppins', 'sans-serif';
 }
 
 /* Styling untuk tiap widget */
@@ -175,7 +173,7 @@ h1, .widget h3 {
 
 .widget h3 i {
     font-size: 24px; /* Ukuran ikon */
-    color: #1b3446; /* Warna ikon */
+    color: #005f73; /* Warna ikon */
 }
 
 /* Styling untuk isi widget (angka atau teks) */
@@ -288,35 +286,6 @@ h1, .widget h3 {
     /* Warna ikon di dropdown tetap putih */
 }
 
-/* Tabel transaksi */
-/* .dashboard-table {
-    margin: 20px;
-    font-family: Arial, sans-serif;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-th {
-    background-color: #f4f4f4;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f4f4f4;
-}
-
-tbody tr:hover {
-    background-color: #f1f1f1;
-} */
-
 .transaction-table {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -324,6 +293,7 @@ tbody tr:hover {
 }
 
 .transaction-table h2 {
+    font-family: 'Poppins', sans-serif;
     margin-bottom: 10px;
     text-align: left;
 }
@@ -389,7 +359,7 @@ tbody tr:hover {
 }
 
 .search-bar .btn {
-    background-color: #1b3446;
+    background-color: #005f73;
     color: white;
     padding: 8px 12px;   /* Mengurangi padding tombol */
     border: none;
@@ -414,9 +384,9 @@ tbody tr:hover {
     display: inline-block;
     margin-bottom: 10px; /* Memberikan jarak bawah antara tombol dan elemen lain */
     padding: 6px 12px; /* Memperkecil ukuran tombol */
-    background-color: #1b3446;
+    background-color: #005f73;
     color: white;
-    font-family: 'Merriweather', 'Merriweather Sans', sans-serif;
+    font-family: 'Poppins', 'sans-serif';
     font-size: 12px;
     font-weight: 600;
     border: 1px solid #84B8C6;
@@ -520,6 +490,112 @@ form .btn-primary {
     margin-top: 15px;
 }
 
+/* Pop UP */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    max-width: 90%;
+    z-index: 1000;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.popup-title {
+    font-family: 'Merriweather', serif;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 auto;
+    color: #003f53;
+}
+
+.popup-subtitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #20B2AA;
+}
+
+.form-label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: normal;
+    color: #003f53;
+}
+
+.popup input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #005f73;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
+}
+
+.popup .styled-select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #005f73;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    appearance: none; /* Menghilangkan gaya default dropdown */
+    background: #ffffff url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSI4Ij48cGF0aCBkPSJNMiAxLjVMNiA1LjUgMTEgMS41IiBzdHJva2U9IiMwMDVmNzMiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==') no-repeat right 10px center;
+    background-size: 12px 8px;
+}
+
+.popup-actions {
+    text-align: center;
+}
+
+.btn-simpan {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background-color: #005f73;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-simpan:hover {
+    background-color: #003f53;
+}
+
+
+.cancel-btn {
+    font-size: 24px;
+    color: #005f73;
+    text-decoration: none;
+}
+
+.cancel-btn:hover {
+    color: #003f53;
+    cursor: pointer;
+}
+
+
 /* Responsif */
 @media (max-width: 768px) {
     .sidebar {
@@ -528,6 +604,7 @@ form .btn-primary {
 
     .sidebar-header h2 {
         display: none;
+        font-family: 'Poppins', 'sans-serif';
     }
 
     .sidebar ul li a {

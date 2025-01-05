@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaksi | KosConnect</title>
-    <link rel="shortcut icon" href="img/logokos.png" type="image/png">
+    <title>Tambah Kategori | Kosconnect</title>
+    <link rel="shortcut icon" href="/img/logokos.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -23,7 +19,7 @@
             <div class="sidebar-header">
                 <!-- Ganti dengan gambar -->
                 <img src="img/logokos.png" alt="Kosconnect Logo" style="width: 40px; height: 40px; margin-right: 10px;">
-                <h2>KosConnect</h2>
+                <h2>Kosconnect</h2>
             </div>
             <ul>
                 <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Beranda</span></a></li>
@@ -43,7 +39,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Transaksi</h1>
+                <h1>Tambah Kategori</h1>
                 <div class="header-icons">
                     <a href="#"><i class="fas fa-bell"></i></a>
                     <a href="#"><i class="fas fa-cog"></i></a>
@@ -54,63 +50,36 @@
                                 <i class="fas fa-user"></i>
                                 <i class="fas fa-caret-down"></i>
                             </div>
-                            <span class="role">Admin</span>
+                            <span class="role">Pemilik Kos</span>
                         </div>
                         <ul class="dropdown-menu">
                             <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
-                    </div>                    
+                    </div>
                 </div>
             </div>
 
-            <!-- Transactions Management Table -->
-            <div class="transaction-management">
-                <h2>Manajemen Transaksi</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Cari..." class="search-input">
-                    <button class="btn search"><i class="fas fa-search"></i> </button>
+            <!-- Form Tambah Kategori -->
+            <div class="card">
+                <div class="header">
+                    <form action="/admin/category/add" method="POST">
+                        <div class="form-group">
+                            <label for="category-name">Nama Kategori :</label>
+                            <input type="text" id="category-name" name="category_name"
+                                placeholder="Masukkan Nama Kategori" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="slug">Slug :</label>
+                            <input type="text" id="slug" name="slug" placeholder="Masukkan Slug" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/category.html'">Batal</button>
+                    </form>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Kode Pemesan</th>
-                            <th>Pemesan</th>
-                            <th>Nama Kos</th>
-                            <th>Nomor Kamar</th>
-                            <th>Total Pemesanan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>KP001</td>
-                            <td>Balqis Rosa</td>
-                            <td>Kos Hijau</td>
-                            <td>101</td>
-                            <td>Rp 1.200.000</td>
-                            <td>
-                                <button class="btn btn-primary" onclick="showPopupDetail()"><i class="fas fa-info-circle"></i> Detail</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>KP002</td>
-                            <td>Fathya Fathimah</td>
-                            <td>Kos Biru</td>
-                            <td>202</td>
-                            <td>Rp 1.500.000</td>
-                            <td>
-                                <button class="btn btn-primary" onclick="showPopupDetail()"><i class="fas fa-info-circle"></i> Detail</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
+
 </html>

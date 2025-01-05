@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fasilitas Kamar | Kosconnect</title>
-    <link rel="shortcut icon" href="/img/logokos.png" type="image/png">
+    <title>Fasilitas Kamar | KosConnect</title>
+    <link rel="shortcut icon" href="img/logokos.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -16,21 +25,24 @@
             <div class="sidebar-header">
                 <!-- Ganti dengan gambar -->
                 <img src="img/logokos.png" alt="Kosconnect Logo" style="width: 40px; height: 40px; margin-right: 10px;">
-                <h2>Kosconnect</h2>
+                <h2>KosConnect</h2>
             </div>
             <ul>
                 <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Beranda</span></a></li>
                 <li>
                     <h2 style="font-size: 14px; color: #b0bec5;">Interface</h2>
                     <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
-                        <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a></li>
-                        <li><a href="usermanajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
+                        <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a>
+                        </li>
+                        <li><a href="usermanajemen.html"><i class="fas fa-users"></i> <span>Manajemen
+                                    Pengguna</span></a></li>
                         <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
                         <li><a href="facilities.html"><i class="fas fa-bed"></i> <span>Fasilitas</span></a></li>
-                        <li><a href="roomfacility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li>
+                        <li><a href="roomfacility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas
+                                    Kamar</span></a></li>
                     </ul>
                 </li>
-            </ul>     
+            </ul>
         </div>
 
         <!-- Main Content -->
@@ -52,7 +64,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
-                    </div>                    
+                    </div>
                 </div>
             </div>
 
@@ -60,7 +72,7 @@
             <div class="room-facility-management">
                 <h2>Manajemen Fasilitas Kamar</h2>
                 <div style="text-align: right; margin-bottom: 10px;">
-                    <button class="btn btn-primary">Tambah Fasilitas Kamar</button>
+                    <button class="btn btn-primary" onclick="showPopup()">Tambah Fasilitas Kamar</button>
                     <!-- <button class="btn btn-primary" onclick="window.location.href='tambah_fasilitas_kamar.html'">Tambah Fasilitas Kamar</button> -->
                 </div>
                 <table>
@@ -76,16 +88,16 @@
                             <td>1</td>
                             <td>AC</td>
                             <td>
-                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                                <button class="btn btn-primary" onclick="showPopupEdit()"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary" onclick="showPopupDelete()"><i class="fas fa-trash"></i> Hapus</button>
                             </td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>Meja Belajar</td>
                             <td>
-                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                                <button class="btn btn-primary" onclick="showPopupEdit()"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary" onclick="showPopupDelete()"><i class="fas fa-trash"></i> Hapus</button>
                             </td>
                         </tr>
                     </tbody>
@@ -93,6 +105,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Popup Tambah Fasilitas Kamar -->
+    <div id="popupTambahFasilitas" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title">KosConnect</h2>
+                <a href="#" class="cancel-btn" onclick="closePopup()">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+            </div>
+            <h3 class="popup-subtitle">Tambah Fasilitas Kamar</h3>
+            <form id="formTambahFasilitas">
+                <label for="namaFasilitas" class="form-label">Masukkan nama fasilitas kamar!</label>
+                <input type="text" id="namaFasilitas" name="namaFasilitas" placeholder="Nama Fasilitas Kamar" required>
+                <div class="popup-actions">
+                    <button type="submit" class="btn btn-simpan">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup Edit Fasilitas Kamar -->
+    <div id="popupEditFasilitas" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title">KosConnect</h2>
+                <a href="#" class="cancel-btn" onclick="closePopup()">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+            </div>
+            <h3 class="popup-subtitle">Edit Fasilitas Kamar</h3>
+            <form id="formEditFasilitas">
+                <label for="editNamaFasilitas" class="form-label">Perbarui nama fasilitas kamar!</label>
+                <input type="text" id="editNamaFasilitas" name="editNamaFasilitas" placeholder="Nama Fasilitas Kamar"
+                    required>
+                <div class="popup-actions">
+                    <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup Hapus Fasilitas Kamar -->
+    <div id="popupHapusFasilitas" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title">KosConnect</h2>
+                <a href="#" class="cancel-btn" onclick="closePopup()">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+            </div>
+            <h3 class="popup-subtitle">Hapus Fasilitas Kamar</h3>
+            <p>Apakah Anda yakin ingin menghapus fasilitas kamar ini?</p>
+            <div class="popup-actions">
+                <button class="btn btn-simpan" onclick="confirmDelete()">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="script.js"></script>
 </body>
+
 </html>
