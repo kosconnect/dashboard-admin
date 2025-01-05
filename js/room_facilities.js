@@ -36,52 +36,6 @@ function confirmDelete() {
     closePopup();
 }
 
-// Fungsi untuk mendapatkan token JWT dari cookie
-function getJwtToken() {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith('authToken=')) {
-            return cookie.substring('authToken='.length);
-        }
-    }
-    console.error("Token tidak ditemukan");
-    return null;
-}
-
-// Fungsi untuk mengambil data fasilitas kamar
-function fetchRoomFacilities() {
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
-        return;
-    }
-
-    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
-        // TODO: Tampilkan data fasilitas di halaman
-    })
-    .catch(error => {
-        console.error("Gagal mengambil data fasilitas kamar:", error);
-    });
-}
-
-// Panggil fetchRoomFacilities saat halaman dimuat
-window.addEventListener('load', fetchRoomFacilities);
-
 function fetchRoomFacilities() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -138,3 +92,6 @@ function fetchRoomFacilities() {
         console.error("Gagal mengambil data fasilitas kamar:", error);
     });
 }
+
+// Panggil fetchRoomFacilities saat halaman dimuat
+window.addEventListener('load', fetchRoomFacilities);
