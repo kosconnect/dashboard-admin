@@ -36,59 +36,57 @@ function confirmDelete() {
     closePopup();
 }
 
-// Mengambil token JWT dari cookies
+// Fungsi untuk mendapatkan JWT token dari cookie
 function getJwtToken() {
-    const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+    const cookieString = document.cookie;  // Mengambil semua cookie
+    console.log("Cookie saat ini:", cookieString);  // Debugging untuk memastikan cookie terbaca
+
+    const cookies = cookieString ? cookieString.split('; ') : [];
+    const tokenCookie = cookies.find(cookie => cookie.startsWith('auth='));  // Mencari cookie dengan nama 'auth'
+
+    if (!tokenCookie) {
+        console.error("Token tidak ditemukan");
+        return null;
+    }
+
+    const token = tokenCookie.split('=')[1];  // Mendapatkan nilai token setelah '='
+    if (!token) {
+        console.error("Format token tidak valid");
+        return null;
+    }
+
     return token;
 }
 
-// Fungsi untuk mengambil data room facilities
+// Fungsi untuk melakukan fetch data room facilities
 function fetchRoomFacilities() {
-    const token = getJwtToken();
+    const jwtToken = getJwtToken();  // Mengambil token JWT
 
-    if (!token) {
-        console.log("Token tidak ditemukan");
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/roomfacilities', {
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities', {  // Ganti dengan URL API Anda
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Menambahkan token JWT di header
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
         }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Gagal mengambil data');
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
-        // Menampilkan data di konsol (atau bisa disesuaikan untuk menampilkan di tabel)
-        console.log(data);
-
-        // Jika ingin menampilkan data di tabel HTML
-        const tbody = document.querySelector('tbody');
-        tbody.innerHTML = ''; // Membersihkan tabel sebelum menambah data baru
-
-        data.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.roomfacility_id}</td>
-                <td>${item.name}</td>
-                <td>
-                    <button class="btn btn-primary" onclick="showPopupEdit()">Edit</button>
-                    <button class="btn btn-primary" onclick="showPopupDelete()">Hapus</button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
+        console.log("Data fasilitas kamar:", data);  // Ganti dengan logika untuk menampilkan data di halaman
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error("Terjadi kesalahan saat mengambil data fasilitas kamar:", error);
     });
 }
 
-// Panggil fungsi untuk fetch data saat halaman dimuat
-window.onload = fetchRoomFacilities;
+// Panggil fungsi untuk mengambil data saat halaman dimuat
+window.addEventListener('load', fetchRoomFacilities);
