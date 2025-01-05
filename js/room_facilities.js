@@ -38,28 +38,21 @@ function confirmDelete() {
 
 // Fungsi untuk mendapatkan JWT token dari cookie
 function getJwtToken() {
-    const cookieString = document.cookie;
-    const cookies = cookieString ? cookieString.split('; ') : [];
-    const tokenCookie = cookies.find(cookie => cookie.startsWith('authToken='));
-    
-    if (!tokenCookie) {
-        return null;  // Langsung kembalikan null tanpa log tambahan
-    }
-
-    const token = tokenCookie.split('=')[1];
-    return token || null;
+    const cookies = document.cookie.split('; ').map(cookie => cookie.split('='));
+    const authTokenCookie = cookies.find(([key]) => key === 'authToken');
+    return authTokenCookie ? authTokenCookie[1] : null;
 }
 
 // Fungsi untuk melakukan fetch data room facilities
 function fetchRoomFacilities() {
-    const jwtToken = getJwtToken();  // Mengambil token JWT
+    const jwtToken = getJwtToken();
 
     if (!jwtToken) {
         alert("Tidak ada token JWT, silakan login kembali.");
         return;
     }
 
-    fetch('https://example.com/api/room_facilities', {  // Sesuaikan dengan endpoint API
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -73,8 +66,7 @@ function fetchRoomFacilities() {
         return response.json();
     })
     .then(data => {
-        // Logika untuk memproses data, seperti menampilkan daftar fasilitas
-        console.log("Data fasilitas kamar:", data);  // Sesuaikan dengan elemen di halaman
+        displayRoomFacilities(data);  // Menampilkan data ke UI
     })
     .catch(error => {
         console.error("Gagal mengambil data fasilitas kamar:", error);
@@ -83,3 +75,14 @@ function fetchRoomFacilities() {
 
 // Panggil fetchRoomFacilities saat halaman dimuat
 window.addEventListener('load', fetchRoomFacilities);
+
+// Contoh fungsi untuk menampilkan data ke UI
+function displayRoomFacilities(data) {
+    const roomFacilitiesContainer = document.getElementById('roomFacilities');
+    roomFacilitiesContainer.innerHTML = data.map(facility => `
+        <div class="facility-item">
+            <h3>${facility.name}</h3>
+            <p>${facility.description}</p>
+        </div>
+    `).join('');
+}
