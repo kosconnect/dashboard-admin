@@ -38,24 +38,16 @@ function confirmDelete() {
 
 // Fungsi untuk mendapatkan JWT token dari cookie
 function getJwtToken() {
-    const cookieString = document.cookie;  // Mengambil semua cookie
-    console.log("Cookie saat ini:", cookieString);  // Debugging untuk memastikan cookie terbaca
-
+    const cookieString = document.cookie;
     const cookies = cookieString ? cookieString.split('; ') : [];
-    const tokenCookie = cookies.find(cookie => cookie.startsWith('auth='));  // Mencari cookie dengan nama 'auth'
-
+    const tokenCookie = cookies.find(cookie => cookie.startsWith('authToken='));
+    
     if (!tokenCookie) {
-        console.error("Token tidak ditemukan");
-        return null;
+        return null;  // Langsung kembalikan null tanpa log tambahan
     }
 
-    const token = tokenCookie.split('=')[1];  // Mendapatkan nilai token setelah '='
-    if (!token) {
-        console.error("Format token tidak valid");
-        return null;
-    }
-
-    return token;
+    const token = tokenCookie.split('=')[1];
+    return token || null;
 }
 
 // Fungsi untuk melakukan fetch data room facilities
@@ -63,11 +55,11 @@ function fetchRoomFacilities() {
     const jwtToken = getJwtToken();  // Mengambil token JWT
 
     if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        alert("Tidak ada token JWT, silakan login kembali.");
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/roomfacilities', {  // Ganti dengan URL API Anda
+    fetch('https://example.com/api/room_facilities', {  // Sesuaikan dengan endpoint API
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -81,12 +73,13 @@ function fetchRoomFacilities() {
         return response.json();
     })
     .then(data => {
-        console.log("Data fasilitas kamar:", data);  // Ganti dengan logika untuk menampilkan data di halaman
+        // Logika untuk memproses data, seperti menampilkan daftar fasilitas
+        console.log("Data fasilitas kamar:", data);  // Sesuaikan dengan elemen di halaman
     })
     .catch(error => {
-        console.error("Terjadi kesalahan saat mengambil data fasilitas kamar:", error);
+        console.error("Gagal mengambil data fasilitas kamar:", error);
     });
 }
 
-// Panggil fungsi untuk mengambil data saat halaman dimuat
+// Panggil fetchRoomFacilities saat halaman dimuat
 window.addEventListener('load', fetchRoomFacilities);
