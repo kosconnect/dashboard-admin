@@ -13,26 +13,7 @@ function closePopup() {
     document.getElementById('popupTambahFasilitas').style.display = 'none';
 }
 
-// document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     alert('Fasilitas berhasil ditambahkan!');
-//     closePopup();
-// });
-
-// function showPopupEdit() {
-//     document.getElementById('popupEditFasilitas').style.display = 'block';
-// }
-
-// function showPopupDelete() {
-//     document.getElementById('popupHapusFasilitas').style.display = 'block';
-// }
-
-// function showPopupEdit(facilityId) {
-//     document.getElementById('popupEditFasilitas').style.display = 'block';
-//     // Populate the edit form with the selected facility's data
-//     document.getElementById('editNamaFasilitas').value = facilityId.name;
-// }
-
+// POPUP EDIT
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
     
@@ -43,10 +24,17 @@ function showPopupEdit(facilityId, facilityName) {
     document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
+// function showPopupDelete(facilityId) {
+//     document.getElementById('popupHapusFasilitas').style.display = 'block';
+//     // Pass the facility ID for deletion
+//     selectedFacilityId = facilityId;
+// }
+
+
+// Fungsi untuk menampilkan popup delete dan menyimpan ID fasilitas
 function showPopupDelete(facilityId) {
-    document.getElementById('popupHapusFasilitas').style.display = 'block';
-    // Pass the facility ID for deletion
-    selectedFacilityId = facilityId;
+    selectedFacilityId = facilityId; // Simpan ID fasilitas
+    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
 }
 
 function closePopup() {
@@ -58,6 +46,7 @@ function confirmDelete() {
     closePopup();
 }
 
+// GET 
 // Fungsi untuk mendapatkan token JWT dari cookie
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -251,41 +240,55 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
 console.log("Mengupdate fasilitas:", facilityId, updatedName);
 console.log("Data fasilitas kamar setelah update:", data);
 
+// DELETE
+// Fungsi untuk melakukan penghapusan data fasilitas kamar
+function confirmDelete() {
+    const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
+    if (!jwtToken) {
+        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
+        return;
+    }
 
-// Panggilan fungsi fetchRoomFacilityById dengan ID pada tombol Edit
-// function setEditButtonActions() {
-//     document.querySelectorAll('.btn-edit').forEach(button => {
-//         button.addEventListener('click', function() {
-//             const id = this.dataset.id;  // Ambil ID dari atribut data-id tombol
-//             fetchRoomFacilityById(id);
-//         });
-//     });
-// }
+    // Kirim permintaan DELETE ke API
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas kamar berhasil dihapus:", data);
+        alert('Fasilitas kamar berhasil dihapus!');
+        closePopup(); // Tutup popup
+        fetchRoomFacilities(); // Perbarui tabel
+    })
+    .catch(error => {
+        console.error("Gagal menghapus fasilitas kamar:", error);
+        alert('Gagal menghapus fasilitas kamar.');
+    });
+}
 
-// Delete
-// function confirmDelete() {
-//     const jwtToken = getJwtToken();
-//     if (!jwtToken) {
-//         console.error("Token tidak ditemukan");
-//         return;
-//     }
+// Fungsi untuk menutup semua popup
+function closePopup() {
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none';
+    });
+}
 
-//     fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
-//         method: 'DELETE',
-//         headers: {
-//             'Authorization': `Bearer ${jwtToken}`,
-//             'Content-Type': 'application/json'
-//         }
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         alert('Fasilitas kamar berhasil dihapus!');
-//         closePopup();
-//         fetchRoomFacilities();
-//     })
-//     .catch(error => {
-//         console.error("Gagal menghapus fasilitas kamar:", error);
-//     });
-// }
+const tdAksi = document.createElement('td');
+tdAksi.innerHTML = `
+    <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
+        <i class="fas fa-edit"></i> Edit
+    </button>
+    <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')">
+        <i class="fas fa-trash"></i> Hapus
+    </button>
+`;
+tr.appendChild(tdAksi);
