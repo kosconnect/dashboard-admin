@@ -203,15 +203,12 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
 });
 
 // PUT
-function updateRoomFacility(facilityId) {
+function updateRoomFacility(facilityId, updatedName) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
-
-    // Ambil input dari form (pastikan ID input sesuai dengan elemen HTML Anda)
-    const updatedFacilityName = document.getElementById('editNamaFasilitas').value;
 
     fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
         method: 'PUT',
@@ -219,25 +216,27 @@ function updateRoomFacility(facilityId) {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: updatedFacilityName }) // Pastikan body sesuai struktur BE
+        body: JSON.stringify({ name: updatedName })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fasilitas kamar berhasil diperbarui:", data);
-            alert('Fasilitas berhasil diperbarui!');
-            closePopup();  // Sembunyikan popup setelah pembaruan
-            fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
-        })
-        .catch(error => {
-            console.error("Gagal memperbarui fasilitas kamar:", error);
-            alert('Gagal memperbarui fasilitas kamar.');
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas kamar berhasil diperbarui:", data);
+        alert('Fasilitas berhasil diperbarui!');
+        closePopup();  // Sembunyikan popup setelah pembaruan
+        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui fasilitas kamar:", error);
+        alert('Gagal memperbarui fasilitas kamar.');
+    });
 }
+
+fetchRoomFacilities();  // Memastikan tabel diperbarui
 
 
 // Panggilan fungsi fetchRoomFacilityById dengan ID pada tombol Edit
