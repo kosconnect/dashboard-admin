@@ -138,3 +138,44 @@ function fetchRoomFacilities() {
         console.error("Gagal mengambil data fasilitas kamar:", error);
     });
 }
+
+// POST
+function addRoomFacility() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const facilityName = document.getElementById('facilityName').value;
+
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: facilityName })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas kamar berhasil ditambahkan:", data);
+        alert('Fasilitas berhasil ditambahkan!');
+        closePopup();  // Sembunyikan popup setelah penambahan
+        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
+    })
+    .catch(error => {
+        console.error("Gagal menambahkan fasilitas kamar:", error);
+        alert('Gagal menambahkan fasilitas kamar.');
+    });
+}
+
+document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
+    e.preventDefault();
+    addRoomFacility();  // Panggil fungsi untuk mengirim data
+});
