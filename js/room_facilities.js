@@ -258,6 +258,7 @@ function confirmDelete() {
         }
     })
     .then(response => {
+        console.log("Status respons DELETE:", response.status);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -268,6 +269,7 @@ function confirmDelete() {
         alert('Fasilitas kamar berhasil dihapus!');
         closePopup(); // Tutup popup
         fetchRoomFacilities(); // Perbarui tabel
+        console.log("fetchRoomFacilities dipanggil");
     })
     .catch(error => {
         console.error("Gagal menghapus fasilitas kamar:", error);
@@ -275,20 +277,50 @@ function confirmDelete() {
     });
 }
 
-// Fungsi untuk menutup semua popup
-function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => {
-        popup.style.display = 'none';
+function fetchRoomFacilities() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data fasilitas setelah penghapusan:", data);
+
+        // Perbarui tabel
+        const tbody = document.querySelector('table tbody');
+        tbody.innerHTML = ''; // Kosongkan tabel
+        data.forEach(fasilitas => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${fasilitas.id}</td>
+                <td>${fasilitas.name}</td>
+                <td>
+                    <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(error => {
+        console.error("Gagal mengambil data fasilitas kamar:", error);
     });
 }
-
-const tdAksi = document.createElement('td');
-tdAksi.innerHTML = `
-    <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
-        <i class="fas fa-edit"></i> Edit
-    </button>
-    <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')">
-        <i class="fas fa-trash"></i> Hapus
-    </button>
-`;
-tr.appendChild(tdAksi);
