@@ -245,17 +245,9 @@ console.log("Data fasilitas kamar setelah update:", data);
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
 function confirmDelete() {
-    console.log("ID fasilitas untuk dihapus:", selectedFacilityId); // Debug log
-
-    const jwtToken = getJwtToken();
+    const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
     if (!jwtToken) {
         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
-        return;
-    }
-
-    if (!selectedFacilityId) {
-        console.error("ID fasilitas tidak ditemukan, tidak dapat menghapus.");
-        alert("ID fasilitas tidak valid!");
         return;
     }
 
@@ -275,16 +267,26 @@ function confirmDelete() {
     })
     .then(data => {
         console.log("Fasilitas kamar berhasil dihapus:", data);
-        alert('Fasilitas kamar berhasil dihapus!');
-        closePopup(); // Tutup popup
-        fetchRoomFacilities(); // Perbarui tabel
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Fasilitas kamar berhasil dihapus!',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            closePopup(); // Tutup popup setelah SweetAlert
+            fetchRoomFacilities(); // Perbarui tabel
+        });
     })
     .catch(error => {
         console.error("Gagal menghapus fasilitas kamar:", error);
-        alert('Gagal menghapus fasilitas kamar.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal menghapus fasilitas kamar. Silakan coba lagi.',
+            confirmButtonText: 'OK'
+        });
     });
 }
-
 
 // Fungsi untuk menutup semua popup
 function closePopup() {
