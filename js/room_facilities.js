@@ -179,3 +179,47 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     e.preventDefault();
     addRoomFacility();  // Pastikan fungsi ini mengambil input yang benar
 });
+
+// GetByID
+// Fungsi untuk mengambil data fasilitas berdasarkan ID dan menampilkannya di form edit
+function fetchRoomFacilityById(id) {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${id}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data fasilitas (by ID):", data); // Debugging
+        // Isi form dengan data yang diterima
+        document.getElementById('editNamaFasilitas').value = data.name;  // Sesuaikan nama field dengan data API
+        document.getElementById('formEditFasilitas').dataset.id = id;    // Simpan ID untuk update
+        showPopupEdit();  // Tampilkan popup
+    })
+    .catch(error => {
+        console.error("Gagal mengambil data fasilitas (by ID):", error);
+    });
+}
+
+// Panggilan fungsi fetchRoomFacilityById dengan ID pada tombol Edit
+function setEditButtonActions() {
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;  // Ambil ID dari atribut data-id tombol
+            fetchRoomFacilityById(id);
+        });
+    });
+}
