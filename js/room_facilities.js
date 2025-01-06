@@ -19,12 +19,24 @@ function closePopup() {
 //     closePopup();
 // });
 
-function showPopupEdit() {
+// function showPopupEdit() {
+//     document.getElementById('popupEditFasilitas').style.display = 'block';
+// }
+
+// function showPopupDelete() {
+//     document.getElementById('popupHapusFasilitas').style.display = 'block';
+// }
+
+function showPopupEdit(facilityId) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
+    // Populate the edit form with the selected facility's data
+    document.getElementById('editNamaFasilitas').value = facilityId.name;
 }
 
-function showPopupDelete() {
+function showPopupDelete(facilityId) {
     document.getElementById('popupHapusFasilitas').style.display = 'block';
+    // Pass the facility ID for deletion
+    selectedFacilityId = facilityId;
 }
 
 function closePopup() {
@@ -221,5 +233,33 @@ function setEditButtonActions() {
             const id = this.dataset.id;  // Ambil ID dari atribut data-id tombol
             fetchRoomFacilityById(id);
         });
+    });
+}
+
+// Delete
+function confirmDelete() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Token tidak ditemukan");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        alert('Fasilitas kamar berhasil dihapus!');
+        closePopup(); // Close the popup after deletion
+        fetchRoomFacilities(); // Refresh the table
+    })
+    .catch(error => {
+        console.error("Gagal menghapus fasilitas kamar:", error);
     });
 }
