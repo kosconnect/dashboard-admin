@@ -227,9 +227,9 @@ function updateRoomFacility(facilityId, updatedName) {
     .then(data => {
         console.log("Fasilitas kamar berhasil diperbarui:", data);
         alert('Fasilitas berhasil diperbarui!');
-        closePopup();  // Sembunyikan popup setelah pembaruan
-        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
-    })
+        closePopup();  // Tutup popup setelah sukses
+        fetchRoomFacilities();  // Panggil ulang untuk memperbarui tabel
+    })    
     .catch(error => {
         console.error("Gagal memperbarui fasilitas kamar:", error);
         alert('Gagal memperbarui fasilitas kamar.');
@@ -237,6 +237,19 @@ function updateRoomFacility(facilityId, updatedName) {
 }
 
 fetchRoomFacilities();  // Memastikan tabel diperbarui
+
+document.getElementById('formEditFasilitas').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah reload halaman
+    
+    const facilityId = document.getElementById('editFacilityId').value; // Ambil ID fasilitas
+    const updatedName = document.getElementById('editNamaFasilitas').value; // Ambil nama fasilitas baru
+    
+    // Panggil fungsi untuk mengupdate data
+    updateRoomFacility(facilityId, updatedName);
+});
+
+console.log("Mengupdate fasilitas:", facilityId, updatedName);
+console.log("Data fasilitas kamar setelah update:", data);
 
 
 // Panggilan fungsi fetchRoomFacilityById dengan ID pada tombol Edit
