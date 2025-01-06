@@ -27,10 +27,20 @@ function closePopup() {
 //     document.getElementById('popupHapusFasilitas').style.display = 'block';
 // }
 
-function showPopupEdit(facilityId) {
+// function showPopupEdit(facilityId) {
+//     document.getElementById('popupEditFasilitas').style.display = 'block';
+//     // Populate the edit form with the selected facility's data
+//     document.getElementById('editNamaFasilitas').value = facilityId.name;
+// }
+
+function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
-    // Populate the edit form with the selected facility's data
-    document.getElementById('editNamaFasilitas').value = facilityId.name;
+    
+    // Isi input tersembunyi untuk ID
+    document.getElementById('editFacilityId').value = facilityId;
+
+    // Isi input nama untuk diedit
+    document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
 function showPopupDelete(facilityId) {
@@ -76,19 +86,19 @@ function fetchRoomFacilities() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
-        // TODO: Tampilkan data fasilitas di halaman
-    })
-    .catch(error => {
-        console.error("Gagal mengambil data fasilitas kamar:", error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
+            // TODO: Tampilkan data fasilitas di halaman
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data fasilitas kamar:", error);
+        });
 }
 
 // Panggil fetchRoomFacilities saat halaman dimuat
@@ -108,47 +118,47 @@ function fetchRoomFacilities() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
 
-        // Ambil elemen tabel
-        const tbody = document.querySelector('table tbody');
-        
-        // Kosongkan tabel sebelum menambah data baru
-        tbody.innerHTML = '';
+            // Ambil elemen tabel
+            const tbody = document.querySelector('table tbody');
 
-        // Loop melalui data dan masukkan ke dalam tabel
-        data.forEach(fasilitas => {
-            const tr = document.createElement('tr');
+            // Kosongkan tabel sebelum menambah data baru
+            tbody.innerHTML = '';
 
-            const tdId = document.createElement('td');
-            tdId.textContent = fasilitas.id;  // Ganti sesuai data yang diterima
-            tr.appendChild(tdId);
+            // Loop melalui data dan masukkan ke dalam tabel
+            data.forEach(fasilitas => {
+                const tr = document.createElement('tr');
 
-            const tdNamaFasilitas = document.createElement('td');
-            tdNamaFasilitas.textContent = fasilitas.name;  // Ganti sesuai data yang diterima
-            tr.appendChild(tdNamaFasilitas);
+                const tdId = document.createElement('td');
+                tdId.textContent = fasilitas.id;  // Ganti sesuai data yang diterima
+                tr.appendChild(tdId);
 
-            const tdAksi = document.createElement('td');
-            tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit()"><i class="fas fa-edit"></i> Edit</button>
+                const tdNamaFasilitas = document.createElement('td');
+                tdNamaFasilitas.textContent = fasilitas.name;  // Ganti sesuai data yang diterima
+                tr.appendChild(tdNamaFasilitas);
+
+                const tdAksi = document.createElement('td');
+                tdAksi.innerHTML = `
+                <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDelete()"><i class="fas fa-trash"></i> Hapus</button>
             `;
-            tr.appendChild(tdAksi);
+                tr.appendChild(tdAksi);
 
-            // Tambahkan row ke tabel
-            tbody.appendChild(tr);
+                // Tambahkan row ke tabel
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data fasilitas kamar:", error);
         });
-    })
-    .catch(error => {
-        console.error("Gagal mengambil data fasilitas kamar:", error);
-    });
 }
 
 // POST
@@ -169,25 +179,25 @@ function addRoomFacility() {
         },
         body: JSON.stringify({ name: facilityName })  // Pastikan body JSON sesuai
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fasilitas kamar berhasil ditambahkan:", data);
-        alert('Fasilitas berhasil ditambahkan!');
-        closePopup();  // Sembunyikan popup setelah penambahan
-        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
-    })
-    .catch(error => {
-        console.error("Gagal menambahkan fasilitas kamar:", error);
-        alert('Gagal menambahkan fasilitas kamar.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas kamar berhasil ditambahkan:", data);
+            alert('Fasilitas berhasil ditambahkan!');
+            closePopup();  // Sembunyikan popup setelah penambahan
+            fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan fasilitas kamar:", error);
+            alert('Gagal menambahkan fasilitas kamar.');
+        });
 }
 
-document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
+document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
     e.preventDefault();
     addRoomFacility();  // Pastikan fungsi ini mengambil input yang benar
 });
@@ -211,22 +221,22 @@ function updateRoomFacility(facilityId) {
         },
         body: JSON.stringify({ name: updatedFacilityName }) // Pastikan body sesuai struktur BE
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fasilitas kamar berhasil diperbarui:", data);
-        alert('Fasilitas berhasil diperbarui!');
-        closePopup();  // Sembunyikan popup setelah pembaruan
-        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
-    })
-    .catch(error => {
-        console.error("Gagal memperbarui fasilitas kamar:", error);
-        alert('Gagal memperbarui fasilitas kamar.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas kamar berhasil diperbarui:", data);
+            alert('Fasilitas berhasil diperbarui!');
+            closePopup();  // Sembunyikan popup setelah pembaruan
+            fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui fasilitas kamar:", error);
+            alert('Gagal memperbarui fasilitas kamar.');
+        });
 }
 
 
