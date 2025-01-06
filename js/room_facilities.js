@@ -179,3 +179,56 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     e.preventDefault();
     addRoomFacility();  // Pastikan fungsi ini mengambil input yang benar
 });
+
+// GETBYID
+// Update tombol edit di fungsi fetchRoomFacilities
+function fetchRoomFacilities() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
+        const tbody = document.querySelector('table tbody');
+        tbody.innerHTML = '';  // Kosongkan tabel
+
+        // Loop dan tampilkan data fasilitas di tabel
+        data.forEach(fasilitas => {
+            const tr = document.createElement('tr');
+            const tdId = document.createElement('td');
+            tdId.textContent = fasilitas.id;
+            tr.appendChild(tdId);
+
+            const tdNamaFasilitas = document.createElement('td');
+            tdNamaFasilitas.textContent = fasilitas.name;
+            tr.appendChild(tdNamaFasilitas);
+
+            const tdAksi = document.createElement('td');
+            tdAksi.innerHTML = `
+                <button class="btn btn-primary" onclick="showPopupEdit(${fasilitas.id})"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupDelete()"><i class="fas fa-trash"></i> Hapus</button>
+            `;
+            tr.appendChild(tdAksi);
+
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(error => {
+        console.error("Gagal mengambil data fasilitas kamar:", error);
+    });
+}
