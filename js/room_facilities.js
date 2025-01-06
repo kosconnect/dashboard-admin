@@ -242,38 +242,16 @@ console.log("Data fasilitas kamar setelah update:", data);
 
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
-function confirmDelete(facilityId) {
-    if (confirm('Apakah Anda yakin ingin menghapus fasilitas ini?')) {
-        fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Gagal menghapus fasilitas kamar');
-            }
-            alert('Fasilitas kamar berhasil dihapus');
-            location.reload();  // Perbarui tabel setelah menghapus
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus fasilitas kamar.');
-        });
-    }
-}
-
-
-function fetchRoomFacilities() {
-    const jwtToken = getJwtToken();
+function confirmDelete() {
+    const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
     if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
-        method: 'GET',
+    // Kirim permintaan DELETE ke API
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
+        method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
@@ -286,24 +264,31 @@ function fetchRoomFacilities() {
         return response.json();
     })
     .then(data => {
-        console.log("Data fasilitas setelah penghapusan:", data);
-
-        // Perbarui tabel
-        const tbody = document.querySelector('table tbody');
-        tbody.innerHTML = ''; // Kosongkan tabel
-        data.forEach(facility => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${facility.name}</td>
-                <td>
-                    <button onclick="showPopupEdit('${facility.id}', '${facility.name}')">Edit</button>
-                    <button onclick="confirmDelete('${facility.id}')">Hapus</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });        
+        console.log("Fasilitas kamar berhasil dihapus:", data);
+        alert('Fasilitas kamar berhasil dihapus!');
+        closePopup(); // Tutup popup
+        fetchRoomFacilities(); // Perbarui tabel
     })
     .catch(error => {
-        console.error("Gagal mengambil data fasilitas kamar:", error);
+        console.error("Gagal menghapus fasilitas kamar:", error);
+        alert('Gagal menghapus fasilitas kamar.');
     });
 }
+
+// Fungsi untuk menutup semua popup
+function closePopup() {
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none';
+    });
+}
+
+const tdAksi = document.createElement('td');
+tdAksi.innerHTML = `
+    <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
+        <i class="fas fa-edit"></i> Edit
+    </button>
+    <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')">
+        <i class="fas fa-trash"></i> Hapus
+    </button>
+`;
+tr.appendChild(tdAksi);
