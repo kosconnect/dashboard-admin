@@ -13,11 +13,11 @@ function closePopup() {
     document.getElementById('popupTambahFasilitas').style.display = 'none';
 }
 
-document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Fasilitas berhasil ditambahkan!');
-    closePopup();
-});
+// document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     alert('Fasilitas berhasil ditambahkan!');
+//     closePopup();
+// });
 
 function showPopupEdit() {
     document.getElementById('popupEditFasilitas').style.display = 'block';
