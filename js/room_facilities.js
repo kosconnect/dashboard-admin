@@ -147,7 +147,7 @@ function addRoomFacility() {
         return;
     }
 
-    const facilityName = document.getElementById('facilityName').value;
+    const facilityName = document.getElementById('namaFasilitas').value;  // Perbarui ID di sini
 
     fetch('https://kosconnect-server.vercel.app/api/roomfacilities/', {
         method: 'POST',
@@ -155,7 +155,7 @@ function addRoomFacility() {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: facilityName })
+        body: JSON.stringify({ name: facilityName })  // Pastikan body JSON sesuai
     })
     .then(response => {
         if (!response.ok) {
@@ -174,8 +174,3 @@ function addRoomFacility() {
         alert('Gagal menambahkan fasilitas kamar.');
     });
 }
-
-document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
-    e.preventDefault();
-    addRoomFacility();  // Panggil fungsi untuk mengirim data
-});
