@@ -31,10 +31,12 @@ function showPopupEdit(facilityId, facilityName) {
 // }
 
 
-// Fungsi untuk menampilkan popup delete dan menyimpan ID fasilitas
+let selectedFacilityId = null; // Variabel global untuk menyimpan ID fasilitas yang akan dihapus
+
 function showPopupDelete(facilityId) {
-    selectedFacilityId = facilityId; // Simpan ID fasilitas
+    selectedFacilityId = facilityId; // Simpan ID fasilitas yang dipilih
     document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
+    console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
 }
 
 function closePopup() {
@@ -243,9 +245,17 @@ console.log("Data fasilitas kamar setelah update:", data);
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
 function confirmDelete() {
-    const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
+    console.log("ID fasilitas untuk dihapus:", selectedFacilityId); // Debug log
+
+    const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    if (!selectedFacilityId) {
+        console.error("ID fasilitas tidak ditemukan, tidak dapat menghapus.");
+        alert("ID fasilitas tidak valid!");
         return;
     }
 
@@ -275,6 +285,7 @@ function confirmDelete() {
     });
 }
 
+
 // Fungsi untuk menutup semua popup
 function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => {
@@ -287,7 +298,7 @@ tdAksi.innerHTML = `
     <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
         <i class="fas fa-edit"></i> Edit
     </button>
-    <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')">
+    <button class="btn btn-danger" onclick="showPopupDelete('${fasilitas.id}')">
         <i class="fas fa-trash"></i> Hapus
     </button>
 `;
