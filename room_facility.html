@@ -119,12 +119,13 @@
             </div>
             <h3 class="popup-subtitle">Edit Fasilitas Kamar</h3>
             <form id="formEditFasilitas">
+                <input type="hidden" id="editFacilityId" name="id"> <!-- Hidden input untuk ID -->
                 <label for="editNamaFasilitas" class="form-label">Perbarui nama fasilitas kamar!</label>
-                <input type="text" id="editNamaFasilitas" name="editNamaFasilitas" placeholder="Nama Fasilitas Kamar" required>
+                <input type="text" id="editNamaFasilitas" name="name" placeholder="Nama Fasilitas Kamar" required>
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
                 </div>
-            </form>
+            </form>            
         </div>
     </div>
 

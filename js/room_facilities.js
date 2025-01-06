@@ -192,21 +192,24 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     addRoomFacility();  // Pastikan fungsi ini mengambil input yang benar
 });
 
-// GetByID
-// Fungsi untuk mengambil data fasilitas berdasarkan ID dan menampilkannya di form edit
-function fetchRoomFacilityById(id) {
+// PUT
+function updateRoomFacility(facilityId) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${id}`, {
-        method: 'GET',
+    // Ambil input dari form (pastikan ID input sesuai dengan elemen HTML Anda)
+    const updatedFacilityName = document.getElementById('editNamaFasilitas').value;
+
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
+        method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ name: updatedFacilityName }) // Pastikan body sesuai struktur BE
     })
     .then(response => {
         if (!response.ok) {
@@ -215,51 +218,52 @@ function fetchRoomFacilityById(id) {
         return response.json();
     })
     .then(data => {
-        console.log("Data fasilitas (by ID):", data); // Debugging
-        // Isi form dengan data yang diterima
-        document.getElementById('editNamaFasilitas').value = data.name;  // Sesuaikan nama field dengan data API
-        document.getElementById('formEditFasilitas').dataset.id = id;    // Simpan ID untuk update
-        showPopupEdit();  // Tampilkan popup
+        console.log("Fasilitas kamar berhasil diperbarui:", data);
+        alert('Fasilitas berhasil diperbarui!');
+        closePopup();  // Sembunyikan popup setelah pembaruan
+        fetchRoomFacilities();  // Perbarui tabel dengan data terbaru
     })
     .catch(error => {
-        console.error("Gagal mengambil data fasilitas (by ID):", error);
+        console.error("Gagal memperbarui fasilitas kamar:", error);
+        alert('Gagal memperbarui fasilitas kamar.');
     });
 }
+
 
 // Panggilan fungsi fetchRoomFacilityById dengan ID pada tombol Edit
-function setEditButtonActions() {
-    document.querySelectorAll('.btn-edit').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;  // Ambil ID dari atribut data-id tombol
-            fetchRoomFacilityById(id);
-        });
-    });
-}
+// function setEditButtonActions() {
+//     document.querySelectorAll('.btn-edit').forEach(button => {
+//         button.addEventListener('click', function() {
+//             const id = this.dataset.id;  // Ambil ID dari atribut data-id tombol
+//             fetchRoomFacilityById(id);
+//         });
+//     });
+// }
 
 // Delete
-function confirmDelete() {
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("Token tidak ditemukan");
-        return;
-    }
+// function confirmDelete() {
+//     const jwtToken = getJwtToken();
+//     if (!jwtToken) {
+//         console.error("Token tidak ditemukan");
+//         return;
+//     }
 
-    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        alert('Fasilitas kamar berhasil dihapus!');
-        closePopup(); // Close the popup after deletion
-        fetchRoomFacilities(); // Refresh the table
-    })
-    .catch(error => {
-        console.error("Gagal menghapus fasilitas kamar:", error);
-    });
-}
+//     fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
+//         method: 'DELETE',
+//         headers: {
+//             'Authorization': `Bearer ${jwtToken}`,
+//             'Content-Type': 'application/json'
+//         }
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         alert('Fasilitas kamar berhasil dihapus!');
+//         closePopup();
+//         fetchRoomFacilities();
+//     })
+//     .catch(error => {
+//         console.error("Gagal menghapus fasilitas kamar:", error);
+//     });
+// }
