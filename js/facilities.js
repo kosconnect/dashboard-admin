@@ -38,21 +38,9 @@ function confirmDelete() {
 
 // GET
 // Fungsi untuk mendapatkan token JWT dari cookie
-function getJwtToken() {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith('authToken=')) {
-            return cookie.substring('authToken='.length);
-        }
-    }
-    console.error("Token tidak ditemukan");
-    return null;
-}
-
-// Fungsi untuk mengambil data facility
 function fetchFacilities() {
     const jwtToken = getJwtToken();
+    console.log("JWT Token:", jwtToken); // Debug: Periksa token JWT
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
@@ -66,16 +54,21 @@ function fetchFacilities() {
         }
     })
         .then(response => {
+            console.log("Fetch Response Status:", response.status); // Debug: Periksa status respons
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("Data facilities:", data);
+            console.log("Facilities Data:", data); // Debug: Periksa data yang diterima
 
             // Ambil elemen tabel
             const tbody = document.querySelector('table tbody');
+            if (!tbody) {
+                console.error("Tabel tbody tidak ditemukan di DOM."); // Debug: Periksa tabel
+                return;
+            }
 
             // Kosongkan tabel sebelum menambah data baru
             tbody.innerHTML = '';
@@ -107,6 +100,6 @@ function fetchFacilities() {
             });
         })
         .catch(error => {
-            console.error("Gagal mengambil data facilities:", error);
+            console.error("Gagal mengambil data facilities:", error); // Debug: Tangkap error
         });
 }
