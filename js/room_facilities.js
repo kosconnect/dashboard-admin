@@ -244,15 +244,18 @@ console.log("Data fasilitas kamar setelah update:", data);
 
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
-function confirmDelete() {
+function confirmDelete(facilityId) {
     const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
     if (!jwtToken) {
         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
         return;
     }
+    if (!facilityId) {
+        console.error("ID fasilitas kamar tidak valid.");
+        return;
+    }
 
-    // Kirim permintaan DELETE ke API
-    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -273,8 +276,8 @@ function confirmDelete() {
             text: 'Fasilitas kamar berhasil dihapus!',
             confirmButtonText: 'OK'
         }).then(() => {
-            closePopup(); // Tutup popup setelah SweetAlert
-            fetchRoomFacilities(); // Perbarui tabel
+            closePopup();
+            fetchRoomFacilities(); // Perbarui daftar fasilitas
         });
     })
     .catch(error => {
@@ -300,7 +303,7 @@ tdAksi.innerHTML = `
     <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
         <i class="fas fa-edit"></i> Edit
     </button>
-    <button class="btn btn-danger" onclick="showPopupDelete('${fasilitas.id}')">
+    <button class="btn btn-danger" onclick="confirmDelete('${fasilitas.id}')">
         <i class="fas fa-trash"></i> Hapus
     </button>
 `;
