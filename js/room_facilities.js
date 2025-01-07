@@ -139,7 +139,7 @@ function fetchRoomFacilities() {
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="showPopupDelete()"><i class="fas fa-trash"></i> Hapus</button>
+                <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
                 tr.appendChild(tdAksi);
 
@@ -304,9 +304,6 @@ const tdAksi = document.createElement('td');
 tdAksi.innerHTML = `
     <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
         <i class="fas fa-edit"></i> Edit
-    </button>
-    <button class="btn btn-danger" onclick="confirmDelete('${fasilitas.id}')">
-        <i class="fas fa-trash"></i> Hapus
     </button>
 `;
 tr.appendChild(tdAksi);
