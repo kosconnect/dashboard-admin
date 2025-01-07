@@ -43,10 +43,10 @@ function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
 
-function confirmDelete() {
-    alert('Fasilitas kamar berhasil dihapus!'); // Ganti dengan fungsi penghapusan yang sesuai.
-    closePopup();
-}
+// function confirmDelete() {
+//     alert('Fasilitas kamar berhasil dihapus!'); 
+//     closePopup();
+// }
 
 // GET 
 // Fungsi untuk mendapatkan token JWT dari cookie
@@ -245,13 +245,13 @@ console.log("Data fasilitas kamar setelah update:", data);
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
 function confirmDelete(facilityId) {
-    const jwtToken = getJwtToken(); // Ambil token JWT dari cookie
-    if (!jwtToken) {
-        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
-        return;
-    }
     if (!facilityId) {
         console.error("ID fasilitas kamar tidak valid.");
+        return;
+    }
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
         return;
     }
 
@@ -277,7 +277,7 @@ function confirmDelete(facilityId) {
             confirmButtonText: 'OK'
         }).then(() => {
             closePopup();
-            fetchRoomFacilities(); // Perbarui daftar fasilitas
+            fetchRoomFacilities();
         });
     })
     .catch(error => {
