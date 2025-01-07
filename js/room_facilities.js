@@ -39,6 +39,11 @@ function showPopupDelete(facilityId) {
     console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
 }
 
+function confirmDelete(facilityId) {
+    selectedFacilityId = facilityId; // Simpan ID fasilitas ke variabel global
+    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
+}
+
 function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
@@ -245,52 +250,89 @@ console.log("Data fasilitas kamar setelah update:", data);
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
 // Fungsi DELETE
-function confirmDelete(facilityId) {
-    if (!facilityId) {
+function executeDelete() {
+    if (!selectedFacilityId) {
         console.error("ID fasilitas kamar tidak valid.");
         return;
     }
+
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
+    fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${selectedFacilityId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fasilitas kamar berhasil dihapus:", data);
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'Fasilitas kamar berhasil dihapus!',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            closePopup();
-            fetchRoomFacilities();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas kamar berhasil dihapus:", data);
+            alert("Fasilitas kamar berhasil dihapus!");
+            closePopup(); // Tutup popup
+            fetchRoomFacilities(); // Refresh tabel
+        })
+        .catch(error => {
+            console.error("Gagal menghapus fasilitas kamar:", error);
+            alert("Gagal menghapus fasilitas kamar.");
         });
-    })
-    .catch(error => {
-        console.error("Gagal menghapus fasilitas kamar:", error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal',
-            text: 'Gagal menghapus fasilitas kamar. Silakan coba lagi.',
-            confirmButtonText: 'OK'
-        });
-    });
 }
+
+// function confirmDelete(facilityId) {
+//     if (!facilityId) {
+//         console.error("ID fasilitas kamar tidak valid.");
+//         return;
+//     }
+//     const jwtToken = getJwtToken();
+//     if (!jwtToken) {
+//         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
+//         return;
+//     }
+
+//     fetch(`https://kosconnect-server.vercel.app/api/roomfacilities/${facilityId}`, {
+//         method: 'DELETE',
+//         headers: {
+//             'Authorization': `Bearer ${jwtToken}`,
+//             'Content-Type': 'application/json'
+//         }
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log("Fasilitas kamar berhasil dihapus:", data);
+//         Swal.fire({
+//             icon: 'success',
+//             title: 'Berhasil',
+//             text: 'Fasilitas kamar berhasil dihapus!',
+//             confirmButtonText: 'OK'
+//         }).then(() => {
+//             closePopup();
+//             fetchRoomFacilities();
+//         });
+//     })
+//     .catch(error => {
+//         console.error("Gagal menghapus fasilitas kamar:", error);
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Gagal',
+//             text: 'Gagal menghapus fasilitas kamar. Silakan coba lagi.',
+//             confirmButtonText: 'OK'
+//         });
+//     });
+// }
 
 
 // Fungsi untuk menutup semua popup
