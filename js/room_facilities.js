@@ -244,6 +244,7 @@ console.log("Data fasilitas kamar setelah update:", data);
 
 // DELETE
 // Fungsi untuk melakukan penghapusan data fasilitas kamar
+// Fungsi DELETE
 function confirmDelete(facilityId) {
     if (!facilityId) {
         console.error("ID fasilitas kamar tidak valid.");
@@ -290,6 +291,7 @@ function confirmDelete(facilityId) {
         });
     });
 }
+
 
 // Fungsi untuk menutup semua popup
 function closePopup() {
