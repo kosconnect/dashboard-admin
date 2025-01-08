@@ -24,11 +24,11 @@ function showPopup() {
 
 
 // Form Submission Handler
-document.getElementById('formTambahFasilitas')?.addEventListener('submit', function (e) {
-    e.preventDefault();
-    alert('Fasilitas berhasil ditambahkan!');
-    closePopup();
-});
+// document.getElementById('formTambahFasilitas')?.addEventListener('submit', function (e) {
+//     e.preventDefault();
+//     alert('Fasilitas berhasil ditambahkan!');
+//     closePopup();
+// });
 
 // Confirm Delete
 function confirmDelete(id) {
