@@ -155,8 +155,14 @@ function addCategory(event) {
         return response.json();
     })
     .then(data => {
-        console.log("Kategori berhasil ditambahkan:", data);
-        
+        console.log("Kategori berhasil ditambahkan:", data); // Debugging log
+
+        // Cek data yang diterima
+        if (!data || !data.id || !data.name || !data.slug) {
+            console.error("Data yang diterima tidak lengkap:", data);
+            return;
+        }
+
         // Menambahkan kategori baru ke tabel tanpa memanggil fetchCategories
         const tbody = document.querySelector('#categories-table-body');
         if (!tbody) {
