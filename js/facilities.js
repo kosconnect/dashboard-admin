@@ -4,15 +4,6 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-//Function show POP UP
-// function showPopup() {
-//     document.getElementById('popupTambahFasilitas').style.display = 'block';
-// }
-
-function closePopup() {
-    document.getElementById('popupTambahFasilitas').style.display = 'none';
-}
-
 function showPopup() {
     const popup = document.getElementById('popupTambahFasilitas');
     if (popup) {
@@ -20,6 +11,21 @@ function showPopup() {
     } else {
         console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
     }
+}
+
+function closePopup() {
+    document.getElementById('popupTambahFasilitas').style.display = 'none';
+}
+
+// POPUP EDIT
+function showPopupEdit(facilityId, facilityName) {
+    document.getElementById('popupEditFasilitas').style.display = 'block';
+    
+    // Isi input tersembunyi untuk ID
+    document.getElementById('editFacilityId').value = facilityId;
+
+    // Isi input nama untuk diedit
+    document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
 
@@ -174,3 +180,70 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     e.preventDefault(); // Mencegah halaman refresh
     addFacility();
 });
+
+
+// PUT
+// Fungsi untuk memperbarui fasilitas
+function updateFacility() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    // Ambil data dari form
+    const facilityId = document.getElementById('editFasilitasId').value;
+    const facilityName = document.getElementById('editNamaFasilitas').value;
+    if (!facilityName) {
+        alert('Nama fasilitas tidak boleh kosong!');
+        return;
+    }
+
+    const updatedFacility = {
+        name: facilityName
+    };
+
+    // Lakukan PUT request untuk memperbarui fasilitas
+    fetch(`https://kosconnect-server.vercel.app/api/facilitytypes/${facilityId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedFacility)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil diperbarui:", data);
+            alert("Fasilitas berhasil diperbarui!");
+            closePopup(); // Tutup popup setelah berhasil
+            fetchRoomFacilities(); // Refresh tabel
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui fasilitas:", error);
+            alert("Gagal memperbarui fasilitas. Silakan coba lagi.");
+        });
+}
+
+// Event listener untuk form edit fasilitas
+document.getElementById('formEditFasilitas').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah refresh halaman
+    updateFacility(); // Panggil fungsi untuk memperbarui fasilitas
+});
+
+// Kolom Aksi
+const tdAksi = document.createElement('td');
+tdAksi.innerHTML = `
+    <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')">
+        <i class="fas fa-edit"></i> Edit
+    </button>
+    <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')">
+        <i class="fas fa-trash"></i> Hapus
+    </button>
+`;
+tr.appendChild(tdAksi);
