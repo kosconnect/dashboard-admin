@@ -31,6 +31,7 @@ function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
 
+
 // Fetch JWT Token from Cookies
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -75,29 +76,23 @@ function fetchCategories() {
             return;
         }
 
-        // Kosongkan tabel sebelum menambah data baru
         tbody.innerHTML = '';
 
-        // Loop data kategori dan tambahkan ke tabel
         data.forEach(kategori => {
             const tr = document.createElement('tr');
 
-            // Kolom ID
             const tdId = document.createElement('td');
-            tdId.textContent = kategori.id.toString(); // ID sebagai string
+            tdId.textContent = kategori.id.toString(); 
             tr.appendChild(tdId);
 
-            // Kolom Nama Kategori
             const tdNamaKategori = document.createElement('td');
             tdNamaKategori.textContent = kategori.name;
             tr.appendChild(tdNamaKategori);
 
-            // Kolom Slug Kategori
             const tdSlugKategori = document.createElement('td');
             tdSlugKategori.textContent = kategori.slug;
             tr.appendChild(tdSlugKategori);
 
-            // Kolom Aksi
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEditCategory('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
@@ -105,7 +100,6 @@ function fetchCategories() {
             `;
             tr.appendChild(tdAksi);
 
-            // Tambahkan baris ke tabel
             tbody.appendChild(tr);
         });
     })
