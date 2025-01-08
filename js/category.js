@@ -31,7 +31,20 @@ function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
 
-// Fetch Categories and Populate Table
+// Fetch JWT Token from Cookies
+function getJwtToken() {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('authToken=')) {
+            return cookie.substring('authToken='.length);
+        }
+    }
+    console.error("Token tidak ditemukan.");
+    return null;
+}
+
+// GET
 // Fetch Categories and Populate Table
 function fetchCategories() {
     const jwtToken = getJwtToken();
