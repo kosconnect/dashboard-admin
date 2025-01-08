@@ -111,8 +111,12 @@ function fetchRoomFacilities() {
         .then(data => {
             console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
 
-            // Ambil elemen tabel
+            // Seleksi elemen tbody
             const tbody = document.querySelector('table tbody');
+            if (!tbody) {
+                console.error("Elemen tbody tidak ditemukan di DOM.");
+                return;
+            };
 
             // Kosongkan tabel sebelum menambah data baru
             tbody.innerHTML = '';
@@ -138,8 +142,6 @@ function fetchRoomFacilities() {
 
                 // Tambahkan row ke tabel
                 tbody.appendChild(tr);
-                const tbody = document.querySelector('table tbody');
-                console.log("Tbody element:", tbody);
             });
         })
         .catch(error => {
