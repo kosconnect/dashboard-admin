@@ -50,11 +50,9 @@ function getJwtToken() {
     return null;
 }
 
-// Fungsi untuk mengambil data fasilitas dari API
-function fetchFacilities() {
+// Fungsi untuk mengambil data fasilitas kamar
+function fetchRoomFacilities() {
     const jwtToken = getJwtToken();
-    console.log("JWT Token:", jwtToken); // Debugging token
-
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
@@ -68,58 +66,76 @@ function fetchFacilities() {
         }
     })
         .then(response => {
-            console.log("Fetch Response Status:", response.status); // Debugging respons
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("Data fasilitas yang diterima:", data); // Debugging data
+            console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
+            // TODO: Tampilkan data fasilitas di halaman
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data fasilitas kamar:", error);
+        });
+}
+
+// Panggil fetchRoomFacilities saat halaman dimuat
+window.addEventListener('load', fetchRoomFacilities);
+
+function fetchRoomFacilities() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch('https://kosconnect-server.vercel.app/api/facilitytypes/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
 
             // Ambil elemen tabel
             const tbody = document.querySelector('table tbody');
-            if (!tbody) {
-                console.error("Elemen tabel tbody tidak ditemukan di DOM.");
-                return;
-            }
 
-            // Kosongkan tabel sebelum mengisi data baru
+            // Kosongkan tabel sebelum menambah data baru
             tbody.innerHTML = '';
 
             // Loop melalui data dan masukkan ke dalam tabel
-            data.forEach(facility => {
-                console.log("Memasukkan fasilitas:", facility); // Debugging setiap item
-
+            data.forEach(fasilitas => {
                 const tr = document.createElement('tr');
 
-                // Kolom ID
                 const tdId = document.createElement('td');
-                tdId.textContent = facility.id || 'N/A'; // Gunakan default jika data tidak ada
+                tdId.textContent = fasilitas.id;  // Ganti sesuai data yang diterima
                 tr.appendChild(tdId);
 
-                // Kolom Nama Fasilitas
-                const tdName = document.createElement('td');
-                tdName.textContent = facility.name || 'N/A';
-                tr.appendChild(tdName);
+                const tdNamaFasilitas = document.createElement('td');
+                tdNamaFasilitas.textContent = fasilitas.name;  // Ganti sesuai data yang diterima
+                tr.appendChild(tdNamaFasilitas);
 
-                // Kolom Aksi
-                const tdActions = document.createElement('td');
-                tdActions.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupEdit('${facility.id}', '${facility.name}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-danger" onclick="confirmDelete('${facility.id}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                `;
-                tr.appendChild(tdActions);
+                const tdAksi = document.createElement('td');
+                tdAksi.innerHTML = `
+                <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
+            `;
+                tr.appendChild(tdAksi);
 
-                // Tambahkan baris ke tabel
+                // Tambahkan row ke tabel
                 tbody.appendChild(tr);
             });
         })
         .catch(error => {
-            console.error("Gagal mengambil data fasilitas:", error); // Debugging error
+            console.error("Gagal mengambil data fasilitas kamar:", error);
         });
 }
