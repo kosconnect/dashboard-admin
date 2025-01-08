@@ -20,7 +20,7 @@ function closePopup() {
 // Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
-    
+
     // Isi input tersembunyi untuk ID
     document.getElementById('editFacilityId').value = facilityId;
 
@@ -57,8 +57,8 @@ function getJwtToken() {
 }
 
 // GET
-// Fetch Room Facilities and Populate Table
-function fetchRoomFacilities() {
+// Fetch Facilities and Populate Table
+function fetchFacilities() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
@@ -105,15 +105,13 @@ function fetchRoomFacilities() {
                 tr.appendChild(tdNamaFasilitas);
 
                 // Kolom Aksi
+                // Kolom Aksi pada tabel fasilitas
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopup('popupEditFasilitas')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
                 `;
+
                 tr.appendChild(tdAksi);
 
                 // Tambahkan baris ke tabel
@@ -125,8 +123,8 @@ function fetchRoomFacilities() {
         });
 }
 
-// Panggil fetchRoomFacilities saat halaman dimuat
-window.addEventListener('load', fetchRoomFacilities);
+// Panggil fetch Facilities saat halaman dimuat
+window.addEventListener('load', fetchFacilities);
 
 
 // POST
@@ -167,7 +165,7 @@ function addFacility() {
             console.log("Fasilitas berhasil ditambahkan:", data);
             alert("Fasilitas berhasil ditambahkan!");
             closePopup(); // Tutup popup setelah berhasil
-            fetchRoomFacilities(); // Refresh tabel
+            fetchFacilities(); // Refresh tabel
         })
         .catch(error => {
             console.error("Gagal menambahkan fasilitas:", error);
@@ -184,7 +182,7 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
 
 // PUT
 // Fungsi untuk memperbarui fasilitas
-function updateRoomFacility(facilityId, updatedName) {
+function updateFacility(facilityId, updatedName) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
@@ -199,31 +197,33 @@ function updateRoomFacility(facilityId, updatedName) {
         },
         body: JSON.stringify({ name: updatedName })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fasilitas kamar berhasil diperbarui:", data);
-        alert('Fasilitas berhasil diperbarui!');
-        closePopup();  // Tutup popup setelah sukses
-        fetchRoomFacilities();  // Panggil ulang untuk memperbarui tabel
-    })  
-    .catch(error => {
-        console.error("Gagal memperbarui fasilitas kamar:", error);
-        alert('Gagal memperbarui fasilitas kamar.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas kamar berhasil diperbarui:", data);
+            alert('Fasilitas berhasil diperbarui!');
+            closePopup();  // Tutup popup setelah sukses
+            fetchFacilities();  // Panggil ulang untuk memperbarui tabel
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui fasilitas kamar:", error);
+            alert('Gagal memperbarui fasilitas kamar.');
+        });
 }
+
+fetchFacilities();  // Memastikan tabel diperbarui
 
 // Event listener untuk form edit fasilitas
 document.getElementById('formEditFasilitas').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah reload halaman
-    
+
     const facilityId = document.getElementById('editFacilityId').value; // Ambil ID fasilitas
     const updatedName = document.getElementById('editNamaFasilitas').value; // Ambil nama fasilitas baru
-    
+
     // Panggil fungsi untuk mengupdate data
-    updateRoomFacility(facilityId, updatedName);
+    updateFacility(facilityId, updatedName);
 });
