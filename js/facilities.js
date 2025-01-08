@@ -4,14 +4,24 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-// Show and Close Popups
-function showPopup(popupId) {
-    document.getElementById(popupId).style.display = 'block';
-}
+//Function show POP UP
+// function showPopup() {
+//     document.getElementById('popupTambahFasilitas').style.display = 'block';
+// }
 
 function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+    document.getElementById('popupTambahFasilitas').style.display = 'none';
 }
+
+function showPopup() {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
+        popup.style.display = 'block';
+    } else {
+        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
+    }
+}
+
 
 // Form Submission Handler
 document.getElementById('formTambahFasilitas')?.addEventListener('submit', function (e) {
