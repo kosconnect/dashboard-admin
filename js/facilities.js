@@ -28,6 +28,9 @@ function showPopupEdit(facilityId, facilityName) {
     document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
+function closePopup() {
+    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+}
 
 // Form Submission Handler
 // document.getElementById('formTambahFasilitas')?.addEventListener('submit', function (e) {
