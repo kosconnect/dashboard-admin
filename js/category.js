@@ -155,51 +155,50 @@ function addCategory(event) {
         return response.json();
     })
     .then(data => {
-        console.log("Kategori berhasil ditambahkan:", data); // Debugging log
+        // Tampilkan data yang diterima di console untuk debugging
+        console.log("Data yang diterima setelah POST:", data);
 
-        // Cek data yang diterima
-        if (!data || !data.id || !data.name || !data.slug) {
-            console.error("Data yang diterima tidak lengkap:", data);
-            return;
+        if (data && data.name && data.slug) {
+            // Menambahkan kategori baru ke tabel tanpa memanggil fetchCategories
+            const tbody = document.querySelector('#categories-table-body');
+            if (!tbody) {
+                console.error("Elemen tbody tidak ditemukan di DOM.");
+                return;
+            }
+
+            const tr = document.createElement('tr');
+
+            // Kolom ID
+            const tdId = document.createElement('td');
+            tdId.textContent = data.id.toString(); // ID kategori yang baru ditambahkan
+            tr.appendChild(tdId);
+
+            // Kolom Nama Kategori
+            const tdNamaKategori = document.createElement('td');
+            tdNamaKategori.textContent = data.name;
+            tr.appendChild(tdNamaKategori);
+
+            // Kolom Slug Kategori
+            const tdSlugKategori = document.createElement('td');
+            tdSlugKategori.textContent = data.slug;
+            tr.appendChild(tdSlugKategori);
+
+            // Kolom Aksi
+            const tdAksi = document.createElement('td');
+            tdAksi.innerHTML = `
+                <button class="btn btn-primary" onclick="showPopupEditCategory('${data.id}', '${data.name}', '${data.slug}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupDeleteCategory('${data.id}')"><i class="fas fa-trash"></i> Hapus</button>
+            `;
+            tr.appendChild(tdAksi);
+
+            // Tambahkan baris kategori ke tabel
+            tbody.appendChild(tr);
+
+            // Menutup popup setelah data berhasil ditambahkan
+            closePopup();
+        } else {
+            console.error("Data yang diterima tidak lengkap atau tidak sesuai:", data);
         }
-
-        // Menambahkan kategori baru ke tabel tanpa memanggil fetchCategories
-        const tbody = document.querySelector('#categories-table-body');
-        if (!tbody) {
-            console.error("Elemen tbody tidak ditemukan di DOM.");
-            return;
-        }
-
-        const tr = document.createElement('tr');
-
-        // Kolom ID
-        const tdId = document.createElement('td');
-        tdId.textContent = data.id.toString(); // ID kategori yang baru ditambahkan
-        tr.appendChild(tdId);
-
-        // Kolom Nama Kategori
-        const tdNamaKategori = document.createElement('td');
-        tdNamaKategori.textContent = data.name;
-        tr.appendChild(tdNamaKategori);
-
-        // Kolom Slug Kategori
-        const tdSlugKategori = document.createElement('td');
-        tdSlugKategori.textContent = data.slug;
-        tr.appendChild(tdSlugKategori);
-
-        // Kolom Aksi
-        const tdAksi = document.createElement('td');
-        tdAksi.innerHTML = `
-            <button class="btn btn-primary" onclick="showPopupEditCategory('${data.id}', '${data.name}', '${data.slug}')"><i class="fas fa-edit"></i> Edit</button>
-            <button class="btn btn-primary" onclick="showPopupDeleteCategory('${data.id}')"><i class="fas fa-trash"></i> Hapus</button>
-        `;
-        tr.appendChild(tdAksi);
-
-        // Tambahkan baris kategori ke tabel
-        tbody.appendChild(tr);
-
-        // Menutup popup setelah data berhasil ditambahkan
-        closePopup();
     })
     .catch(error => {
         console.error("Gagal menambah kategori:", error);
