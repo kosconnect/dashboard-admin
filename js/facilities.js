@@ -40,6 +40,11 @@ function showPopupDelete(facilityId) {
     console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
 }
 
+function confirmDelete(facilityId) {
+    selectedFacilityId = facilityId; // Simpan ID fasilitas ke variabel global
+    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
+}
+
 // Fetch JWT Token from Cookies
 function getJwtToken() {
     const cookies = document.cookie.split(';');
