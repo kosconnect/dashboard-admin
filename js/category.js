@@ -32,6 +32,7 @@ function closePopup() {
 }
 
 // Fetch Categories and Populate Table
+// Fetch Categories and Populate Table
 function fetchCategories() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -70,17 +71,17 @@ function fetchCategories() {
 
             // Kolom ID
             const tdId = document.createElement('td');
-            tdId.textContent = kategori.id; // ID dapat langsung ditampilkan
+            tdId.textContent = kategori.id.toString(); // ID sebagai string
             tr.appendChild(tdId);
 
             // Kolom Nama Kategori
             const tdNamaKategori = document.createElement('td');
-            tdNamaKategori.textContent = kategori.name; // Nama kategori
+            tdNamaKategori.textContent = kategori.name;
             tr.appendChild(tdNamaKategori);
 
             // Kolom Slug Kategori
             const tdSlugKategori = document.createElement('td');
-            tdSlugKategori.textContent = kategori.slug; // Slug kategori
+            tdSlugKategori.textContent = kategori.slug;
             tr.appendChild(tdSlugKategori);
 
             // Kolom Aksi
