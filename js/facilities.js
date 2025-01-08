@@ -4,45 +4,12 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-function showPopup() {
-    const popup = document.getElementById('popupTambahFasilitas');
-    if (popup) {
-        popup.style.display = 'block';
-    } else {
-        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
-    }
-}
-
-// Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
-function showPopupEdit(facilityId, facilityName) {
-    document.getElementById('popupEditFasilitas').style.display = 'block';
-
-    // Isi input tersembunyi untuk ID
-    document.getElementById('editFacilityId').value = facilityId;
-
-    // Isi input nama untuk diedit
-    document.getElementById('editNamaFasilitas').value = facilityName;
-}
-
 // Fungsi untuk menutup semua popup
 function closePopup() {
     // Menutup semua popup yang ada
     document.querySelectorAll('.popup').forEach(popup => {
         popup.style.display = 'none';
     });
-}
-
-let selectedFacilityId = null;  // Menyimpan ID fasilitas yang dipilih
-
-function showPopupDelete(facilityId) {
-    selectedFacilityId = facilityId; // Simpan ID fasilitas yang dipilih
-    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
-    console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
-}
-
-function confirmDelete(facilityId) {
-    selectedFacilityId = facilityId; // Simpan ID fasilitas ke variabel global
-    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
 }
 
 // Fetch JWT Token from Cookies
@@ -111,7 +78,7 @@ function fetchFacilities() {
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
+                <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
                 `;
 
                 tr.appendChild(tdAksi);
@@ -127,6 +94,16 @@ function fetchFacilities() {
 
 // Panggil fetch Facilities saat halaman dimuat
 window.addEventListener('load', fetchFacilities);
+
+
+function showPopup() {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
+        popup.style.display = 'block';
+    } else {
+        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
+    }
+}
 
 
 // POST
@@ -181,6 +158,16 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     addFacility();
 });
 
+// Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
+function showPopupEdit(facilityId, facilityName) {
+    document.getElementById('popupEditFasilitas').style.display = 'block';
+
+    // Isi input tersembunyi untuk ID
+    document.getElementById('editFacilityId').value = facilityId;
+
+    // Isi input nama untuk diedit
+    document.getElementById('editNamaFasilitas').value = facilityName;
+}
 
 // PUT
 // Fungsi untuk memperbarui fasilitas
@@ -229,6 +216,16 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
     // Panggil fungsi untuk mengupdate data
     updateFacility(facilityId, updatedName);
 });
+
+let selectedFacilityId = null;  // Menyimpan ID fasilitas yang dipilih
+
+// Fungsi untuk menampilkan popup Hapus Fasilitas
+function showPopupDelete(facilityId) {
+    selectedFacilityId = facilityId; // Simpan ID fasilitas yang dipilih
+    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
+    console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
+}
+
 
 // DELETE
 function executeDelete() {
