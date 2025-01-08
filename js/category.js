@@ -31,7 +31,7 @@ function showPopupDelete() {
     document.getElementById('popupHapusKategori').style.display = 'block';
 }
 
-// Function to get JWT token from cookies
+// Fungsi untuk mendapatkan JWT token
 function getJwtToken() {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
@@ -46,25 +46,18 @@ function getJwtToken() {
 
 // Tunggu hingga seluruh DOM dimuat
 document.addEventListener('DOMContentLoaded', function() {
-    // Pastikan elemen tbody ada sebelum memanggil fetchCategories
-    const tbody = document.querySelector('#categories-table tbody');
-    if (!tbody) {
-        console.error("Elemen tbody tidak ditemukan di DOM.");
-        return;
-    }
-
-    // Memanggil fungsi fetchCategories untuk mengambil kategori
-    fetchCategories();
-});
-
-// Function to fetch categories and populate the table
-function fetchCategories() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
+    // Panggil fungsi fetchCategories setelah token ditemukan
+    fetchCategories(jwtToken);
+});
+
+// Fungsi untuk mengambil kategori
+function fetchCategories(jwtToken) {
     fetch('https://kosconnect-server.vercel.app/api/categories/', {
         method: 'GET',
         headers: {
@@ -81,7 +74,7 @@ function fetchCategories() {
     .then(data => {
         console.log("Data kategori:", data);
 
-        const tbody = document.querySelector('#categories-table tbody');
+        const tbody = document.querySelector('#categories-table-body'); // Pastikan ini sesuai dengan id yang ditambahkan di HTML
         if (!tbody) {
             console.error("Elemen tbody tidak ditemukan di DOM.");
             return;
@@ -125,8 +118,3 @@ function fetchCategories() {
         console.error("Gagal mengambil data kategori:", error);
     });
 }
-
-// Panggil fetch Categories setelah DOM sepenuhnya dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    fetchCategories();
-});
