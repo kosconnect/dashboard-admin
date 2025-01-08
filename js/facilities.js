@@ -13,10 +13,6 @@ function showPopup() {
     }
 }
 
-// function closePopup() {
-//     document.getElementById('popupTambahFasilitas').style.display = 'none';
-// }
-
 // Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
@@ -36,18 +32,12 @@ function closePopup() {
     });
 }
 
-// Form Submission Handler
-// document.getElementById('formTambahFasilitas')?.addEventListener('submit', function (e) {
-//     e.preventDefault();
-//     alert('Fasilitas berhasil ditambahkan!');
-//     closePopup();
-// });
+let selectedFacilityId = null;  // Menyimpan ID fasilitas yang dipilih
 
-// Confirm Delete
-function confirmDelete(id) {
-    alert(`Fasilitas dengan ID ${id} berhasil dihapus!`);
-    closePopup();
-    // TODO: Tambahkan fungsi penghapusan di sini
+function showPopupDelete(facilityId) {
+    selectedFacilityId = facilityId; // Simpan ID fasilitas yang dipilih
+    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
+    console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
 }
 
 // Fetch JWT Token from Cookies
@@ -234,3 +224,42 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
     // Panggil fungsi untuk mengupdate data
     updateFacility(facilityId, updatedName);
 });
+
+// DELETE
+function executeDelete() {
+    if (!selectedFacilityId) {
+        console.error("ID fasilitas tidak valid.");
+        return;
+    }
+
+    const jwtToken = getJwtToken();  // Ambil token JWT
+    if (!jwtToken) {
+        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    // Kirim permintaan DELETE ke API untuk menghapus fasilitas
+    fetch(`https://kosconnect-server.vercel.app/api/facilitytypes/${selectedFacilityId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil dihapus:", data);
+            alert("Fasilitas berhasil dihapus!");
+            closePopup(); // Tutup popup
+            fetchFacilities(); // Refresh tabel setelah penghapusan
+        })
+        .catch(error => {
+            console.error("Gagal menghapus fasilitas:", error);
+            alert("Gagal menghapus fasilitas.");
+        });
+}
