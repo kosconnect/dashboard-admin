@@ -156,22 +156,29 @@ function addCategory(event) {
     })
     .then(data => {
         console.log("Kategori berhasil ditambahkan:", data);
+
         // Menutup popup setelah data berhasil ditambahkan
         closePopup();
-        fetchCategories(); // Memperbarui data kategori setelah penambahan
+
+        // Panggil ulang fetchCategories untuk memperbarui tabel
+        fetchCategories();
+
+        // Opsional: Tambahkan notifikasi bahwa data berhasil ditambahkan
+        alert('Kategori berhasil ditambahkan!');
     })
     .catch(error => {
         console.error("Gagal menambah kategori:", error);
     });
 }
 
+
 // Tambahkan event listener untuk form tambah kategori
 document.getElementById('formTambahKategori').addEventListener('submit', addCategory);
 
 // Fungsi untuk menutup popup
-function closePopup() {
-    document.getElementById('popupTambahKategori').style.display = 'none';
-}
+// function closePopup() {
+//     document.getElementById('popupTambahKategori').style.display = 'none';
+// }
 
 // Fungsi untuk menampilkan popup
 function showPopup() {
