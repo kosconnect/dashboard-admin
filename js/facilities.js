@@ -13,7 +13,7 @@ function closePopup() {
     document.getElementById('popupTambahFasilitas').style.display = 'none';
 }
 
-document.getElementById('formTambahFasilitas').addEventListener('submit', function(e) {
+document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
     e.preventDefault();
     alert('Fasilitas berhasil ditambahkan!');
     closePopup();
@@ -53,6 +53,7 @@ function getJwtToken() {
 // Fungsi untuk mengambil data fasilitas kamar
 function fetchRoomFacilities() {
     const jwtToken = getJwtToken();
+    console.log("JWT Token:", jwtToken);
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
@@ -74,6 +75,10 @@ function fetchRoomFacilities() {
         .then(data => {
             console.log("Data fasilitas kamar:", data); // Tampilkan data di console untuk debugging
             // TODO: Tampilkan data fasilitas di halaman
+        })
+        .then(data => {
+            console.log("Response data:", data);
+            // Tampilkan data di tabel
         })
         .catch(error => {
             console.error("Gagal mengambil data fasilitas kamar:", error);
@@ -133,6 +138,8 @@ function fetchRoomFacilities() {
 
                 // Tambahkan row ke tabel
                 tbody.appendChild(tr);
+                const tbody = document.querySelector('table tbody');
+                console.log("Tbody element:", tbody);
             });
         })
         .catch(error => {
