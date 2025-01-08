@@ -1,38 +1,37 @@
+// Function to toggle the dropdown menu display
 function toggleDropdown() {
     const dropdown = document.querySelector('.dropdown-menu');
-    // Toggle the display between none and block
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-//Function show POP UP
+// Function to show Popup for adding category
 function showPopup() {
     document.getElementById('popupTambahKategori').style.display = 'block';
 }
 
+// Function to close the popup
 function closePopup() {
-    document.getElementById('popupTambahKategori').style.display = 'none';
+    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
 
+// Function to handle form submission for adding category
 document.getElementById('formTambahKategori').addEventListener('submit', function(e) {
     e.preventDefault();
     alert('Kategori berhasil ditambahkan!');
     closePopup();
 });
 
+// Function to show popup for editing a category
 function showPopupEdit() {
     document.getElementById('popupEditKategori').style.display = 'block';
 }
 
+// Function to show popup for deleting a category
 function showPopupDelete() {
     document.getElementById('popupHapusKategori').style.display = 'block';
 }
 
-function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
-}
-
-
-// Fetch JWT Token from Cookies
+// Function to get JWT token from cookies
 function getJwtToken() {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
@@ -45,8 +44,7 @@ function getJwtToken() {
     return null;
 }
 
-// GET
-// Fetch Categories and Populate Table
+// Function to fetch categories and populate the table
 function fetchCategories() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -76,23 +74,29 @@ function fetchCategories() {
             return;
         }
 
+        // Kosongkan tabel sebelum menambah data baru
         tbody.innerHTML = '';
 
+        // Loop data kategori dan tambahkan ke tabel
         data.forEach(kategori => {
             const tr = document.createElement('tr');
 
+            // Kolom ID
             const tdId = document.createElement('td');
-            tdId.textContent = kategori.id.toString(); 
+            tdId.textContent = kategori.id.toString(); // ID sebagai string
             tr.appendChild(tdId);
 
+            // Kolom Nama Kategori
             const tdNamaKategori = document.createElement('td');
             tdNamaKategori.textContent = kategori.name;
             tr.appendChild(tdNamaKategori);
 
+            // Kolom Slug Kategori
             const tdSlugKategori = document.createElement('td');
             tdSlugKategori.textContent = kategori.slug;
             tr.appendChild(tdSlugKategori);
 
+            // Kolom Aksi
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEditCategory('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
@@ -100,6 +104,7 @@ function fetchCategories() {
             `;
             tr.appendChild(tdAksi);
 
+            // Tambahkan baris ke tabel
             tbody.appendChild(tr);
         });
     })
@@ -108,5 +113,7 @@ function fetchCategories() {
     });
 }
 
-// Panggil fetch Categories saat halaman dimuat
-window.addEventListener('load', fetchCategories);
+// Panggil fetch Categories setelah DOM sepenuhnya dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    fetchCategories();
+});
