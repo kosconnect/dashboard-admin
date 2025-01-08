@@ -17,7 +17,7 @@ function closePopup() {
     document.getElementById('popupTambahFasilitas').style.display = 'none';
 }
 
-// POPUP EDIT
+// Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
     
@@ -210,15 +210,14 @@ function updateRoomFacility(facilityId, updatedName) {
         alert('Fasilitas berhasil diperbarui!');
         closePopup();  // Tutup popup setelah sukses
         fetchRoomFacilities();  // Panggil ulang untuk memperbarui tabel
-    })    
+    })  
     .catch(error => {
         console.error("Gagal memperbarui fasilitas kamar:", error);
         alert('Gagal memperbarui fasilitas kamar.');
     });
 }
 
-fetchRoomFacilities();  // Memastikan tabel diperbarui
-
+// Event listener untuk form edit fasilitas
 document.getElementById('formEditFasilitas').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah reload halaman
     
@@ -228,6 +227,3 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
     // Panggil fungsi untuk mengupdate data
     updateRoomFacility(facilityId, updatedName);
 });
-
-console.log("Mengupdate fasilitas:", facilityId, updatedName);
-console.log("Data fasilitas kamar setelah update:", data);
