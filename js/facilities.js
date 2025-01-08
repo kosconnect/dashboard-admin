@@ -13,9 +13,9 @@ function showPopup() {
     }
 }
 
-function closePopup() {
-    document.getElementById('popupTambahFasilitas').style.display = 'none';
-}
+// function closePopup() {
+//     document.getElementById('popupTambahFasilitas').style.display = 'none';
+// }
 
 // Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
 function showPopupEdit(facilityId, facilityName) {
@@ -28,8 +28,12 @@ function showPopupEdit(facilityId, facilityName) {
     document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
+// Fungsi untuk menutup semua popup
 function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+    // Menutup semua popup yang ada
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none';
+    });
 }
 
 // Form Submission Handler
