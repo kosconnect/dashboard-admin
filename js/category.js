@@ -44,6 +44,19 @@ function getJwtToken() {
     return null;
 }
 
+// Tunggu hingga seluruh DOM dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    // Pastikan elemen tbody ada sebelum memanggil fetchCategories
+    const tbody = document.querySelector('#categories-table tbody');
+    if (!tbody) {
+        console.error("Elemen tbody tidak ditemukan di DOM.");
+        return;
+    }
+
+    // Memanggil fungsi fetchCategories untuk mengambil kategori
+    fetchCategories();
+});
+
 // Function to fetch categories and populate the table
 function fetchCategories() {
     const jwtToken = getJwtToken();
