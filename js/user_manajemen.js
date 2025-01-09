@@ -26,6 +26,7 @@ function confirmDelete() {
     closePopup();
 }
 
+
 // Fetch JWT Token from Cookies
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -48,69 +49,69 @@ function fetchUsers() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/users', {
+    fetch('https://kosconnect-server.vercel.app/api/users/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data pengguna:", data);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data pengguna:", data);
 
-        const tbody = document.querySelector('table tbody');
-        if (!tbody) {
-            console.error("Elemen tbody tidak ditemukan di DOM.");
-            return;
-        }
+            // Pastikan data.users ada dan berupa array
+            if (data.users && Array.isArray(data.users)) {
+                const tbody = document.getElementById('user-table-body');
+                if (!tbody) {
+                    console.error("Elemen tbody tidak ditemukan di DOM.");
+                    return;
+                }
 
-        // Kosongkan tabel sebelum menambah data baru
-        tbody.innerHTML = '';
+                // Kosongkan tabel sebelum menambah data baru
+                tbody.innerHTML = '';
 
-        // Pastikan data.users ada dan berupa array
-        if (Array.isArray(data.users)) {
-            data.users.forEach(user => {
-                const tr = document.createElement('tr');
+                data.users.forEach(user => {
+                    const tr = document.createElement('tr');
 
-                // Kolom Nama Pengguna
-                const tdFullName = document.createElement('td');
-                tdFullName.textContent = user.fullname;
-                tr.appendChild(tdFullName);
+                    // Kolom Nama Pengguna
+                    const tdFullName = document.createElement('td');
+                    tdFullName.textContent = user.fullname;
+                    tr.appendChild(tdFullName);
 
-                // Kolom Email Pengguna
-                const tdEmail = document.createElement('td');
-                tdEmail.textContent = user.email;
-                tr.appendChild(tdEmail);
+                    // Kolom Email Pengguna
+                    const tdEmail = document.createElement('td');
+                    tdEmail.textContent = user.email;
+                    tr.appendChild(tdEmail);
 
-                // Kolom Role Pengguna
-                const tdRole = document.createElement('td');
-                tdRole.textContent = user.role;
-                tr.appendChild(tdRole);
+                    // Kolom Role Pengguna
+                    const tdRole = document.createElement('td');
+                    tdRole.textContent = user.role;
+                    tr.appendChild(tdRole);
 
-                // Kolom Aksi
-                const tdAksi = document.createElement('td');
-                tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupUbahRole('${user.id}', '${user.fullname}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
-                    <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
-                `;
-                tr.appendChild(tdAksi);
+                    // Kolom Aksi
+                    const tdAksi = document.createElement('td');
+                    tdAksi.innerHTML = `
+                        <button class="btn btn-primary" onclick="showPopupUbahRole('${user.id}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
+                        <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
+                    `;
+                    tr.appendChild(tdAksi);
 
-                // Tambahkan baris ke tabel
-                tbody.appendChild(tr);
-            });
-        } else {
-            console.error("Data pengguna tidak ditemukan atau format salah.");
-        }
-    })
-    .catch(error => {
-        console.error("Gagal mengambil data pengguna:", error);
-    });
+                    // Tambahkan baris ke tabel
+                    tbody.appendChild(tr);
+                });
+            } else {
+                console.error("Data pengguna tidak ditemukan atau format salah.");
+            }
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data pengguna:", error);
+        });
 }
 
 // Panggil fetch Users saat halaman dimuat
