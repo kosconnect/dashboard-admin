@@ -33,8 +33,6 @@ function getJwtToken() {
     return null;
 }
 
-let usersData = []; // Variabel global untuk menyimpan data pengguna
-
 // GET
 // Fetch Users and Populate Table
 function fetchUsers() {
@@ -60,9 +58,8 @@ function fetchUsers() {
         .then(data => {
             console.log("Data pengguna:", data);
 
+            // Pastikan data.users ada dan berupa array
             if (data.users && Array.isArray(data.users)) {
-                usersData = data.users; // Simpan data pengguna ke variabel global
-
                 const tbody = document.getElementById('user-table-body');
                 if (!tbody) {
                     console.error("Elemen tbody tidak ditemukan di DOM.");
@@ -134,22 +131,15 @@ function updateUserRole(userName, updatedRole) {
         return;
     }
 
-    if (!usersData || usersData.length === 0) {
-        console.error("Data pengguna belum dimuat.");
-        alert("Data pengguna belum dimuat. Harap refresh halaman.");
-        return;
-    }
-
-    // Cari user berdasarkan nama pengguna
-    const user = usersData.find(user => user.fullname === userName);
+    // Pertama, cari userId berdasarkan userName
+    const user = usersData.find(user => user.fullname === userName); // Menyesuaikan dengan data yang sudah dimuat
 
     if (!user) {
-        console.error(`Pengguna dengan nama "${userName}" tidak ditemukan.`);
-        alert(`Pengguna dengan nama "${userName}" tidak ditemukan.`);
+        console.error("Pengguna tidak ditemukan.");
         return;
     }
 
-    const userId = user.id;
+    const userId = user.id;  // Ambil ID pengguna yang sesuai
 
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
