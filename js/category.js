@@ -87,7 +87,7 @@ function fetchCategories(jwtToken) {
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="showPopupDeleteCategory('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
+                <button class="btn btn-primary" onclick="showPopupDelete('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
             tr.appendChild(tdAksi);
 
@@ -221,10 +221,11 @@ document.getElementById('formEditKategori').addEventListener('submit', function 
     updateCategory(categoryId, updatedName);
 });
 
+
 let selectedCategoryId = null;  // Menyimpan ID kategori yang dipilih
 
 // Fungsi untuk menampilkan popup Hapus Kategori
-function showPopupDeleteCategory(categoryId) {
+function showPopupDelete(categoryId) {
     selectedCategoryId = categoryId; // Simpan ID kategori yang dipilih
     document.getElementById('popupHapusKategori').style.display = 'block'; // Tampilkan popup
     console.log("Category ID untuk dihapus:", selectedCategoryId); // Debug log
