@@ -111,44 +111,42 @@ function fetchCategories(jwtToken) {
 }
 
 
-// Function to show Popup for adding category
 function showPopup() {
-    resetForm('formTambahKategori'); // Reset input form sebelum menampilkan popup
-    document.getElementById('popupTambahKategori').style.display = 'block';
-}
-
-// Fungsi untuk mereset form
-function resetForm(formId) {
-    const form = document.getElementById(formId);
-    if (form) {
-        form.reset(); // Mengosongkan semua input di dalam form
+    const popup = document.getElementById('popupTambahKategori');
+    if (popup) {
+        popup.style.display = 'block';
     } else {
-        console.error(`Form dengan ID ${formId} tidak ditemukan.`);
+        console.error("Popup dengan ID 'popupTambahKategori' tidak ditemukan.");
     }
 }
 
-// POST 
-// Fungsi untuk menambah kategori baru
+// POST
+// Fungsi untuk menambahkan kategori baru
 function addCategory() {
-    const jwtToken = getJwtToken(); // Ambil token JWT
+    const jwtToken = getJwtToken(); // Fungsi Anda untuk mengambil token JWT
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    // Ambil input dari form
+    // Ambil data dari form
     const categoryName = document.getElementById('namaKategori').value;
+    if (!categoryName) {
+        alert('Nama kategori tidak boleh kosong!');
+        return;
+    }
 
-    // Kirim permintaan POST ke backend
+    const newCategory = {
+        name: categoryName
+    };
+
     fetch('https://kosconnect-server.vercel.app/api/categories/', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${jwtToken}`, // Masukkan token ke header Authorization
-            'Content-Type': 'application/json' // Format data JSON
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            name: categoryName // Hanya kirim nama kategori
-        })
+        body: JSON.stringify(newCategory)
     })
         .then(response => {
             if (!response.ok) {
@@ -158,18 +156,18 @@ function addCategory() {
         })
         .then(data => {
             console.log("Kategori berhasil ditambahkan:", data);
-            alert('Kategori berhasil ditambahkan!');
-            closePopup();  // Tutup popup setelah data berhasil ditambahkan
-            fetchCategories();  // Refresh data kategori
+            alert("Kategori berhasil ditambahkan!");
+            closePopup(); // Tutup popup setelah berhasil
+            fetchCategories(); // Refresh tabel kategori
         })
         .catch(error => {
             console.error("Gagal menambahkan kategori:", error);
-            alert('Gagal menambahkan kategori.');
+            alert("Gagal menambahkan kategori. Silakan coba lagi.");
         });
 }
 
-// Event listener untuk form tambah kategori
+// Event Listener untuk form Tambah Kategori
 document.getElementById('formTambahKategori').addEventListener('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah halaman refresh
     addCategory();
 });
