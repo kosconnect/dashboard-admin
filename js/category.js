@@ -4,17 +4,20 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-// Function to close the popup
+// Fungsi untuk menutup semua popup
 function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+    // Menutup semua popup yang ada
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none';
+    });
 }
 
 // Function to handle form submission for adding category
-document.getElementById('formTambahKategori').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Kategori berhasil ditambahkan!');
-    closePopup();
-});
+// document.getElementById('formTambahKategori').addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     alert('Kategori berhasil ditambahkan!');
+//     closePopup();
+// });
 
 // Function to show popup for editing a category
 function showPopupEdit() {
@@ -122,58 +125,53 @@ function showPopup() {
 
 // POST 
 // Fungsi untuk menambah kategori baru
-function addCategory(event) {
-    event.preventDefault(); // Menghindari reload halaman saat form disubmit
-
-    const jwtToken = getJwtToken(); // Ambil JWT Token
+function addCategory() {
+    const jwtToken = getJwtToken(); // Ambil token JWT
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    // Ambil data dari form input
-    const namaKategori = document.getElementById('namaKategori').value;
-
-    // Membuat data kategori yang akan dikirim
-    const data = {
-        name: namaKategori
-    };
-
-    // Kirim data ke server menggunakan POST
+    // Ambil input dari form
+    const categoryName = document.getElementById('namaKategori').value;
+    
+    // Kirim permintaan POST ke backend
     fetch('https://kosconnect-server.vercel.app/api/categories/', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${jwtToken}`, // Masukkan token ke header Authorization
+            'Content-Type': 'application/json' // Format data JSON
         },
-        body: JSON.stringify(data) // Mengirim data kategori dalam format JSON
+        body: JSON.stringify({
+            name: categoryName // Hanya kirim nama kategori
+        })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Kategori berhasil ditambahkan:", data);
-
-        // Menutup popup setelah data berhasil ditambahkan
-        closePopup();
-
-        // Panggil ulang fetchCategories untuk memperbarui tabel
-        fetchCategories();
-
-        // Opsional: Tambahkan notifikasi bahwa data berhasil ditambahkan
-        alert('Kategori berhasil ditambahkan!');
-    })
-    .catch(error => {
-        console.error("Gagal menambah kategori:", error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Kategori berhasil ditambahkan:", data);
+            alert('Kategori berhasil ditambahkan!');
+            closePopup();  // Tutup popup setelah data berhasil ditambahkan
+            fetchCategories();  // Refresh data kategori
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan kategori:", error);
+            alert('Gagal menambahkan kategori.');
+        });
 }
 
+// Event listener untuk submit form tambah kategori
+document.getElementById('formTambahKategori').addEventListener('submit', function (e) {
+    e.preventDefault();
+    addCategory(); // Panggil fungsi untuk menambahkan kategori
+});
 
 // Tambahkan event listener untuk form tambah kategori
-document.getElementById('formTambahKategori').addEventListener('submit', addCategory);
+// document.getElementById('formTambahKategori').addEventListener('submit', addCategory);
 
 // Fungsi untuk menutup popup
 // function closePopup() {
@@ -181,6 +179,6 @@ document.getElementById('formTambahKategori').addEventListener('submit', addCate
 // }
 
 // Fungsi untuk menampilkan popup
-function showPopup() {
-    document.getElementById('popupTambahKategori').style.display = 'block';
-}
+// function showPopup() {
+//     document.getElementById('popupTambahKategori').style.display = 'block';
+// }
