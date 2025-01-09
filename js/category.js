@@ -117,6 +117,16 @@ function showPopup() {
     document.getElementById('popupTambahKategori').style.display = 'block';
 }
 
+// Fungsi untuk mereset form
+function resetForm(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.reset(); // Mengosongkan semua input di dalam form
+    } else {
+        console.error(`Form dengan ID ${formId} tidak ditemukan.`);
+    }
+}
+
 // POST 
 // Fungsi untuk menambah kategori baru
 function addCategory() {
