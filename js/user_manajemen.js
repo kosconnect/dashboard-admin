@@ -90,7 +90,7 @@ function fetchUsers() {
                     // Kolom Aksi
                     const tdAksi = document.createElement('td');
                     tdAksi.innerHTML = `
-                        <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.id}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
+                        <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
                         <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
                     `;
                     tr.appendChild(tdAksi);
@@ -111,22 +111,35 @@ function fetchUsers() {
 window.addEventListener('load', fetchUsers);
 
 
-function showPopupUbahRoleUser(userId, currentRole) {
-    document.getElementById('popupUbahRoleUser').style.display = 'block';
+function showPopupUbahRoleUser(fullname, currentRole) {
+    const popup = document.getElementById('popupUbahRoleUser');
+    popup.style.display = 'block'; // Tampilkan popup
 
-    // Isi input userName dengan nama pengguna
-    document.getElementById('userName').value = userId; // Isi dengan ID pengguna, karena input readonly
-    document.getElementById('userRole').value = currentRole; // Isi dengan role pengguna saat ini
+    // Isi input dengan nama pengguna (readonly)
+    document.getElementById('userName').value = fullname; 
+
+    // Setel role saat ini pada dropdown
+    document.getElementById('userRole').value = currentRole; 
 }
 
 // PUT
-// Fungsi untuk memperbarui role pengguna
-function updateUserRole(userId, updatedRole) {
+// Fungsi untuk memperbarui role pengguna berdasarkan nama dan role
+function updateUserRole(userName, updatedRole) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
+
+    // Pertama, cari userId berdasarkan userName
+    const user = usersData.find(user => user.fullname === userName); // Menyesuaikan dengan data yang sudah dimuat
+
+    if (!user) {
+        console.error("Pengguna tidak ditemukan.");
+        return;
+    }
+
+    const userId = user.id;  // Ambil ID pengguna yang sesuai
 
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
@@ -154,12 +167,13 @@ function updateUserRole(userId, updatedRole) {
         });
 }
 
+// Menangani form submit untuk perubahan role pengguna
 document.getElementById('formUbahRoleUser').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah reload halaman
 
-    const userId = document.getElementById('userName').value; // Ambil ID pengguna
-    const updatedRole = document.getElementById('userRole').value; // Ambil role baru
+    const userName = document.getElementById('userName').value; // Ambil Nama Pengguna
+    const updatedRole = document.getElementById('userRole').value; // Ambil Role Baru
 
     // Panggil fungsi untuk mengupdate data role
-    updateUserRole(userId, updatedRole);
+    updateUserRole(userName, updatedRole);
 });

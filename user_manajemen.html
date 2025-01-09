@@ -87,7 +87,6 @@
         </div>
     </div>
 
-    <!-- Popup Ubah Role User -->
     <div id="popupUbahRoleUser" class="popup">
         <div class="popup-content">
             <div class="popup-header">
@@ -98,23 +97,25 @@
             </div>
             <h3 class="popup-subtitle">Ubah Role Pengguna</h3>
             <form id="formUbahRoleUser">
+                <!-- Input Nama Pengguna -->
                 <label for="userName" class="form-label">Nama Pengguna</label>
-                <input type="text" id="userName" name="userName" placeholder="Pilih Nama Pengguna" required readonly>
-                <!-- readonly karena ini hanya untuk tampilan -->
-
+                <input type="text" id="userName" name="userName" placeholder="Nama Pengguna" readonly required>
+    
+                <!-- Dropdown Role -->
                 <label for="userRole" class="form-label">Pilih Role Baru</label>
-                <select id="userRole" name="userRole" required class="styled-select" placeholder="Pilih">
+                <select id="userRole" name="userRole" required class="styled-select">
                     <option value="admin">Admin</option>
                     <option value="owner">Owner</option>
                     <option value="user">User</option>
                 </select>
-
+    
+                <!-- Tombol Simpan -->
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
-    </div>
+    </div>    
 
 
     <!-- Popup Hapus User -->
