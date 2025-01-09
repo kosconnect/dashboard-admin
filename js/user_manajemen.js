@@ -170,16 +170,16 @@ function updateUserRole(userName, updatedRole) {
         })
         .then(data => {
             console.log("Role pengguna berhasil diperbarui:", data);
-        
-            // Update role di variabel global usersData
+
+            // Update data di usersData
             const userIndex = usersData.findIndex(user => user.id === userId);
             if (userIndex !== -1) {
                 usersData[userIndex].role = updatedRole; // Update role di array
             }
-        
+
             alert('Role pengguna berhasil diperbarui!');
-            closePopup();  // Tutup popup setelah sukses
-            populateUserTable(usersData); // Refresh tabel tanpa fetch ulang
+            closePopup(); // Tutup popup
+            populateUserTable(usersData); // Refresh tabel
         })
         .catch(error => {
             console.error("Gagal memperbarui role pengguna:", error);
