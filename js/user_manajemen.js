@@ -126,10 +126,16 @@ window.addEventListener('load', fetchUsers);
 
 function showPopupUbahRoleUser(fullname, currentRole) {
     const popup = document.getElementById('popupUbahRoleUser');
-    popup.style.display = 'block'; // Tampilkan popup
+    popup.style.display = 'block';
 
     // Isi input dengan nama pengguna (readonly)
     document.getElementById('userName').value = fullname;
+
+    // Simpan id pengguna di atribut tersembunyi atau variabel global
+    const user = usersData.find(user => user.fullname === fullname);
+    if (user) {
+        document.getElementById('userName').setAttribute('data-id', user.id);
+    }
 
     // Setel role saat ini pada dropdown
     document.getElementById('userRole').value = currentRole;
@@ -171,10 +177,10 @@ function updateUserRole(userName, updatedRole) {
         .then(data => {
             console.log("Role pengguna berhasil diperbarui:", data);
 
-            // Update data di usersData
+            // Update role pengguna di array usersData
             const userIndex = usersData.findIndex(user => user.id === userId);
             if (userIndex !== -1) {
-                usersData[userIndex].role = updatedRole; // Update role di array
+                usersData[userIndex].role = updatedRole; // Perbarui role di array
             }
 
             alert('Role pengguna berhasil diperbarui!');
@@ -187,12 +193,19 @@ function updateUserRole(userName, updatedRole) {
         });
 }
 
-// Menangani form submit untuk perubahan role pengguna
 document.getElementById('formUbahRoleUser').addEventListener('submit', function (e) {
-    e.preventDefault(); // Mencegah reload halaman
+    e.preventDefault();
 
-    const userName = document.getElementById('userName').value; // Ambil Nama Pengguna
-    const updatedRole = document.getElementById('userRole').value; // Ambil Role Baru
+    const userName = document.getElementById('userName').value;
+    const updatedRole = document.getElementById('userRole').value;
+
+    // Ambil userId dari atribut tersembunyi
+    const userId = document.getElementById('userName').getAttribute('data-id');
+
+    if (!userId) {
+        console.error("User ID tidak ditemukan. Pastikan data diatur dengan benar.");
+        return;
+    }
 
     // Panggil fungsi untuk mengupdate data role
     updateUserRole(userName, updatedRole);
