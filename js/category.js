@@ -12,16 +12,6 @@ function closePopup() {
     });
 }
 
-// Function to show popup for editing a category
-// function showPopupEdit() {
-//     document.getElementById('popupEditKategori').style.display = 'block';
-// }
-
-// Function to show popup for deleting a category
-function showPopupDelete() {
-    document.getElementById('popupHapusKategori').style.display = 'block';
-}
-
 // Fungsi untuk mendapatkan JWT token
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -230,3 +220,51 @@ document.getElementById('formEditKategori').addEventListener('submit', function 
     // Panggil fungsi untuk mengupdate data
     updateCategory(categoryId, updatedName);
 });
+
+let selectedCategoryId = null;  // Menyimpan ID kategori yang dipilih
+
+// Fungsi untuk menampilkan popup Hapus Kategori
+function showPopupDeleteCategory(categoryId) {
+    selectedCategoryId = categoryId; // Simpan ID kategori yang dipilih
+    document.getElementById('popupHapusKategori').style.display = 'block'; // Tampilkan popup
+    console.log("Category ID untuk dihapus:", selectedCategoryId); // Debug log
+}
+
+// DELETE
+function executeDelete() {
+    if (!selectedCategoryId) {
+        console.error("ID kategori tidak valid.");
+        return;
+    }
+
+    const jwtToken = getJwtToken();  // Ambil token JWT
+    if (!jwtToken) {
+        console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    // Kirim permintaan DELETE ke API untuk menghapus kategori
+    fetch(`https://kosconnect-server.vercel.app/api/categories/${selectedCategoryId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Kategori berhasil dihapus:", data);
+            alert("Kategori berhasil dihapus!");
+            closePopup(); // Tutup popup
+            fetchCategories(); // Refresh tabel kategori setelah penghapusan
+        })
+        .catch(error => {
+            console.error("Gagal menghapus kategori:", error);
+            alert("Gagal menghapus kategori.");
+        });
+}
