@@ -4,13 +4,6 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-function showPopupUbahRole(userId, userName, currentRole) {
-    document.getElementById('popupUbahRoleUser').style.display = 'block';
-    document.getElementById('userName').value = userName;
-    document.getElementById('userRole').value = currentRole;
-    document.getElementById('userId').value = userId;  // Pastikan ada elemen input dengan id userId
-}
-
 function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
@@ -97,7 +90,7 @@ function fetchUsers() {
                     // Kolom Aksi
                     const tdAksi = document.createElement('td');
                     tdAksi.innerHTML = `
-                        <button class="btn btn-primary" onclick="showPopupUbahRole('${user.id}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
+                        <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.id}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
                         <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
                     `;
                     tr.appendChild(tdAksi);
@@ -116,3 +109,57 @@ function fetchUsers() {
 
 // Panggil fetch Users saat halaman dimuat
 window.addEventListener('load', fetchUsers);
+
+
+function showPopupUbahRoleUser(userId, currentRole) {
+    document.getElementById('popupUbahRoleUser').style.display = 'block';
+
+    // Isi input userName dengan nama pengguna
+    document.getElementById('userName').value = userId; // Isi dengan ID pengguna, karena input readonly
+    document.getElementById('userRole').value = currentRole; // Isi dengan role pengguna saat ini
+}
+
+// PUT
+// Fungsi untuk memperbarui role pengguna
+function updateUserRole(userId, updatedRole) {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: updatedRole })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Role pengguna berhasil diperbarui:", data);
+            alert('Role pengguna berhasil diperbarui!');
+            closePopup();  // Tutup popup setelah sukses
+            fetchUsers();  // Panggil ulang untuk memperbarui tabel
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui role pengguna:", error);
+            alert('Gagal memperbarui role pengguna.');
+        });
+}
+
+document.getElementById('formUbahRoleUser').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah reload halaman
+
+    const userId = document.getElementById('userName').value; // Ambil ID pengguna
+    const updatedRole = document.getElementById('userRole').value; // Ambil role baru
+
+    // Panggil fungsi untuk mengupdate data role
+    updateUserRole(userId, updatedRole);
+});
