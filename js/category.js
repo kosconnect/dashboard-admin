@@ -13,9 +13,9 @@ function closePopup() {
 }
 
 // Function to show popup for editing a category
-function showPopupEdit() {
-    document.getElementById('popupEditKategori').style.display = 'block';
-}
+// function showPopupEdit() {
+//     document.getElementById('popupEditKategori').style.display = 'block';
+// }
 
 // Function to show popup for deleting a category
 function showPopupDelete() {
@@ -170,4 +170,68 @@ function addCategory() {
 document.getElementById('formTambahKategori').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah halaman refresh
     addCategory();
+});
+
+
+// Fungsi untuk menampilkan popup Edit dan mengisi data kategori
+function showPopupEditCategory(categoryId, categoryName) {
+    document.getElementById('popupEditKategori').style.display = 'block';
+
+    // Isi input tersembunyi untuk ID (tambahkan elemen hidden input jika diperlukan)
+    if (!document.getElementById('editCategoryId')) {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.id = 'editCategoryId';
+        document.getElementById('formEditKategori').appendChild(hiddenInput);
+    }
+    document.getElementById('editCategoryId').value = categoryId;
+
+    // Isi input nama untuk diedit
+    document.getElementById('editNamaKategori').value = categoryName;
+}
+
+// PUT
+// Fungsi untuk memperbarui kategori
+function updateCategory(categoryId, updatedName) {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: updatedName })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Kategori berhasil diperbarui:", data);
+            alert('Kategori berhasil diperbarui!');
+            closePopup();  // Tutup popup setelah sukses
+            fetchCategories();  // Panggil ulang untuk memperbarui tabel
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui kategori:", error);
+            alert('Gagal memperbarui kategori.');
+        });
+}
+
+// Event listener untuk form edit kategori
+document.getElementById('formEditKategori').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah reload halaman
+
+    const categoryId = document.getElementById('editCategoryId').value; // Ambil ID kategori
+    const updatedName = document.getElementById('editNamaKategori').value; // Ambil nama kategori baru
+
+    // Panggil fungsi untuk mengupdate data
+    updateCategory(categoryId, updatedName);
 });
