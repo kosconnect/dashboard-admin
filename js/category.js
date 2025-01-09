@@ -96,7 +96,7 @@ function fetchCategories(jwtToken) {
             // Kolom Aksi
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEditCategory('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDeleteCategory('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
             tr.appendChild(tdAksi);
