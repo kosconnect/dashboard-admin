@@ -49,7 +49,7 @@ function fetchUsers() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/users', {
+    fetch('https://kosconnect-server.vercel.app/api/users/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
