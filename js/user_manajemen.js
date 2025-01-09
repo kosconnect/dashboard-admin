@@ -20,7 +20,7 @@ function confirmDelete() {
 }
 
 
-// Fetch JWT Token from Cookies
+// Fungsi untuk mendapatkan token JWT dari cookies
 function getJwtToken() {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
@@ -33,8 +33,10 @@ function getJwtToken() {
     return null;
 }
 
-// GET
-// Fetch Users and Populate Table
+// Variabel global untuk menyimpan data pengguna
+let usersData = [];
+
+// Fungsi untuk mengambil data pengguna dan mengisi tabel
 function fetchUsers() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -56,48 +58,12 @@ function fetchUsers() {
             return response.json();
         })
         .then(data => {
-            console.log("Data pengguna:", data);
+            console.log("Data pengguna yang diterima dari server:", data);
 
-            // Pastikan data.users ada dan berupa array
+            // Simpan data pengguna ke dalam variabel global
             if (data.users && Array.isArray(data.users)) {
-                const tbody = document.getElementById('user-table-body');
-                if (!tbody) {
-                    console.error("Elemen tbody tidak ditemukan di DOM.");
-                    return;
-                }
-
-                // Kosongkan tabel sebelum menambah data baru
-                tbody.innerHTML = '';
-
-                data.users.forEach(user => {
-                    const tr = document.createElement('tr');
-
-                    // Kolom Nama Pengguna
-                    const tdFullName = document.createElement('td');
-                    tdFullName.textContent = user.fullname;
-                    tr.appendChild(tdFullName);
-
-                    // Kolom Email Pengguna
-                    const tdEmail = document.createElement('td');
-                    tdEmail.textContent = user.email;
-                    tr.appendChild(tdEmail);
-
-                    // Kolom Role Pengguna
-                    const tdRole = document.createElement('td');
-                    tdRole.textContent = user.role;
-                    tr.appendChild(tdRole);
-
-                    // Kolom Aksi
-                    const tdAksi = document.createElement('td');
-                    tdAksi.innerHTML = `
-                        <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-edit"></i> Ubah Role</button>
-                        <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
-                    `;
-                    tr.appendChild(tdAksi);
-
-                    // Tambahkan baris ke tabel
-                    tbody.appendChild(tr);
-                });
+                usersData = data.users; // Simpan data pengguna di variabel global
+                populateUserTable(usersData); // Isi tabel dengan data pengguna
             } else {
                 console.error("Data pengguna tidak ditemukan atau format salah.");
             }
@@ -107,7 +73,54 @@ function fetchUsers() {
         });
 }
 
-// Panggil fetch Users saat halaman dimuat
+// Fungsi untuk mengisi tabel dengan data pengguna
+function populateUserTable(users) {
+    const tbody = document.getElementById('user-table-body');
+    if (!tbody) {
+        console.error("Elemen tbody tidak ditemukan di DOM.");
+        return;
+    }
+
+    // Kosongkan tabel sebelum menambahkan data baru
+    tbody.innerHTML = '';
+
+    // Iterasi data pengguna untuk menambahkan baris ke tabel
+    users.forEach(user => {
+        const tr = document.createElement('tr');
+
+        // Kolom Nama Pengguna
+        const tdFullName = document.createElement('td');
+        tdFullName.textContent = user.fullname;
+        tr.appendChild(tdFullName);
+
+        // Kolom Email Pengguna
+        const tdEmail = document.createElement('td');
+        tdEmail.textContent = user.email;
+        tr.appendChild(tdEmail);
+
+        // Kolom Role Pengguna
+        const tdRole = document.createElement('td');
+        tdRole.textContent = user.role;
+        tr.appendChild(tdRole);
+
+        // Kolom Aksi
+        const tdAksi = document.createElement('td');
+        tdAksi.innerHTML = `
+            <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')">
+                <i class="fas fa-user-edit"></i> Ubah Role
+            </button>
+            <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
+                <i class="fas fa-trash"></i> Hapus
+            </button>
+        `;
+        tr.appendChild(tdAksi);
+
+        // Tambahkan baris ke tabel
+        tbody.appendChild(tr);
+    });
+}
+
+// Panggil fetchUsers saat halaman dimuat
 window.addEventListener('load', fetchUsers);
 
 
@@ -116,10 +129,10 @@ function showPopupUbahRoleUser(fullname, currentRole) {
     popup.style.display = 'block'; // Tampilkan popup
 
     // Isi input dengan nama pengguna (readonly)
-    document.getElementById('userName').value = fullname; 
+    document.getElementById('userName').value = fullname;
 
     // Setel role saat ini pada dropdown
-    document.getElementById('userRole').value = currentRole; 
+    document.getElementById('userRole').value = currentRole;
 }
 
 // PUT
