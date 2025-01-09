@@ -174,21 +174,16 @@ document.getElementById('formTambahKategori').addEventListener('submit', functio
 
 
 // Fungsi untuk menampilkan popup Edit dan mengisi data kategori
-function showPopupEditCategory(categoryId, categoryName) {
+function showPopupEdit(categoryId, categoryName) {
     document.getElementById('popupEditKategori').style.display = 'block';
 
-    // Isi input tersembunyi untuk ID (tambahkan elemen hidden input jika diperlukan)
-    if (!document.getElementById('editCategoryId')) {
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.id = 'editCategoryId';
-        document.getElementById('formEditKategori').appendChild(hiddenInput);
-    }
+    // Isi input tersembunyi untuk ID kategori
     document.getElementById('editCategoryId').value = categoryId;
 
-    // Isi input nama untuk diedit
+    // Isi input nama kategori untuk diedit
     document.getElementById('editNamaKategori').value = categoryName;
 }
+
 
 // PUT
 // Fungsi untuk memperbarui kategori
