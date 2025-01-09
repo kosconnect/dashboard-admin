@@ -12,13 +12,6 @@ function closePopup() {
     });
 }
 
-// Function to handle form submission for adding category
-// document.getElementById('formTambahKategori').addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     alert('Kategori berhasil ditambahkan!');
-//     closePopup();
-// });
-
 // Function to show popup for editing a category
 function showPopupEdit() {
     document.getElementById('popupEditKategori').style.display = 'block';
@@ -120,6 +113,7 @@ function fetchCategories(jwtToken) {
 
 // Function to show Popup for adding category
 function showPopup() {
+    resetForm('formTambahKategori'); // Reset input form sebelum menampilkan popup
     document.getElementById('popupTambahKategori').style.display = 'block';
 }
 
@@ -134,7 +128,7 @@ function addCategory() {
 
     // Ambil input dari form
     const categoryName = document.getElementById('namaKategori').value;
-    
+
     // Kirim permintaan POST ke backend
     fetch('https://kosconnect-server.vercel.app/api/categories/', {
         method: 'POST',
@@ -164,21 +158,8 @@ function addCategory() {
         });
 }
 
-// Event listener untuk submit form tambah kategori
+// Event listener untuk form tambah kategori
 document.getElementById('formTambahKategori').addEventListener('submit', function (e) {
     e.preventDefault();
-    addCategory(); // Panggil fungsi untuk menambahkan kategori
+    addCategory();
 });
-
-// Tambahkan event listener untuk form tambah kategori
-// document.getElementById('formTambahKategori').addEventListener('submit', addCategory);
-
-// Fungsi untuk menutup popup
-// function closePopup() {
-//     document.getElementById('popupTambahKategori').style.display = 'none';
-// }
-
-// Fungsi untuk menampilkan popup
-// function showPopup() {
-//     document.getElementById('popupTambahKategori').style.display = 'block';
-// }
