@@ -4,6 +4,12 @@ function toggleDropdown() {
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
+function closePopup() {
+    document.querySelectorAll('.popup').forEach(popup => {
+        popup.style.display = 'none';
+    });
+}
+
 // Fungsi untuk mendapatkan JWT token dari cookie
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -101,6 +107,16 @@ function fetchUsers(jwtToken) {
 }
 
 
+function showPopupEdit(userId, fullname, email) {
+    // Isi form dengan data pengguna yang akan diedit
+    document.getElementById('editUserId').value = userId;
+    document.getElementById('editFullName').value = fullname;
+    document.getElementById('editEmail').value = email;
+
+    // Tampilkan popup
+    document.getElementById('popupEditUser').style.display = 'block';
+}
+
 // Fungsi untuk memperbarui detail pengguna (Nama & Email)
 function updateUserDetails(userId, updatedName, updatedEmail) {
     const jwtToken = getJwtToken();
@@ -144,6 +160,17 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
 
     updateUserDetails(userId, updatedName, updatedEmail);
 });
+
+
+function showPopupUbahRoleUser(userId, fullname, role) {
+    // Isi form dengan data pengguna yang akan diubah
+    document.getElementById('userIdHidden').value = userId;  // Hidden ID field untuk update
+    document.getElementById('userName').value = fullname;
+    document.getElementById('userRole').value = role;
+
+    // Tampilkan popup
+    document.getElementById('popupUbahRoleUser').style.display = 'block';
+}
 
 // Fungsi untuk memperbarui role pengguna
 function updateUserRole(userId, updatedRole) {
