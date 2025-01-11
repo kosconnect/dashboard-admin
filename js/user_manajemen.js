@@ -113,13 +113,13 @@ function populateUserTable(users) {
         <button class="btn btn-primary dropdown-button">
             <i class="fas fa-ellipsis-v"></i> Lainnya</button>
         <div class="dropdown-content">
-            <button class="btn btn-primary" style="background-color: #87CEEB;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')">
+            <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')">
                 <i class="fas fa-user-cog"></i> Update Role
             </button>
-            <button class="btn btn-primary" style="background-color: #FFD700;" onclick="changePassword('${user.id}')">
+            <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
                 <i class="fas fa-key"></i> Change Password
             </button>
-            <button class="btn btn-primary" style="background-color: #FF6347;" onclick="resetPassword('${user.id}')">
+            <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.id}')">
                 <i class="fas fa-redo"></i> Reset Password
             </button>
         </div>
