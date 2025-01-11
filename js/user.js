@@ -108,13 +108,13 @@ function fetchUsers(jwtToken) {
 
 // Fungsi untuk menampilkan popup edit dengan data pengguna sebelumnya
 function showPopupEdit(userId, fullname, email) {
-    document.getElementById('editUserId').value = userId;  // Set userId ke input hidden
-    document.getElementById('editFullName').value = fullname;  // Set nama sebelumnya
-    document.getElementById('editEmail').value = email;        // Set email sebelumnya
+    document.getElementById('editUserId').value = userId;  // Simpan ID pengguna
+    document.getElementById('editFullName').value = fullname;
+    document.getElementById('editEmail').value = email;
 
-    // Tampilkan popup
     document.getElementById('popupEditUser').style.display = 'block';
 }
+
 // Fungsi untuk memperbarui detail pengguna (Nama & Email)
 function updateUserDetails(userId, updatedName, updatedEmail) {
     const jwtToken = getJwtToken();
@@ -154,11 +154,11 @@ function updateUserDetails(userId, updatedName, updatedEmail) {
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
     event.preventDefault();
 
-    const userId = document.getElementById('editUserId').value;
+    const userId = document.getElementById('editUserId').value;  // Ambil ID dari input hidden
     const updatedName = document.getElementById('editFullName').value;
     const updatedEmail = document.getElementById('editEmail').value;
 
-    updateUserDetails(userId, updatedName, updatedEmail);
+    updateUserDetails(userId, updatedName, updatedEmail);  // Kirim data dengan ID pengguna yang benar
 });
 
 
