@@ -78,7 +78,7 @@ function fetchUsers(jwtToken) {
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupEdit('${user.fullname}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
@@ -112,8 +112,8 @@ function fetchUsers(jwtToken) {
 // Fungsi untuk menampilkan popup edit
 function showPopupEdit(userId, fullname, email) {
     document.getElementById('editUserId').value = userId;
-    document.getElementById('editFullName').value = fullname;
-    document.getElementById('editEmail').value = email;
+    document.getElementById('editFullName').value = fullname || '';
+    document.getElementById('editEmail').value = email || '';
     document.getElementById('popupEditUser').style.display = 'block';
 }
 
