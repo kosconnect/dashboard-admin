@@ -86,9 +86,10 @@ function fetchUsers(jwtToken) {
                 tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', '${user.fullname}', '${user.email}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
-                    <div class="dropdown">
+                    <div class="dropdown-aksi">
                     <button class="btn btn-primary dropdown-button"><i class="fas fa-ellipsis-v"></i> Lainnya</button>
-                    <div class="dropdown-content"><button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.id}', '${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button><button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button>
+                    <div class="dropdown-aksi-content">
+                    <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.id}', '${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button><button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button>
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')"><i class="fas fa-key"></i> Change Password</button>
                         <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.id}')"><i class="fas fa-redo"></i> Reset Password</button>
                     </div>
