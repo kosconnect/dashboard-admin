@@ -106,21 +106,21 @@ function fetchUsers(jwtToken) {
 }
 
 
+// Fungsi untuk menampilkan popup edit dengan data pengguna sebelumnya
 function showPopupEdit(userId, fullname, email) {
-    // Isi form dengan data pengguna yang akan diedit
-    document.getElementById('editUserId').value = userId;
-    document.getElementById('editFullName').value = fullname;
-    document.getElementById('editEmail').value = email;
+    document.getElementById('editUserId').value = userId;  // Set userId ke input hidden
+    document.getElementById('editFullName').value = fullname;  // Set nama sebelumnya
+    document.getElementById('editEmail').value = email;        // Set email sebelumnya
 
     // Tampilkan popup
     document.getElementById('popupEditUser').style.display = 'block';
 }
-
 // Fungsi untuk memperbarui detail pengguna (Nama & Email)
 function updateUserDetails(userId, updatedName, updatedEmail) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        alert("Token otentikasi tidak ditemukan. Silakan login ulang.");
         return;
     }
 
@@ -132,24 +132,25 @@ function updateUserDetails(userId, updatedName, updatedEmail) {
         },
         body: JSON.stringify({ fullname: updatedName, email: updatedEmail })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Data pengguna berhasil diperbarui:", data);
-            alert('Data pengguna berhasil diperbarui!');
-            closePopup();  // Tutup popup setelah sukses
-            fetchUsers();  // Perbarui tabel pengguna
-        })
-        .catch(error => {
-            console.error("Gagal memperbarui data pengguna:", error);
-            alert('Gagal memperbarui data pengguna.');
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Gagal memperbarui data pengguna! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data pengguna berhasil diperbarui:", data);
+        alert('Data pengguna berhasil diperbarui!');
+        closePopup();  // Tutup popup setelah data diperbarui
+        fetchUsers();  // Perbarui tabel pengguna
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui data pengguna:", error);
+        alert('Gagal memperbarui data pengguna. Silakan coba lagi.');
+    });
 }
 
+// Tangani submit form edit
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
     event.preventDefault();
 
