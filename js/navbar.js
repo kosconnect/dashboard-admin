@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const authToken = getCookie("authToken");
     const userRole = getCookie("userRole");
 
-    // Memuat data pengguna
+    // Fungsi memuat data pengguna dari API
     async function loadUserData() {
         if (authToken) {
             try {
@@ -48,18 +48,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 const user = data.user;
 
+                // Update nama pengguna jika ada
                 if (user && user.fullname) {
                     userNameElement.textContent = user.fullname;
-                } else if (userRole) {
-                    userNameElement.textContent = userRole;
+                } else {
+                    console.warn("User data incomplete. Falling back to user role.");
+                    if (userRole) {
+                        userNameElement.textContent = userRole;
+                    } else {
+                        userNameElement.textContent = "Guest";
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching user data:", error);
                 if (userRole) {
                     userNameElement.textContent = userRole;
+                } else {
+                    userNameElement.textContent = "Guest";
                 }
             }
         } else {
+            // Jika tidak ada authToken
             userNameElement.textContent = "Guest";
         }
     }
