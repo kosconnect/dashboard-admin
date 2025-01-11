@@ -100,7 +100,7 @@ function fetchRoomFacilities() {
                 const tr = document.createElement('tr');
 
                 const tdId = document.createElement('td');
-                tdId.textContent = fasilitas.RoomFacilityID || 'N/A';  // Validasi RoomFacilityID
+                tdId.textContent = fasilitas.roomfacility_id || 'N/A';  // Validasi roomfacility_id
                 tr.appendChild(tdId);
 
                 const tdNamaFasilitas = document.createElement('td');
@@ -108,7 +108,7 @@ function fetchRoomFacilities() {
                 tr.appendChild(tdNamaFasilitas);
 
                 const tdAksi = document.createElement('td');
-                const facilityId = fasilitas.RoomFacilityID;  // Gunakan variabel facilityId dengan aman
+                const facilityId = fasilitas.roomfacility_id;  // Gunakan variabel facilityId dengan aman
                 tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${facilityId}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="confirmDelete('${facilityId}')"><i class="fas fa-trash"></i> Hapus</button>
