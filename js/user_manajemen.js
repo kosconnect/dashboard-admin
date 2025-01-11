@@ -194,6 +194,7 @@ function updateUserRole(userName, updatedRole) {
             const userIndex = usersData.findIndex(user => user.id === userId);
             if (userIndex !== -1) {
                 usersData[userIndex].role = updatedRole; // Perbarui role di array
+                localStorage.setItem('usersData', JSON.stringify(usersData));
             }
 
             alert('Role pengguna berhasil diperbarui!');
