@@ -87,7 +87,8 @@
         </div>
     </div>
 
-    <div id="popupUbahRoleUser" class="popup">
+    <!-- Popup Edit Kategori -->
+    <div id="popupEditKategori" class="popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2 class="popup-title">KosConnect</h2>
@@ -95,28 +96,23 @@
                     <i class="fa-solid fa-circle-xmark"></i>
                 </a>
             </div>
-            <h3 class="popup-subtitle">Ubah Role Pengguna</h3>
-            <form id="formUbahRoleUser">
-                <!-- Input Nama Pengguna -->
-                <label for="userName" class="form-label">Nama Pengguna</label>
-                <input type="text" id="userName" name="userName" placeholder="Nama Pengguna" readonly required>
-    
-                <!-- Dropdown Role -->
-                <label for="userRole" class="form-label">Pilih Role Baru</label>
-                <select id="userRole" name="userRole" required class="styled-select">
-                    <option value="admin">Admin</option>
-                    <option value="owner">Owner</option>
-                    <option value="user">User</option>
-                </select>
-    
-                <!-- Tombol Simpan -->
+            <h3 class="popup-subtitle">Edit Kategori</h3>
+            <form id="formEditKategori">
+                <!-- Hidden input untuk ID kategori yang akan diedit -->
+                <input type="hidden" id="editKategoriId" name="id">
+
+                <label for="editFullName" class="form-label">Perbarui Nama Lengkap</label>
+                <input type="text" id="editFullName" name="fullname" placeholder="Nama Lengkap" required>
+
+                <label for="editEmail" class="form-label">Perbarui Email</label>
+                <input type="email" id="editEmail" name="email" placeholder="Email" required>
+
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
-    </div>    
-
+    </div>
 
     <!-- Popup Hapus User -->
     <div id="popupHapusRoleUser" class="popup">
@@ -135,7 +131,37 @@
         </div>
     </div>
 
-    <script src="js/user_manajemen.js"></script>
+    <div id="popupUbahRoleUser" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title">KosConnect</h2>
+                <a href="#" class="cancel-btn" onclick="closePopup()">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+            </div>
+            <h3 class="popup-subtitle">Ubah Role Pengguna</h3>
+            <form id="formUbahRoleUser">
+                <!-- Input Nama Pengguna -->
+                <label for="userName" class="form-label">Nama Pengguna</label>
+                <input type="text" id="userName" name="userName" placeholder="Nama Pengguna" readonly required>
+
+                <!-- Dropdown Role -->
+                <label for="userRole" class="form-label">Pilih Role Baru</label>
+                <select id="userRole" name="userRole" required class="styled-select">
+                    <option value="admin">Admin</option>
+                    <option value="owner">Owner</option>
+                    <option value="user">User</option>
+                </select>
+
+                <!-- Tombol Simpan -->
+                <div class="popup-actions">
+                    <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/user.js"></script>
 </body>
 
 </html>
