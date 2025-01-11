@@ -47,44 +47,47 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Dashboard Admin</h1>
+                <h1>Pengguna</h1>
                 <div class="header-icons">
                     <a href="#"><i class="fas fa-bell"></i></a>
                     <a href="#"><i class="fas fa-cog"></i></a>
                     <div class="user-dropdown">
                         <div class="user-info" onclick="toggleDropdown()">
                             <div class="top-row">
+                                <span class="name">Balqis Rosa Sekamayang</span>
                                 <span class="name"></span> <!-- Nama pengguna akan ditambahkan secara dinamis -->
                                 <i class="fas fa-user"></i>
                                 <i class="fas fa-caret-down"></i>
                             </div>
                             <span class="role">Admin</span> <!-- Peran user akan ditambahkan secara dinamis -->
-                            </div>
                         </div>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
-                    </div>                    
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
                 </div>
-
-            <!-- User Management Table -->
-            <div class="user-management">
-                <h2>Manajemen Pengguna</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama Lengkap</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-table-body">
-                        <!-- Data pengguna akan ditambahkan di sini -->
-                    </tbody>
-                </table>
             </div>
         </div>
+    </div>
+
+    <!-- User Management Table -->
+    <div class="user-management">
+        <h2>Manajemen Pengguna</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Lengkap</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+                <!-- Data pengguna akan ditambahkan di sini -->
+            </tbody>
+        </table>
+    </div>
+    </div>
     </div>
 
     <!-- Popup Edit User -->
