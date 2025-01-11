@@ -103,7 +103,7 @@ function populateUserTable(users) {
         tdRole.textContent = user.role;
         tr.appendChild(tdRole);
 
-        // Kolom Aksi
+        // Kolom Aksi dengan Dropdown
         const tdAksi = document.createElement('td');
         tdAksi.innerHTML = `
             <button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')">
@@ -112,6 +112,22 @@ function populateUserTable(users) {
             <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
                 <i class="fas fa-trash"></i> Hapus
             </button>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-button">
+                    <i class="fas fa-ellipsis-v"></i> Lainnya
+                </button>
+                <div class="dropdown-content">
+                    <button class="btn btn-primary" style="background-color: #87CEEB;" onclick="updateRole('${user.id}')">
+                        <i class="fas fa-user-cog"></i> Update Role
+                    </button>
+                    <button class="btn btn-primary" style="background-color: #FFD700;" onclick="changePassword('${user.id}')">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                    <button class="btn btn-primary" style="background-color: #FF6347;" onclick="resetPassword('${user.id}')">
+                        <i class="fas fa-redo"></i> Reset Password
+                    </button>
+                </div>
+            </div>
         `;
         tr.appendChild(tdAksi);
 
