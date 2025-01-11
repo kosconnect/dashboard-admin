@@ -1,31 +1,25 @@
 function toggleDropdown() {
     const dropdown = document.querySelector('.dropdown-menu');
-    // Toggle the display between none and block
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Fungsi untuk membaca nilai cookie berdasarkan nama
+    // Fungsi membaca nilai cookie berdasarkan nama
     function getCookie(name) {
         const cookies = document.cookie.split("; ");
         for (let cookie of cookies) {
             const [key, value] = cookie.split("=");
-            if (key === name) {
-                return decodeURIComponent(value);
-            }
+            if (key === name) return decodeURIComponent(value);
         }
         return null;
     }
 
-    // Ambil token dan role dari cookie
+    // Ambil token dan elemen yang dibutuhkan
     const authToken = getCookie("authToken");
     const userRole = getCookie("userRole");
-
-    // Elemen header dan user info
     const userNameElement = document.querySelector(".user-dropdown .name");
-    const userRoleElement = document.querySelector(".user-dropdown .role");
+    const adminWidgetElement = document.querySelector(".widget-info");
 
-    // Logika mengganti informasi pengguna berdasarkan authToken
     if (authToken) {
         fetch("https://kosconnect-server.vercel.app/api/users/me", {
             method: "GET",
@@ -39,18 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(data => {
                 const user = data.user;
-                if (user && user.fullname) {
-                    userNameElement.textContent = user.fullname;
-                } else if (userRole) {
-                    userNameElement.textContent = userRole;
-                }
+                const userName = user?.fullname || userRole || "Admin Tidak Diketahui";
+                userNameElement.textContent = userName;
+                adminWidgetElement.textContent = userName; // Tambahkan nama admin ke widget
             })
             .catch(error => {
                 console.error("Error fetching user data:", error);
-                if (userRole) userNameElement.textContent = userRole;
+                userNameElement.textContent = userRole || "Guest";
+                adminWidgetElement.textContent = "Gagal Memuat Nama Admin";
             });
     } else {
         userNameElement.textContent = "Guest";
+        adminWidgetElement.textContent = "Guest";
     }
 
     // Logika logout
@@ -58,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            // Hapus cookie dengan opsi tambahan untuk kompatibilitas
             document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure";
             document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure";
 
