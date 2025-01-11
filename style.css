@@ -595,6 +595,39 @@ form .btn-primary {
     cursor: pointer;
 }
 
+/* Dropdown aksi */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    padding: 5px 0;
+}
+
+.dropdown-content .btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content .btn i {
+    margin-right: 8px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
 /* Responsif */
 @media (max-width: 768px) {
     .sidebar {
