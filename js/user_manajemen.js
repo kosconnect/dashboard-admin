@@ -1,8 +1,3 @@
-function toggleDropdown() {
-    const dropdown = document.querySelector('.dropdown-menu');
-    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-}
-
 function closePopup() {
     document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
 }
