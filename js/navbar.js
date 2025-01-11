@@ -4,59 +4,80 @@ function toggleDropdown() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Fungsi membaca nilai cookie berdasarkan nama
+    const dropdown = document.querySelector('.dropdown-menu');
+    const userNameElement = document.querySelector(".user-dropdown .name");
+    const userRoleElement = document.querySelector(".user-dropdown .role");
+    const logoutBtn = document.querySelector(".dropdown-menu li a");
+
+    // Fungsi toggle dropdown
+    function toggleDropdown() {
+        dropdown.classList.toggle('show');
+    }
+
+    document.querySelector(".user-dropdown").addEventListener("click", toggleDropdown);
+
+    // Fungsi untuk membaca nilai cookie berdasarkan nama
     function getCookie(name) {
         const cookies = document.cookie.split("; ");
         for (let cookie of cookies) {
             const [key, value] = cookie.split("=");
-            if (key === name) return decodeURIComponent(value);
+            if (key === name) {
+                return decodeURIComponent(value);
+            }
         }
         return null;
     }
 
-    // Ambil token dan elemen yang dibutuhkan
+    // Ambil token dan role dari cookie
     const authToken = getCookie("authToken");
     const userRole = getCookie("userRole");
-    const userNameElement = document.querySelector(".user-dropdown .name");
-    const adminWidgetElement = document.querySelector(".widget-info");
 
-    if (authToken) {
-        fetch("https://kosconnect-server.vercel.app/api/users/me", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        })
-            .then(response => {
+    // Memuat data pengguna
+    async function loadUserData() {
+        if (authToken) {
+            try {
+                const response = await fetch("https://kosconnect-server.vercel.app/api/users/me", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                });
+
                 if (!response.ok) throw new Error("Failed to fetch user data");
-                return response.json();
-            })
-            .then(data => {
+
+                const data = await response.json();
                 const user = data.user;
-                const userName = user?.fullname || userRole || "Admin Tidak Diketahui";
-                userNameElement.textContent = userName;
-                adminWidgetElement.textContent = userName; // Tambahkan nama admin ke widget
-            })
-            .catch(error => {
+
+                if (user && user.fullname) {
+                    userNameElement.textContent = user.fullname;
+                } else if (userRole) {
+                    userNameElement.textContent = userRole;
+                }
+            } catch (error) {
                 console.error("Error fetching user data:", error);
-                userNameElement.textContent = userRole || "Guest";
-                adminWidgetElement.textContent = "Gagal Memuat Nama Admin";
-            });
-    } else {
-        userNameElement.textContent = "Guest";
-        adminWidgetElement.textContent = "Guest";
+                if (userRole) {
+                    userNameElement.textContent = userRole;
+                }
+            }
+        } else {
+            userNameElement.textContent = "Guest";
+        }
     }
 
     // Logika logout
-    const logoutBtn = document.querySelector(".dropdown-menu li a");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure";
-            document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure";
+            
+            // Hapus cookies authToken dan userRole
+            document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-            // Arahkan ke halaman login setelah logout
+            // Arahkan ke halaman login
             window.location.href = "https://kosconnect.github.io/login/";
         });
     }
+
+    // Panggil fungsi memuat data pengguna
+    loadUserData();
 });
