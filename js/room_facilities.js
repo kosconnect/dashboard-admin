@@ -100,17 +100,18 @@ function fetchRoomFacilities() {
                 const tr = document.createElement('tr');
 
                 const tdId = document.createElement('td');
-                tdId.textContent = fasilitas.RoomFacilityID;  // Menggunakan RoomFacilityID sesuai perubahan di BE
+                tdId.textContent = fasilitas.RoomFacilityID || 'N/A';  // Validasi RoomFacilityID
                 tr.appendChild(tdId);
 
                 const tdNamaFasilitas = document.createElement('td');
-                tdNamaFasilitas.textContent = fasilitas.name;  // Ganti sesuai data yang diterima
+                tdNamaFasilitas.textContent = fasilitas.name || 'Tidak tersedia';  // Validasi name
                 tr.appendChild(tdNamaFasilitas);
 
                 const tdAksi = document.createElement('td');
+                const facilityId = fasilitas.RoomFacilityID;  // Gunakan variabel facilityId dengan aman
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.RoomFacilityID}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="confirmDelete('${fasilitas.RoomFacilityID}')"><i class="fas fa-trash"></i> Hapus</button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${facilityId}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="confirmDelete('${facilityId}')"><i class="fas fa-trash"></i> Hapus</button>
                 `;
                 tr.appendChild(tdAksi);
 
@@ -122,6 +123,7 @@ function fetchRoomFacilities() {
             console.error("Gagal mengambil data fasilitas kamar:", error);
         });
 }
+
 
 // POST
 function addRoomFacility() {
