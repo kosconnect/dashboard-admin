@@ -84,12 +84,11 @@ function fetchUsers(jwtToken) {
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${user.fullname}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', '${user.fullname}', '${user.email}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')"><i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown">
                     <button class="btn btn-primary dropdown-button"><i class="fas fa-ellipsis-v"></i> Lainnya</button>
-                    <div class="dropdown-content">
-                        <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button>
+                    <div class="dropdown-content"><button class="btn btn-primary" onclick="showPopupUbahRoleUser('${user.id}', '${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button><button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')"><i class="fas fa-user-cog"></i> Update Role</button>
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')"><i class="fas fa-key"></i> Change Password</button>
                         <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.id}')"><i class="fas fa-redo"></i> Reset Password</button>
                     </div>
@@ -133,27 +132,27 @@ function updateUserDetails(userId, updatedName, updatedEmail) {
         },
         body: JSON.stringify({ fullname: updatedName, email: updatedEmail })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data pengguna berhasil diperbarui:", data);
-        alert('Data pengguna berhasil diperbarui!');
-        closePopup();  // Tutup popup setelah sukses
-        fetchUsers();  // Perbarui tabel pengguna
-    })
-    .catch(error => {
-        console.error("Gagal memperbarui data pengguna:", error);
-        alert('Gagal memperbarui data pengguna.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data pengguna berhasil diperbarui:", data);
+            alert('Data pengguna berhasil diperbarui!');
+            closePopup();  // Tutup popup setelah sukses
+            fetchUsers();  // Perbarui tabel pengguna
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui data pengguna:", error);
+            alert('Gagal memperbarui data pengguna.');
+        });
 }
 
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
     event.preventDefault();
-    
+
     const userId = document.getElementById('editUserId').value;
     const updatedName = document.getElementById('editFullName').value;
     const updatedEmail = document.getElementById('editEmail').value;
@@ -164,7 +163,7 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
 
 function showPopupUbahRoleUser(userId, fullname, role) {
     // Isi form dengan data pengguna yang akan diubah
-    document.getElementById('userIdHidden').value = userId;  // Hidden ID field untuk update
+    document.getElementById('userIdHidden').value = userId;
     document.getElementById('userName').value = fullname;
     document.getElementById('userRole').value = role;
 
@@ -188,22 +187,22 @@ function updateUserRole(userId, updatedRole) {
         },
         body: JSON.stringify({ role: updatedRole })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Role pengguna berhasil diperbarui:", data);
-        alert('Role pengguna berhasil diperbarui!');
-        closePopup();  // Tutup popup setelah sukses
-        fetchUsers();  // Perbarui tabel pengguna
-    })
-    .catch(error => {
-        console.error("Gagal memperbarui role pengguna:", error);
-        alert('Gagal memperbarui role pengguna.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Role pengguna berhasil diperbarui:", data);
+            alert('Role pengguna berhasil diperbarui!');
+            closePopup();  // Tutup popup setelah sukses
+            fetchUsers();  // Perbarui tabel pengguna
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui role pengguna:", error);
+            alert('Gagal memperbarui role pengguna.');
+        });
 }
 
 document.getElementById('formUbahRoleUser').addEventListener('submit', function (event) {
