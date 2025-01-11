@@ -121,19 +121,39 @@ function closePopup() {
     document.getElementById('popupEditUser').style.display = 'none';
 }
 
-// Event listener untuk form edit
-document.getElementById('formEditUser').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const userId = document.getElementById('editUserId').value;
-    const updatedData = {
-        fullname: document.getElementById('editFullName').value,
-        email: document.getElementById('editEmail').value
-    };
-    const jwtToken = getJwtToken();
-    if (jwtToken) {
-        updateUser(userId, updatedData, jwtToken);
-    } else {
-        console.error("Tidak dapat memperbarui user karena token JWT tidak ditemukan.");
+document.getElementById('fetchUser').addEventListener('click', async () => {
+    const userID = document.getElementById('userID').value.trim();
+    if (!userID) {
+        alert('Please enter a User ID');
+        return;
+    }
+
+    const token = 'authToken'; // Ganti dengan token autentikasi valid
+
+    try {
+        const response = await fetch(`http://localhost:8080/users/${userID}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('User not found or invalid credentials');
+        }
+
+        const data = await response.json();
+        const user = data.user;
+
+        document.getElementById('userIdOutput').textContent = user._id || 'N/A';
+        document.getElementById('fullNameOutput').textContent = user.fullname || 'N/A';
+        document.getElementById('emailOutput').textContent = user.email || 'N/A';
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+        document.getElementById('userIdOutput').textContent = '';
+        document.getElementById('fullNameOutput').textContent = '';
+        document.getElementById('emailOutput').textContent = '';
     }
 });
 
@@ -147,20 +167,27 @@ function updateUser(userId, updatedData, jwtToken) {
         },
         body: JSON.stringify(updatedData)
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Gagal memperbarui data pengguna. Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Data pengguna berhasil diperbarui:", data);
-            closePopup();
-            fetchUsers(jwtToken);  // Refresh tabel setelah update
-        })
-        .catch(error => {
-            console.error("Terjadi kesalahan saat memperbarui pengguna:", error);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Gagal memperbarui data pengguna. Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data pengguna berhasil diperbarui:", data);
+        closePopup();
+        // fetchUsers(jwtToken);  // Pastikan fungsi ini tersedia
+    })
+    .catch(error => {
+        console.error("Terjadi kesalahan saat memperbarui pengguna:", error);
+    });
+}
+
+function showPopupUbahRoleUser(userId, fullname, role) {
+    document.getElementById('userIdHidden').value = userId;
+    document.getElementById('userName').value = fullname;
+    document.getElementById('userRole').value = role;
+    document.getElementById('popupUbahRoleUser').style.display = 'block';
 }
 
 function showPopupUbahRoleUser(userId, fullname, role) {

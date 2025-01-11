@@ -616,7 +616,7 @@ form .btn-primary {
     padding: 10px;
 }
 
-.dropdown-aksi:hover .dropdown-content {
+.dropdown-aksi:hover .dropdown-aksi-content {
     display: block;
 }
 
