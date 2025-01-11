@@ -87,8 +87,8 @@
         </div>
     </div>
 
-    <!-- Popup Edit Kategori -->
-    <div id="popupEditKategori" class="popup">
+    <!-- Popup Edit User -->
+    <div id="popupEditUser" class="popup">
         <div class="popup-content">
             <div class="popup-header">
                 <h2 class="popup-title">KosConnect</h2>
@@ -96,10 +96,10 @@
                     <i class="fa-solid fa-circle-xmark"></i>
                 </a>
             </div>
-            <h3 class="popup-subtitle">Edit Kategori</h3>
-            <form id="formEditKategori">
-                <!-- Hidden input untuk ID kategori yang akan diedit -->
-                <input type="hidden" id="editKategoriId" name="id">
+            <h3 class="popup-subtitle">Edit User</h3>
+            <form id="formEditUser">
+                <!-- Hidden input untuk ID user yang akan diedit -->
+                <input type="hidden" id="editUserId" name="id">
 
                 <label for="editFullName" class="form-label">Perbarui Nama Lengkap</label>
                 <input type="text" id="editFullName" name="fullname" placeholder="Nama Lengkap" required>
@@ -131,6 +131,7 @@
         </div>
     </div>
 
+    <!-- Popup Ubah Role User -->
     <div id="popupUbahRoleUser" class="popup">
         <div class="popup-content">
             <div class="popup-header">
@@ -141,6 +142,7 @@
             </div>
             <h3 class="popup-subtitle">Ubah Role Pengguna</h3>
             <form id="formUbahRoleUser">
+                <input type="hidden" id="userIdHidden" name="userId">
                 <!-- Input Nama Pengguna -->
                 <label for="userName" class="form-label">Nama Pengguna</label>
                 <input type="text" id="userName" name="userName" placeholder="Nama Pengguna" readonly required>

@@ -101,5 +101,92 @@ function fetchUsers(jwtToken) {
 }
 
 
+// Fungsi untuk memperbarui detail pengguna (Nama & Email)
+function updateUserDetails(userId, updatedName, updatedEmail) {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fullname: updatedName, email: updatedEmail })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Data pengguna berhasil diperbarui:", data);
+        alert('Data pengguna berhasil diperbarui!');
+        closePopup();  // Tutup popup setelah sukses
+        fetchUsers();  // Perbarui tabel pengguna
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui data pengguna:", error);
+        alert('Gagal memperbarui data pengguna.');
+    });
+}
+
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault();
+    
+    const userId = document.getElementById('editUserId').value;
+    const updatedName = document.getElementById('editFullName').value;
+    const updatedEmail = document.getElementById('editEmail').value;
+
+    updateUserDetails(userId, updatedName, updatedEmail);
+});
+
+// Fungsi untuk memperbarui role pengguna
+function updateUserRole(userId, updatedRole) {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: updatedRole })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Role pengguna berhasil diperbarui:", data);
+        alert('Role pengguna berhasil diperbarui!');
+        closePopup();  // Tutup popup setelah sukses
+        fetchUsers();  // Perbarui tabel pengguna
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui role pengguna:", error);
+        alert('Gagal memperbarui role pengguna.');
+    });
+}
+
+document.getElementById('formUbahRoleUser').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const userId = document.getElementById('userIdHidden').value;  // ID pengguna tersembunyi
+    const updatedRole = document.getElementById('userRole').value;
+
+    updateUserRole(userId, updatedRole);
+});
+
 
 
