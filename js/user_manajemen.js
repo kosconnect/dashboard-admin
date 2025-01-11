@@ -37,7 +37,6 @@ function getJwtToken() {
 let usersData = [];
 
 // Fungsi untuk mengambil data pengguna dan mengisi tabel
-// Sinkronisasi data dari server
 function fetchUsers() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -45,24 +44,33 @@ function fetchUsers() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/users', {
+    fetch('https://kosconnect-server.vercel.app/api/users/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Gagal mengambil data pengguna, status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        usersData = data.users || [];
-        populateUserTable(usersData); // Isi tabel dengan data terbaru
-    })
-    .catch(error => console.error("Gagal mengambil data pengguna:", error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data pengguna yang diterima dari server:", data);
+
+            // Simpan data pengguna ke dalam variabel global
+            if (data.users && Array.isArray(data.users)) {
+                usersData = data.users; // Simpan data pengguna di variabel global
+                populateUserTable(usersData); // Isi tabel dengan data pengguna
+            } else {
+                console.error("Data pengguna tidak ditemukan atau format salah.");
+            }
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data pengguna:", error);
+        });
 }
 
 // Fungsi untuk mengisi tabel dengan data pengguna
@@ -129,17 +137,20 @@ function populateUserTable(users) {
 window.addEventListener('load', fetchUsers);
 
 
-// Popup untuk ubah role pengguna
 function showPopupUbahRoleUser(fullname, currentRole) {
     const popup = document.getElementById('popupUbahRoleUser');
     popup.style.display = 'block';
+
+    // Isi input dengan nama pengguna (readonly)
     document.getElementById('userName').value = fullname;
 
+    // Simpan id pengguna di atribut tersembunyi atau variabel global
     const user = usersData.find(user => user.fullname === fullname);
     if (user) {
         document.getElementById('userName').setAttribute('data-id', user.id);
     }
 
+    // Setel role saat ini pada dropdown
     document.getElementById('userRole').value = currentRole;
 }
 
@@ -196,11 +207,20 @@ function updateUserRole(userName, updatedRole) {
         });
 }
 
-// Form submit untuk ubah role pengguna
 document.getElementById('formUbahRoleUser').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const userName = document.getElementById('userName').value;
     const updatedRole = document.getElementById('userRole').value;
+
+    // Ambil userId dari atribut tersembunyi
+    const userId = document.getElementById('userName').getAttribute('data-id');
+
+    if (!userId) {
+        console.error("User ID tidak ditemukan. Pastikan data diatur dengan benar.");
+        return;
+    }
+
+    // Panggil fungsi untuk mengupdate data role
     updateUserRole(userName, updatedRole);
 });
