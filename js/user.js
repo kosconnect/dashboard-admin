@@ -109,61 +109,59 @@ function fetchUsers(jwtToken) {
 }
 
 
-// Fungsi untuk menampilkan popup edit dengan data pengguna sebelumnya
+// Fungsi untuk menampilkan popup edit
 function showPopupEdit(userId, fullname, email) {
-    document.getElementById('editUserId').value = userId;  // Simpan ID pengguna
+    document.getElementById('editUserId').value = userId;
     document.getElementById('editFullName').value = fullname;
     document.getElementById('editEmail').value = email;
-
     document.getElementById('popupEditUser').style.display = 'block';
 }
 
-// Fungsi untuk memperbarui detail pengguna (Nama & Email)
-function updateUserDetails(userId, updatedName, updatedEmail) {
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
-        alert("Token otentikasi tidak ditemukan. Silakan login ulang.");
-        return;
-    }
+function closePopup() {
+    document.getElementById('popupEditUser').style.display = 'none';
+}
 
+// Event listener untuk form edit
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const userId = document.getElementById('editUserId').value;
+    const updatedData = {
+        fullname: document.getElementById('editFullName').value,
+        email: document.getElementById('editEmail').value
+    };
+    const jwtToken = getJwtToken();
+    if (jwtToken) {
+        updateUser(userId, updatedData, jwtToken);
+    } else {
+        console.error("Tidak dapat memperbarui user karena token JWT tidak ditemukan.");
+    }
+});
+
+// Fungsi untuk memperbarui data pengguna
+function updateUser(userId, updatedData, jwtToken) {
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fullname: updatedName, email: updatedEmail })
+        body: JSON.stringify(updatedData)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Gagal memperbarui data pengguna! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data pengguna berhasil diperbarui:", data);
-        alert('Data pengguna berhasil diperbarui!');
-        closePopup();  // Tutup popup setelah data diperbarui
-        fetchUsers();  // Perbarui tabel pengguna
-    })
-    .catch(error => {
-        console.error("Gagal memperbarui data pengguna:", error);
-        alert('Gagal memperbarui data pengguna. Silakan coba lagi.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Gagal memperbarui data pengguna. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data pengguna berhasil diperbarui:", data);
+            closePopup();
+            fetchUsers(jwtToken);  // Refresh tabel setelah update
+        })
+        .catch(error => {
+            console.error("Terjadi kesalahan saat memperbarui pengguna:", error);
+        });
 }
-
-// Tangani submit form edit
-document.getElementById('formEditUser').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const userId = document.getElementById('editUserId').value;  // Ambil ID dari input hidden
-    const updatedName = document.getElementById('editFullName').value;
-    const updatedEmail = document.getElementById('editEmail').value;
-
-    updateUserDetails(userId, updatedName, updatedEmail);  // Kirim data dengan ID pengguna yang benar
-});
-
 
 function showPopupUbahRoleUser(userId, fullname, role) {
     // Isi form dengan data pengguna yang akan diubah
