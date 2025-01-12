@@ -39,7 +39,8 @@
                         <li><a href="facilities.html"><i class="fas fa-bed"></i> <span>Fasilitas</span></a></li>
                         <li><a href="room_facility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li>
                         <li><a href="manajemen_kos.html"><i class="fas fa-house-user"></i> <span>Manajemen Kos</span></a></li>
-                        <li><a href="manajemen_kamar_kos.html"><i class="fas fa-bed"></i> <span>Manajemen Kamar Kos</span></a></li>
+                        <li><a href="manajemen_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Manajemen Kamar Kos</span></a></li>
+                        <li><a href="custom_facility.html"><i class="fas fa-bed"></i> <span>Fasilitas Khusus</span></a></li>
                     </ul>
                 </li>
             </ul>         
@@ -55,18 +56,18 @@
                     <div class="user-dropdown">
                         <div class="user-info" onclick="toggleDropdown()">
                             <div class="top-row">
-                                <span class="name">Balqis Rosa Sekamayang</span>
+                                <span class="name"></span> <!-- Nama pengguna akan ditambahkan secara dinamis -->
                                 <i class="fas fa-user"></i>
                                 <i class="fas fa-caret-down"></i>
                             </div>
-                            <span class="role">Pemilik Kos</span>
+                            <span class="role">Admin</span> <!-- Peran user akan ditambahkan secara dinamis -->
+                            </div>
                         </div>
                         <ul class="dropdown-menu">
                             <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
-                    </div>
+                    </div>                   
                 </div>
-            </div>
 
             <!-- Room Management Table -->
             <div class="room-management">
@@ -112,6 +113,7 @@
                 </table>
             </div>
     <script src="script.js"></script>
+    <script src="js/navbar.js"></script>
 </body>
 
 </html>
