@@ -87,3 +87,56 @@ function fetchFacilities() {
 }
 // Panggil fetch Facilities saat halaman dimuat
 window.addEventListener('load', fetchFacilities);
+
+
+// POST
+// Fungsi untuk menambahkan fasilitas baru
+function addFacility() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    // Ambil data dari form
+    const facilityName = document.getElementById('namaFasilitas').value;
+    if (!facilityName) {
+        alert('Nama fasilitas tidak boleh kosong!');
+        return;
+    }
+
+    const newFacility = {
+        name: facilityName
+    };
+
+    fetch('https://kosconnect-server.vercel.app/api/facility/', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newFacility)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil ditambahkan:", data);
+            alert("Fasilitas berhasil ditambahkan!");
+            closePopup(); // Tutup popup setelah berhasil
+            fetchFacilities(); // Refresh tabel
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan fasilitas:", error);
+            alert("Gagal menambahkan fasilitas. Silakan coba lagi.");
+        });
+}
+
+// Event Listener untuk form Tambah Fasilitas
+document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah halaman refresh
+    addFacility();
+});
