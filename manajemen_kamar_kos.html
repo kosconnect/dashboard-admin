@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori | KosConnect</title>
-    <link rel="shortcut icon" href="img/logokos.png" type="image/png">
+    <title>Manajemen Kamar Kos | KosConnect</title>
+    <link rel="shortcut icon" href="/img/logokos.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Signika:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,9 +14,11 @@
       href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -45,110 +48,73 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Kategori</h1>
+                <h1>Kamar Kos</h1>
                 <div class="header-icons">
                     <a href="#"><i class="fas fa-bell"></i></a>
                     <a href="#"><i class="fas fa-cog"></i></a>
                     <div class="user-dropdown">
                         <div class="user-info" onclick="toggleDropdown()">
                             <div class="top-row">
-                                <span class="name"></span> <!-- Nama pengguna akan ditambahkan secara dinamis -->
+                                <span class="name">Balqis Rosa Sekamayang</span>
                                 <i class="fas fa-user"></i>
                                 <i class="fas fa-caret-down"></i>
                             </div>
-                            <span class="role">Admin</span> <!-- Peran user akan ditambahkan secara dinamis -->
-                            </div>
+                            <span class="role">Pemilik Kos</span>
                         </div>
                         <ul class="dropdown-menu">
                             <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                         </ul>
-                    </div>                    
+                    </div>
                 </div>
+            </div>
 
-            <!-- Category Management Table -->
-            <div class="category-management">
-                <h2>Manajemen Kategori</h2>
+            <!-- Room Management Table -->
+            <div class="room-management">
+                <h2>Daftar Kamar Kos</h2>
                 <div style="text-align: right; margin-bottom: 10px;">
-                    <button class="btn btn-primary" onclick="showPopup()">Tambah Kategori</button>
-                    <!-- <button class="btn btn-primary" onclick="window.location.href='tambah_category.html'">Tambah Kategori</button> -->
+                    <!-- <button class="btn btn-primary">Tambah Kamar</button> -->
+                    <a href="tambah_kamar.html" class="btn btn-primary" style="text-decoration: none;">Tambah Kamar</a>
                 </div>                
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nama Kategori</th>
-                            <th>Slug</th>
+                            <th>No</th>
+                            <th>Nama Kamar</th>
+                            <th>Fasilitas</th>
+                            <th>Harga</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="categories-table-body">
-                        <!-- Data kategori akan ditambahkan di sini -->
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Kamar Eksekutif 1</td>
+                            <td>AC, TV, Kamar Mandi Dalam</td>
+                            <td>Rp 2.500.000</td>
+                            <td>Aktif</td>
+                            <td>
+                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Kamar Mahasiswa 1</td>
+                            <td>Tempat Tidur, Lemari, Meja Belajar</td>
+                            <td>Rp 1.500.000</td>
+                            <td>Nonaktif</td>
+                            <td>
+                                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <!-- Popup Tambah Kategori -->
-    <div id="popupTambahKategori" class="popup">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h2 class="popup-title">KosConnect</h2>
-                <a href="#" class="cancel-btn" onclick="closePopup()">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </a>
-            </div>
-            <h3 class="popup-subtitle">Tambah Kategori</h3>
-            <form id="formTambahKategori">
-                <label for="namaKategori" class="form-label">Masukkan nama kategori!</label>
-                <input type="text" id="namaKategori" name="namaKategori" placeholder="Nama Kategori " required>
-                <div class="popup-actions">
-                    <button type="submit" class="btn btn-simpan">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Popup Edit Kategori -->
-    <div id="popupEditKategori" class="popup">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h2 class="popup-title">KosConnect</h2>
-                <a href="#" class="cancel-btn" onclick="closePopup()">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </a>
-            </div>
-            <h3 class="popup-subtitle">Edit Kategori</h3>
-            <form id="formEditKategori">
-                <input type="hidden" id="editCategoryId" name="id">
-                <label for="editNamaKategori" class="form-label">Perbarui nama kategori!</label>
-                <input type="text" id="editNamaKategori" name="editNamakategori" placeholder="Nama kategori"
-                    required>
-                <div class="popup-actions">
-                    <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Popup Hapus Kategori -->
-    <div id="popupHapusKategori" class="popup">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h2 class="popup-title">KosConnect</h2>
-                <a href="#" class="cancel-btn" onclick="closePopup()">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </a>
-            </div>
-            <h3 class="popup-subtitle">Hapus Kategori</h3>
-            <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
-            <div class="popup-actions">
-                <button class="btn btn-simpan" onclick="executeDelete()">Ya, Hapus</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/category.js"></script>
-    <script src="js/navbar.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
