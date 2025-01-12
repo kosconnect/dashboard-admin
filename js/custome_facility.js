@@ -19,7 +19,7 @@ function fetchCustomFacilities() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/customFacility/', {
+    fetch('https://kosconnect-server.vercel.app/api/customFacilities/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
