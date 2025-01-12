@@ -28,7 +28,7 @@ function fetchFacilities() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/facilitytypes/', {
+    fetch('https://kosconnect-server.vercel.app/api/facility/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
