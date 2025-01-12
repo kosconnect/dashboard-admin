@@ -19,7 +19,7 @@ function fetchBoardingHouses() {
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/boardingHouses', {
+    fetch('https://kosconnect-server.vercel.app/api/boardingHouses/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
