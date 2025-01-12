@@ -85,3 +85,5 @@ function fetchFacilities() {
             console.error("Gagal mengambil data fasilitas kamar:", error);
         });
 }
+// Panggil fetch Facilities saat halaman dimuat
+window.addEventListener('load', fetchFacilities);
