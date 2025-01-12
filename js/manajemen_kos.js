@@ -64,7 +64,10 @@ function fetchBoardingHouses() {
 
                 // Kolom Fasilitas
                 const tdFacilities = document.createElement('td');
-                tdFacilities.textContent = house.facilities_id.join(", ");  // Menampilkan ID fasilitas
+                // Memastikan facilities_id ada dan merupakan array, jika tidak tampilkan 'N/A'
+                tdFacilities.textContent = Array.isArray(house.facilities_id) && house.facilities_id.length > 0
+                    ? house.facilities_id.join(", ")
+                    : 'N/A';
                 tr.appendChild(tdFacilities);
 
                 // Kolom Alamat
@@ -74,12 +77,12 @@ function fetchBoardingHouses() {
 
                 // Kolom Long & Lat
                 const tdCoordinates = document.createElement('td');
-                tdCoordinates.textContent = `${house.longitude}, ${house.latitude}`;
+                tdCoordinates.textContent = `${house.longitude || 'N/A'}, ${house.latitude || 'N/A'}`;
                 tr.appendChild(tdCoordinates);
 
                 // Kolom Foto
                 const tdPhoto = document.createElement('td');
-                if (house.images.length > 0) {
+                if (Array.isArray(house.images) && house.images.length > 0) {
                     const img = document.createElement('img');
                     img.src = house.images[0];  // Menampilkan gambar pertama
                     img.alt = "Boarding House Image";
@@ -94,7 +97,7 @@ function fetchBoardingHouses() {
                 const tdAction = document.createElement('td');
                 tdAction.innerHTML = `
                     <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+                    <button class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</button>
                 `;
                 tr.appendChild(tdAction);
 
