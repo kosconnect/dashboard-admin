@@ -27,11 +27,12 @@ function fetchCustomFacilities() {
         }
     })
         .then(response => {
+            console.log(response);  // Tambahkan ini
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
-        })
+        })        
         .then(data => {
             console.log("Data fasilitas khusus:", data);
 
@@ -68,7 +69,7 @@ function fetchCustomFacilities() {
 
                 // Kolom Owner ID
                 const tdOwnerId = document.createElement('td');
-                tdOwnerId.textContent = fasilitas.owner_id || 'N/A';
+                tdOwnerId.textContent = fasilitas.owner_id;  // Pastikan 'owner_id' sesuai dengan struktur data API
                 tr.appendChild(tdOwnerId);
 
                 // Kolom Aksi
