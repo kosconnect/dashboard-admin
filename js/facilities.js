@@ -106,12 +106,16 @@ function addFacility() {
     }
 
     const facilityName = document.getElementById('namaFasilitas').value;
-    if (!facilityName) {
-        alert('Nama fasilitas tidak boleh kosong!');
+    const facilityType = document.getElementById('jenisFasilitas').value; // Ambil nilai type dari input
+    if (!facilityName || !facilityType) {
+        alert('Nama dan jenis fasilitas tidak boleh kosong!');
         return;
     }
 
-    const newFacility = { name: facilityName };
+    const newFacility = {
+        name: facilityName,
+        type: facilityType
+    };
 
     fetch('https://kosconnect-server.vercel.app/api/facility/', {
         method: 'POST',
@@ -130,8 +134,8 @@ function addFacility() {
     .then(data => {
         console.log("Fasilitas berhasil ditambahkan:", data);
         alert("Fasilitas berhasil ditambahkan!");
-        closePopup(); // Tutup popup setelah berhasil
-        fetchFacilities(); // Refresh tabel
+        closePopup();
+        addFacilityToTable(data); // Tambahkan ke tabel tanpa refresh
     })
     .catch(error => {
         console.error("Gagal menambahkan fasilitas:", error);
@@ -139,10 +143,30 @@ function addFacility() {
     });
 }
 
+function addFacilityToTable(facility) {
+    const tbody = document.querySelector('table tbody');
+    const row = document.createElement('tr');
+
+    const nameCell = document.createElement('td');
+    nameCell.textContent = facility.name;
+    row.appendChild(nameCell);
+
+    const actionCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Hapus';
+    deleteButton.addEventListener('click', () => deleteFacility(facility.facility_id));
+    actionCell.appendChild(deleteButton);
+    row.appendChild(actionCell);
+
+    tbody.appendChild(row);
+}
+
+
 document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
     e.preventDefault();
     addFacility();
 });
+
 
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
