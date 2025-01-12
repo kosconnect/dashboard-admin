@@ -89,6 +89,16 @@ function fetchFacilities() {
 window.addEventListener('load', fetchFacilities);
 
 
+
+function showPopup() {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
+        popup.style.display = 'block';
+    } else {
+        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
+    }
+}
+
 // POST
 // Fungsi untuk menambahkan fasilitas baru
 function addFacility() {
