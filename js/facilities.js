@@ -120,7 +120,7 @@ function addFacility() {
         name: facilityName
     };
 
-    fetch('https://kosconnect-server.vercel.app/api/facilitytypes/', {
+    fetch('https://kosconnect-server.vercel.app/api/facility/', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -172,7 +172,7 @@ function updateFacility(facilityId, updatedName) {
         return;
     }
 
-    fetch(`https://kosconnect-server.vercel.app/api/facilitytypes/${facilityId}`, {
+    fetch(`https://kosconnect-server.vercel.app/api/facility/${facilityId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -235,7 +235,7 @@ function executeDelete() {
     }
 
     // Kirim permintaan DELETE ke API untuk menghapus fasilitas
-    fetch(`https://kosconnect-server.vercel.app/api/facilitytypes/${selectedFacilityId}`, {
+    fetch(`https://kosconnect-server.vercel.app/api/facility/${selectedFacilityId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
