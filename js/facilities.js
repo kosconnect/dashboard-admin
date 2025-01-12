@@ -56,27 +56,23 @@ function fetchFacilities() {
             // Loop data dan tambahkan ke tabel
             data.forEach(fasilitas => {
                 const tr = document.createElement('tr');
-
-                // Kolom ID
-                const tdId = document.createElement('td');
-                tdId.textContent = fasilitas.id;
-                tr.appendChild(tdId);
-
+            
+                // Simpan ID fasilitas di atribut data-id, bukan di kolom tabel
+                tr.setAttribute('data-id', fasilitas.id);
+            
                 // Kolom Nama Fasilitas
                 const tdNamaFasilitas = document.createElement('td');
                 tdNamaFasilitas.textContent = fasilitas.name;
                 tr.appendChild(tdNamaFasilitas);
-
+            
                 // Kolom Aksi
-                // Kolom Aksi pada tabel fasilitas
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${fasilitas.id}', '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="showPopupDelete('${fasilitas.id}')"><i class="fas fa-trash"></i> Hapus</button>
+                    <button class="btn btn-primary" onclick="showPopupEdit(this.parentElement.parentElement.dataset.id, '${fasilitas.name}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-primary" onclick="showPopupDelete(this.parentElement.parentElement.dataset.id)"><i class="fas fa-trash"></i> Hapus</button>
                 `;
-
                 tr.appendChild(tdAksi);
-
+            
                 // Tambahkan baris ke tabel
                 tbody.appendChild(tr);
             });
