@@ -105,16 +105,13 @@ function addFacility() {
         return;
     }
 
-    // Ambil data dari form
     const facilityName = document.getElementById('namaFasilitas').value;
     if (!facilityName) {
         alert('Nama fasilitas tidak boleh kosong!');
         return;
     }
 
-    const newFacility = {
-        name: facilityName
-    };
+    const newFacility = { name: facilityName };
 
     fetch('https://kosconnect-server.vercel.app/api/facility/', {
         method: 'POST',
@@ -124,43 +121,36 @@ function addFacility() {
         },
         body: JSON.stringify(newFacility)
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fasilitas berhasil ditambahkan:", data);
-            alert("Fasilitas berhasil ditambahkan!");
-            closePopup(); // Tutup popup setelah berhasil
-            fetchFacilities(); // Refresh tabel
-        })
-        .catch(error => {
-            console.error("Gagal menambahkan fasilitas:", error);
-            alert("Gagal menambahkan fasilitas. Silakan coba lagi.");
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas berhasil ditambahkan:", data);
+        alert("Fasilitas berhasil ditambahkan!");
+        closePopup(); // Tutup popup setelah berhasil
+        fetchFacilities(); // Refresh tabel
+    })
+    .catch(error => {
+        console.error("Gagal menambahkan fasilitas:", error);
+        alert("Gagal menambahkan fasilitas. Silakan coba lagi.");
+    });
 }
 
-// Event Listener untuk form Tambah Fasilitas
 document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
-    e.preventDefault(); // Mencegah halaman refresh
+    e.preventDefault();
     addFacility();
 });
 
-// Fungsi untuk menampilkan popup Edit dan mengisi data fasilitas
 function showPopupEdit(facilityId, facilityName) {
     document.getElementById('popupEditFasilitas').style.display = 'block';
-
-    // Isi input tersembunyi untuk ID
     document.getElementById('editFacilityId').value = facilityId;
-
-    // Isi input nama untuk diedit
     document.getElementById('editNamaFasilitas').value = facilityName;
 }
 
 // PUT
-// Fungsi untuk memperbarui fasilitas
 function updateFacility(facilityId, updatedName) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -176,46 +166,38 @@ function updateFacility(facilityId, updatedName) {
         },
         body: JSON.stringify({ name: updatedName })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fasilitas kamar berhasil diperbarui:", data);
-            alert('Fasilitas berhasil diperbarui!');
-            closePopup();  // Tutup popup setelah sukses
-            fetchFacilities();  // Panggil ulang untuk memperbarui tabel
-        })
-        .catch(error => {
-            console.error("Gagal memperbarui fasilitas kamar:", error);
-            alert('Gagal memperbarui fasilitas kamar.');
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas berhasil diperbarui:", data);
+        alert('Fasilitas berhasil diperbarui!');
+        closePopup();
+        fetchFacilities();
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui fasilitas:", error);
+        alert('Gagal memperbarui fasilitas.');
+    });
 }
 
-fetchFacilities();  // Memastikan tabel diperbarui
-
-// Event listener untuk form edit fasilitas
 document.getElementById('formEditFasilitas').addEventListener('submit', function (e) {
-    e.preventDefault(); // Mencegah reload halaman
-
-    const facilityId = document.getElementById('editFacilityId').value; // Ambil ID fasilitas
-    const updatedName = document.getElementById('editNamaFasilitas').value; // Ambil nama fasilitas baru
-
-    // Panggil fungsi untuk mengupdate data
+    e.preventDefault();
+    const facilityId = document.getElementById('editFacilityId').value;
+    const updatedName = document.getElementById('editNamaFasilitas').value;
     updateFacility(facilityId, updatedName);
 });
 
-let selectedFacilityId = null;  // Menyimpan ID fasilitas yang dipilih
+let selectedFacilityId = null;
 
-// Fungsi untuk menampilkan popup Hapus Fasilitas
 function showPopupDelete(facilityId) {
-    selectedFacilityId = facilityId; // Simpan ID fasilitas yang dipilih
-    document.getElementById('popupHapusFasilitas').style.display = 'block'; // Tampilkan popup
-    console.log("Facility ID untuk dihapus:", selectedFacilityId); // Debug log
+    selectedFacilityId = facilityId;
+    document.getElementById('popupHapusFasilitas').style.display = 'block';
+    console.log("Facility ID untuk dihapus:", selectedFacilityId);
 }
-
 
 // DELETE
 function executeDelete() {
@@ -224,13 +206,12 @@ function executeDelete() {
         return;
     }
 
-    const jwtToken = getJwtToken();  // Ambil token JWT
+    const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Token tidak ditemukan, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    // Kirim permintaan DELETE ke API untuk menghapus fasilitas
     fetch(`https://kosconnect-server.vercel.app/api/facility/${selectedFacilityId}`, {
         method: 'DELETE',
         headers: {
@@ -238,20 +219,22 @@ function executeDelete() {
             'Content-Type': 'application/json'
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fasilitas berhasil dihapus:", data);
-            alert("Fasilitas berhasil dihapus!");
-            closePopup(); // Tutup popup
-            fetchFacilities(); // Refresh tabel setelah penghapusan
-        })
-        .catch(error => {
-            console.error("Gagal menghapus fasilitas:", error);
-            alert("Gagal menghapus fasilitas.");
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas berhasil dihapus:", data);
+        alert("Fasilitas berhasil dihapus!");
+        closePopup();
+        fetchFacilities();
+    })
+    .catch(error => {
+        console.error("Gagal menghapus fasilitas:", error);
+        alert("Gagal menghapus fasilitas.");
+    });
 }
+
+fetchFacilities();
