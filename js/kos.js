@@ -31,33 +31,36 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(response => response.json())
   .then(data => {
     if (data.data && data.data.length > 0) {
-      data.data.forEach(house => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="header">
-            <h2>Manajemen Kos</h2>
-          </div>
-          <div class="card-content">
-            <h3>Owner</h3>
-            <p>Email: ${house.owner_email}</p> <!-- Gantikan dengan field email -->
-            <p>Nama Kos: ${house.name}</p>
-
-            <h3>Detail</h3>
-            <p>Fasilitas: ${house.facilities.join(', ')}</p>
-            <p>Alamat: ${house.address}</p>
-            <p>Latitude & Longitude: ${house.latitude}, ${house.longitude}</p>
-
-            <h3>Foto</h3>
-            ${house.images.map(img => `<img src="${img}" alt="${house.name}" width="100">`).join('')}
-
-            <h3>Aksi</h3>
-            <button>Edit</button>
-            <button>Delete</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+        data.data.forEach(house => {
+            const facilities = Array.isArray(house.facilities) ? house.facilities.join(', ') : 'Tidak tersedia';
+            const images = Array.isArray(house.images) ? house.images.map(img => `<img src="${img}" alt="${house.name}" width="100">`).join('') : 'Tidak ada gambar';
+            
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <div class="header">
+                <h2>Manajemen Kos</h2>
+              </div>
+              <div class="card-content">
+                <h3>Owner</h3>
+                <p>Email: ${house.owner_email || 'Tidak tersedia'}</p>
+                <p>Nama Kos: ${house.name || 'Tidak tersedia'}</p>
+        
+                <h3>Detail</h3>
+                <p>Fasilitas: ${facilities}</p>
+                <p>Alamat: ${house.address || 'Tidak tersedia'}</p>
+                <p>Latitude & Longitude: ${house.latitude || 'N/A'}, ${house.longitude || 'N/A'}</p>
+        
+                <h3>Foto</h3>
+                ${images}
+        
+                <h3>Aksi</h3>
+                <button>Edit</button>
+                <button>Delete</button>
+              </div>
+            `;
+            container.appendChild(card);
+        });
     } else {
       container.innerHTML = '<p>No boarding houses found</p>';
     }
