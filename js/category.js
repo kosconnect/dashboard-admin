@@ -21,7 +21,7 @@ function getJwtToken() {
 }
 
 // Tunggu hingga seluruh DOM dimuat
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
@@ -41,58 +41,58 @@ function fetchCategories(jwtToken) {
             'Content-Type': 'application/json'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data kategori:", data);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data kategori:", data);
 
-        const tbody = document.querySelector('#categories-table-body'); // Pastikan ini sesuai dengan id yang ditambahkan di HTML
-        if (!tbody) {
-            console.error("Elemen tbody tidak ditemukan di DOM.");
-            return;
-        }
+            const tbody = document.querySelector('#categories-table-body'); // Pastikan ini sesuai dengan id yang ditambahkan di HTML
+            if (!tbody) {
+                console.error("Elemen tbody tidak ditemukan di DOM.");
+                return;
+            }
 
-        // Kosongkan tabel sebelum menambah data baru
-        tbody.innerHTML = '';
+            // Kosongkan tabel sebelum menambah data baru
+            tbody.innerHTML = '';
 
-        // Loop data kategori dan tambahkan ke tabel
-        data.forEach((kategori, index) => {
-            const tr = document.createElement('tr');
-        
-            // Kolom No (Nomor Urut)
-            const tdNo = document.createElement('td');
-            tdNo.textContent = index + 1; // Mulai dari 1
-            tr.appendChild(tdNo);
-        
-            // Kolom Nama Kategori
-            const tdNamaKategori = document.createElement('td');
-            tdNamaKategori.textContent = kategori.name || 'Tidak ada nama';
-            tr.appendChild(tdNamaKategori);
-        
-            // Kolom Slug Kategori
-            const tdSlugKategori = document.createElement('td');
-            tdSlugKategori.textContent = kategori.slug || 'Tidak ada slug';
-            tr.appendChild(tdSlugKategori);
-            
-            // Kolom Aksi
-            const tdAksi = document.createElement('td');
-            tdAksi.innerHTML = `
+            // Loop data kategori dan tambahkan ke tabel
+            data.forEach((kategori, index) => {
+                const tr = document.createElement('tr');
+
+                // Kolom No (Nomor Urut)
+                const tdNo = document.createElement('td');
+                tdNo.textContent = index + 1; // Menggunakan nomor urut berdasarkan indeks
+                tr.appendChild(tdNo);
+
+                // Kolom Nama Kategori
+                const tdNamaKategori = document.createElement('td');
+                tdNamaKategori.textContent = kategori.name || 'Tidak ada nama';
+                tr.appendChild(tdNamaKategori);
+
+                // Kolom Slug Kategori
+                // const tdSlugKategori = document.createElement('td');
+                // tdSlugKategori.textContent = kategori.slug;
+                // tr.appendChild(tdSlugKategori);
+
+                // Kolom Aksi
+                const tdAksi = document.createElement('td');
+                tdAksi.innerHTML = `
                 <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDelete('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
-            tr.appendChild(tdAksi);
+                tr.appendChild(tdAksi);
 
-            // Tambahkan baris ke tabel
-            tbody.appendChild(tr);
+                // Tambahkan baris ke tabel
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data kategori:", error);
         });
-    })
-    .catch(error => {
-        console.error("Gagal mengambil data kategori:", error);
-    });
 }
 
 
