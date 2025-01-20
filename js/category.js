@@ -160,33 +160,25 @@ document.getElementById('formTambahKategori').addEventListener('submit', functio
 
 // Fungsi untuk menampilkan popup Edit dan mengisi data kategori
 function showPopupEdit(categoryId, categoryName) {
-    document.getElementById('popupEditKategori').style.display = 'block';
-
-    // Isi input tersembunyi untuk ID kategori
-    document.getElementById('editCategoryId').value = categoryId;
-
-    // Isi input nama kategori untuk diedit
-    document.getElementById('editNamaKategori').value = categoryName;
+    const popup = document.getElementById('popupEditKategori'); // Pastikan popup/modal untuk edit ada
+    document.getElementById('editCategoryId').value = categoryId; // Set ID kategori
+    document.getElementById('editNamaKategori').value = categoryName; // Set nama kategori
+    popup.style.display = 'block'; // Tampilkan popup/modal
 }
 
 
 // PUT
 // Fungsi untuk memperbarui kategori
 function updateCategory(categoryId, updatedName) {
-    console.log('Updating category with ID:', categoryId); // Periksa ID yang dikirim
-    console.log('New Category Name:', updatedName); // Periksa nama kategori yang baru
-
-    if (!categoryId) {
-        console.error("ID kategori tidak ditemukan.");
-        alert("ID kategori tidak ditemukan.");
-        return;
-    }
-
-    const jwtToken = getJwtToken();
+    const jwtToken = getJwtToken(); // Ambil token JWT
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
+
+    const updatedCategory = {
+        name: updatedName // Nama kategori yang diperbarui
+    };
 
     fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`, {
         method: 'PUT',
@@ -194,25 +186,25 @@ function updateCategory(categoryId, updatedName) {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: updatedName })
+        body: JSON.stringify(updatedCategory)
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Kategori berhasil diperbarui:", data);
-            alert('Kategori berhasil diperbarui!');
-            closePopup();  // Tutup popup setelah sukses
-            fetchCategories();  // Panggil ulang untuk memperbarui tabel
-        })
-        .catch(error => {
-            console.error("Gagal memperbarui kategori:", error);
-            alert('Gagal memperbarui kategori.');
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Kategori berhasil diperbarui:", data);
+        alert("Kategori berhasil diperbarui!");
+        fetchCategories(jwtToken); // Refresh data kategori
+    })
+    .catch(error => {
+        console.error("Gagal memperbarui kategori:", error);
+        alert("Gagal memperbarui kategori. Silakan coba lagi.");
+    });
 }
+
 
 // Event listener untuk form edit kategori
 document.getElementById('formEditKategori').addEventListener('submit', function (e) {
