@@ -182,7 +182,7 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
     const facilityId = document.getElementById('editFacilityId').value;
     const namaFasilitasBaru = document.getElementById('editNamaFasilitas').value.trim();
 
-    if (!namaFasilitasBaru) {
+    if (!namaFasilitasBaru.trim()) {
         alert("Nama fasilitas tidak boleh kosong!");
         return;
     }
@@ -203,6 +203,7 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
         .then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
+                    console.error("Respon error dari server:", err); // Debug response
                     throw new Error(err.message || `HTTP error! status: ${response.status}`);
                 });
             }
@@ -211,15 +212,11 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
         .then(data => {
             console.log("Fasilitas berhasil diperbarui:", data);
             alert("Fasilitas berhasil diperbarui!");
-
-            // Perbarui tabel fasilitas
             fetchFacilities(jwtToken);
-
-            // Tutup popup
             closePopup();
         })
         .catch(error => {
             console.error("Gagal memperbarui fasilitas:", error);
             alert(`Gagal memperbarui fasilitas: ${error.message}`);
-        });
+        });    
 });
