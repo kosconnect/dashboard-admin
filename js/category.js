@@ -160,7 +160,6 @@ document.getElementById('formTambahKategori').addEventListener('submit', functio
 
 // Fungsi untuk menampilkan popup Edit dan mengisi data kategori
 function showPopupEdit(categoryId, categoryName) {
-    console.log("ID Kategori:", categoryId); 
     document.getElementById('popupEditKategori').style.display = 'block';
 
     // Isi input tersembunyi untuk ID kategori
