@@ -182,31 +182,27 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
     const facilityId = document.getElementById('editFacilityId').value;
     const namaFasilitasBaru = document.getElementById('editNamaFasilitas').value.trim();
 
-    // Validasi input
     if (!namaFasilitasBaru) {
         alert("Nama fasilitas tidak boleh kosong!");
         return;
     }
 
-    const requestBody = { name: namaFasilitasBaru };
-
-    // Debugging
-    console.log("Facility ID:", facilityId);
-    console.log("Request Body:", requestBody);
+    const requestBody = {
+        name: namaFasilitasBaru
+    };
 
     // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/facility/${facilityId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(requestBody)
     })
         .then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
-                    console.error("Response Error:", err);
                     throw new Error(err.message || `HTTP error! status: ${response.status}`);
                 });
             }
@@ -216,7 +212,7 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
             console.log("Fasilitas berhasil diperbarui:", data);
             alert("Fasilitas berhasil diperbarui!");
 
-            // Perbarui daftar fasilitas
+            // Perbarui tabel fasilitas
             fetchFacilities(jwtToken);
 
             // Tutup popup
@@ -227,35 +223,3 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
             alert(`Gagal memperbarui fasilitas: ${error.message}`);
         });
 });
-
-// Fungsi untuk menutup semua popup
-function closePopup() {
-    const popups = document.querySelectorAll('.popup');
-    popups.forEach(popup => {
-        popup.style.display = 'none';
-    });
-}
-
-// Contoh fungsi untuk mendapatkan token JWT
-function getJwtToken() {
-    // Ubah ini dengan logika sebenarnya untuk mendapatkan token JWT
-    return localStorage.getItem('jwtToken');
-}
-
-// Contoh fungsi untuk memperbarui daftar fasilitas
-function fetchFacilities(jwtToken) {
-    fetch('https://kosconnect-server.vercel.app/api/facility', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-        },
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Daftar fasilitas:", data);
-            // Perbarui tampilan fasilitas di UI
-        })
-        .catch(error => {
-            console.error("Gagal mengambil daftar fasilitas:", error);
-        });
-}
