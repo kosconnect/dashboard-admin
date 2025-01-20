@@ -173,6 +173,9 @@ function showPopupEdit(categoryId, categoryName) {
 // PUT
 // Fungsi untuk memperbarui kategori
 function updateCategory(categoryId, updatedName) {
+    console.log('Updating category with ID:', categoryId); // Periksa ID yang dikirim
+    console.log('New Category Name:', updatedName); // Periksa nama kategori yang baru
+
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
