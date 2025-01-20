@@ -83,6 +83,17 @@ function fetchCategories(jwtToken) {
         });    
 }
 
+
+//Fungsi untuk menampilkan popup Tambah Kategori
+function showPopup() {
+    const popup = document.getElementById('popupTambahKategori');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+    } else {
+        console.error("Popup Tambah Kategori tidak ditemukan.");
+    }
+}
+
 // Fungsi untuk menangani submit formulir tambah kategori
 document.getElementById('formTambahKategori').addEventListener('submit', function (event) {
     event.preventDefault(); // Mencegah reload halaman saat form disubmit
