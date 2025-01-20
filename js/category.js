@@ -60,24 +60,24 @@ function fetchCategories(jwtToken) {
         tbody.innerHTML = '';
 
         // Loop data kategori dan tambahkan ke tabel
-        data.forEach(kategori => {
+        data.forEach((kategori, index) => {
             const tr = document.createElement('tr');
-
-            // Kolom ID
-            const tdId = document.createElement('td');
-            tdId.textContent = kategori.id !== undefined ? kategori.id.toString() : 'N/A';
-            tr.appendChild(tdId);
-
+        
+            // Kolom No (Nomor Urut)
+            const tdNo = document.createElement('td');
+            tdNo.textContent = index + 1; // Mulai dari 1
+            tr.appendChild(tdNo);
+        
             // Kolom Nama Kategori
             const tdNamaKategori = document.createElement('td');
-            tdNamaKategori.textContent = kategori.name;
+            tdNamaKategori.textContent = kategori.name || 'Tidak ada nama';
             tr.appendChild(tdNamaKategori);
-
+        
             // Kolom Slug Kategori
             const tdSlugKategori = document.createElement('td');
-            tdSlugKategori.textContent = kategori.slug;
+            tdSlugKategori.textContent = kategori.slug || 'Tidak ada slug';
             tr.appendChild(tdSlugKategori);
-
+            
             // Kolom Aksi
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
