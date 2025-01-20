@@ -160,12 +160,11 @@ document.getElementById('formTambahKategori').addEventListener('submit', functio
 
 // Fungsi untuk menampilkan popup Edit dan mengisi data kategori
 function showPopupEdit(categoryId, categoryName) {
-    const popup = document.getElementById('popupEditKategori'); // Pastikan popup/modal untuk edit ada
-    document.getElementById('editCategoryId').value = categoryId; // Set ID kategori
-    document.getElementById('editNamaKategori').value = categoryName; // Set nama kategori
+    const popup = document.getElementById('popupEditKategori'); // Pastikan ID sesuai dengan modal/popup
+    document.getElementById('editCategoryId').value = categoryId; // Set ID kategori ke input
+    document.getElementById('editNamaKategori').value = categoryName; // Set nama kategori ke input
     popup.style.display = 'block'; // Tampilkan popup/modal
 }
-
 
 // PUT
 // Fungsi untuk memperbarui kategori
@@ -186,7 +185,7 @@ function updateCategory(categoryId, updatedName) {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updatedCategory)
+        body: JSON.stringify(updatedCategory) // Kirim data kategori yang diperbarui
     })
     .then(response => {
         if (!response.ok) {
@@ -197,7 +196,8 @@ function updateCategory(categoryId, updatedName) {
     .then(data => {
         console.log("Kategori berhasil diperbarui:", data);
         alert("Kategori berhasil diperbarui!");
-        fetchCategories(jwtToken); // Refresh data kategori
+        fetchCategories(jwtToken); // Refresh data kategori setelah update
+        closePopup(); // Tutup popup setelah update
     })
     .catch(error => {
         console.error("Gagal memperbarui kategori:", error);
@@ -206,14 +206,15 @@ function updateCategory(categoryId, updatedName) {
 }
 
 
+
 // Event listener untuk form edit kategori
 document.getElementById('formEditKategori').addEventListener('submit', function (e) {
     e.preventDefault(); // Mencegah reload halaman
 
-    const categoryId = document.getElementById('editCategoryId').value; // Ambil ID kategori
-    const updatedName = document.getElementById('editNamaKategori').value; // Ambil nama kategori baru
+    const categoryId = document.getElementById('editCategoryId').value; // Ambil ID kategori dari input
+    const updatedName = document.getElementById('editNamaKategori').value; // Ambil nama kategori yang baru
 
-    // Panggil fungsi untuk mengupdate data
+    // Panggil fungsi untuk memperbarui kategori
     updateCategory(categoryId, updatedName);
 });
 
