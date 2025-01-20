@@ -49,50 +49,47 @@ function fetchCategories(jwtToken) {
         })
         .then(data => {
             console.log("Data kategori:", data);
-
-            const tbody = document.querySelector('#categories-table-body'); // Pastikan ini sesuai dengan id yang ditambahkan di HTML
+    
+            const tbody = document.querySelector('#categories-table-body');
             if (!tbody) {
                 console.error("Elemen tbody tidak ditemukan di DOM.");
                 return;
             }
-
-            // Kosongkan tabel sebelum menambah data baru
-            tbody.innerHTML = '';
-
-            // Loop data kategori dan tambahkan ke tabel
+    
+            tbody.innerHTML = ''; // Kosongkan tabel
+    
             data.forEach((kategori, index) => {
                 const tr = document.createElement('tr');
-
-                // Kolom No (Nomor Urut)
+    
+                // Cek apakah kategori memiliki category_id dan name
+                const categoryId = kategori.category_id;  // Pastikan field sesuai dengan respons
+                const categoryName = kategori.name || 'Tidak ada nama';
+    
+                // Kolom No
                 const tdNo = document.createElement('td');
-                tdNo.textContent = index + 1; // Menggunakan nomor urut berdasarkan indeks
+                tdNo.textContent = index + 1;
                 tr.appendChild(tdNo);
-
+    
                 // Kolom Nama Kategori
                 const tdNamaKategori = document.createElement('td');
-                tdNamaKategori.textContent = kategori.name || 'Tidak ada nama';
+                tdNamaKategori.textContent = categoryName;
                 tr.appendChild(tdNamaKategori);
-
-                // Kolom Slug Kategori
-                // const tdSlugKategori = document.createElement('td');
-                // tdSlugKategori.textContent = kategori.slug;
-                // tr.appendChild(tdSlugKategori);
-
+    
                 // Kolom Aksi
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="showPopupDelete('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
-            `;
+                    <button class="btn btn-primary" onclick="showPopupEdit('${categoryId}', '${categoryName}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-primary" onclick="showPopupDelete('${categoryId}')"><i class="fas fa-trash"></i> Hapus</button>
+                `;
                 tr.appendChild(tdAksi);
-
+    
                 // Tambahkan baris ke tabel
                 tbody.appendChild(tr);
             });
         })
         .catch(error => {
             console.error("Gagal mengambil data kategori:", error);
-        });
+        });    
 }
 
 
