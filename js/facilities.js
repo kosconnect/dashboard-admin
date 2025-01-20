@@ -179,17 +179,22 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
         return;
     }
 
-    const facilityId = document.getElementById('editFacilityId').value;
+    const facilityId = document.getElementById('editFacilityId').value.trim();
     const namaFasilitasBaru = document.getElementById('editNamaFasilitas').value.trim();
 
-    if (!namaFasilitasBaru) {
-        alert("Nama fasilitas tidak boleh kosong!");
+    if (!facilityId || !namaFasilitasBaru) {
+        alert("ID Fasilitas dan Nama Fasilitas tidak boleh kosong!");
         return;
     }
 
     const requestBody = {
         name: namaFasilitasBaru
     };
+
+    // Debugging sebelum request
+    console.log("Facility ID:", facilityId);
+    console.log("Nama Fasilitas Baru:", namaFasilitasBaru);
+    console.log("Request Body:", requestBody);
 
     // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/facility/${facilityId}`, {
@@ -201,8 +206,10 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
         body: JSON.stringify(requestBody)
     })
         .then(response => {
+            console.log("Response Status:", response.status); // Debug status response
             if (!response.ok) {
                 return response.json().then(err => {
+                    console.log("Response Error Data:", err); // Debug data error
                     throw new Error(err.message || `HTTP error! status: ${response.status}`);
                 });
             }
@@ -212,7 +219,7 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
             console.log("Fasilitas berhasil diperbarui:", data);
             alert("Fasilitas berhasil diperbarui!");
 
-            // Perbarui tabel fasilitas
+            // Perbarui daftar fasilitas
             fetchFacilities(jwtToken);
 
             // Tutup popup
@@ -223,3 +230,35 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
             alert(`Gagal memperbarui fasilitas: ${error.message}`);
         });
 });
+
+// Fungsi untuk menutup semua popup
+function closePopup() {
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
+        popup.style.display = 'none';
+    });
+}
+
+// Dummy fungsi untuk mendapatkan JWT Token
+function getJwtToken() {
+    // Ganti dengan implementasi nyata untuk mendapatkan token JWT
+    return localStorage.getItem('jwtToken');
+}
+
+// Dummy fungsi untuk memperbarui daftar fasilitas setelah PUT berhasil
+function fetchFacilities(jwtToken) {
+    fetch('https://kosconnect-server.vercel.app/api/facilities', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Daftar fasilitas berhasil diperbarui:", data);
+            // Tambahkan logika untuk memperbarui tampilan UI dengan data baru
+        })
+        .catch(error => {
+            console.error("Gagal memuat daftar fasilitas:", error);
+        });
+}
