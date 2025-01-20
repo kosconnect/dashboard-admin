@@ -153,3 +153,72 @@ function closePopup() {
         popup.style.display = 'none';
     });
 }
+
+// Fungsi untuk menampilkan popup Edit Kategori
+function showPopupEdit(categoryId, categoryName) {
+    const popup = document.getElementById('popupEditKategori');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+
+        // Isi input form dengan data kategori yang akan diubah
+        document.getElementById('editCategoryId').value = categoryId;
+        document.getElementById('editNamaKategori').value = categoryName;
+    } else {
+        console.error("Popup Edit Kategori tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menangani submit formulir Edit Kategori
+document.getElementById('formEditKategori').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const categoryId = document.getElementById('editCategoryId').value;
+    const namaKategoriBaru = document.getElementById('editNamaKategori').value.trim();
+
+    if (!namaKategoriBaru) {
+        alert("Nama kategori tidak boleh kosong!");
+        return;
+    }
+
+    const requestBody = {
+        name: namaKategoriBaru
+    };
+
+    // Kirim permintaan PUT ke API
+    fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Kategori berhasil diperbarui:", data);
+            alert("Kategori berhasil diperbarui!");
+
+            // Perbarui tabel kategori
+            fetchCategories(jwtToken);
+
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui kategori:", error);
+            alert(`Gagal memperbarui kategori: ${error.message}`);
+        });
+});
