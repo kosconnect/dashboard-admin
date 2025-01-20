@@ -81,7 +81,7 @@ function fetchCategories(jwtToken) {
                 // Kolom Aksi
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}', '${kategori.slug}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}')"><i class="fas fa-edit"></i> Edit</button>
                 <button class="btn btn-primary" onclick="showPopupDelete('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
                 tr.appendChild(tdAksi);
@@ -175,6 +175,12 @@ function showPopupEdit(categoryId, categoryName) {
 function updateCategory(categoryId, updatedName) {
     console.log('Updating category with ID:', categoryId); // Periksa ID yang dikirim
     console.log('New Category Name:', updatedName); // Periksa nama kategori yang baru
+
+    if (!categoryId) {
+        console.error("ID kategori tidak ditemukan.");
+        alert("ID kategori tidak ditemukan.");
+        return;
+    }
 
     const jwtToken = getJwtToken();
     if (!jwtToken) {
