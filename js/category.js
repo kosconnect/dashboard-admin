@@ -81,8 +81,8 @@ function fetchCategories(jwtToken) {
                 // Kolom Aksi
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                <button class="btn btn-primary" onclick="showPopupEdit('${category.id}', '${category.name}')"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary" onclick="showPopupDelete('${category.id}')"><i class="fas fa-trash"></i> Hapus</button>
+                <button class="btn btn-primary" onclick="showPopupEdit('${kategori.id}', '${kategori.name}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-primary" onclick="showPopupDelete('${kategori.id}')"><i class="fas fa-trash"></i> Hapus</button>
             `;
                 tr.appendChild(tdAksi);
 
