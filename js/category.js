@@ -65,7 +65,7 @@ function fetchCategories(jwtToken) {
 
             // Kolom ID
             const tdId = document.createElement('td');
-            tdId.textContent = kategori.id.toString(); // ID sebagai string
+            tdId.textContent = kategori.id !== undefined ? kategori.id.toString() : 'N/A';
             tr.appendChild(tdId);
 
             // Kolom Nama Kategori
