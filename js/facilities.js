@@ -78,3 +78,75 @@ function fetchFacilities(jwtToken) {
         console.error("Gagal mengambil data fasilitas:", error);
     });
 }
+
+// Fungsi untuk menampilkan popup Tambah Fasilitas
+function showPopup() {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+    } else {
+        console.error("Popup Tambah Fasilitas tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menangani submit formulir tambah fasilitas
+document.getElementById('formTambahFasilitas').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const namaFasilitas = document.getElementById('namaFasilitas').value.trim();
+    if (!namaFasilitas) {
+        alert("Nama fasilitas tidak boleh kosong!");
+        return;
+    }
+
+    const requestBody = {
+        name: namaFasilitas,
+        type: "boarding_house" // Sesuaikan dengan tipe fasilitas
+    };
+
+    // Kirim permintaan POST ke API
+    fetch('https://kosconnect-server.vercel.app/api/facility/', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil ditambahkan:", data);
+            alert("Fasilitas berhasil ditambahkan!");
+            
+            // Perbarui tabel fasilitas
+            fetchFacilities(jwtToken);
+            
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan fasilitas:", error);
+            alert(`Gagal menambahkan fasilitas: ${error.message}`);
+        });
+});
+
+// Fungsi untuk menutup semua popup
+function closePopup() {
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
+        popup.style.display = 'none';
+    });
+}
