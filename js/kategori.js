@@ -222,3 +222,51 @@ document.getElementById('formEditKategori').addEventListener('submit', function 
             alert(`Gagal memperbarui kategori: ${error.message}`);
         });
 });
+
+
+// Fungsi untuk menampilkan popup Hapus Kategori
+function showPopupDelete(categoryId) {
+    const popup = document.getElementById('popupHapusKategori');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+
+        // Simpan ID kategori untuk dihapus
+        popup.dataset.categoryId = categoryId;
+    } else {
+        console.error("Popup Hapus Kategori tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menghapus kategori
+function executeDelete() {
+    const jwtToken = getJwtToken(); // Fungsi getJwtToken sudah ada
+    const popup = document.getElementById('popupHapusKategori');
+    const categoryId = popup.dataset.categoryId; // Ambil ID kategori dari popup
+
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Kategori berhasil dihapus:", data);
+            closePopup(); // Tutup popup setelah sukses
+            fetchCategories(jwtToken); // Perbarui tabel kategori
+        })
+        .catch(error => {
+            console.error("Gagal menghapus kategori:", error);
+        });
+}
