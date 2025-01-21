@@ -109,11 +109,13 @@ function fetchUsers(jwtToken) {
 }
 
 
-// Fungsi untuk menutup popup
+// Fungsi untuk menutup popup Edit User
 function closePopup() {
-    document.getElementById('popupEditUser').style.display = 'none';
+    const popup = document.getElementById('popupEditUser');
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    }
 }
-
 
 // Fungsi untuk menampilkan popup Edit User
 function showPopupEdit(userId, fullname, email) {
@@ -176,8 +178,8 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
             console.log("User berhasil diperbarui:", data);
             alert("User berhasil diperbarui!");
 
-            // Perbarui tabel pengguna
-            fetchUsers(jwtToken);
+            // Perbarui tabel pengguna secara lokal
+            updateTableRow(userId, fullnameBaru, emailBaru);
 
             // Tutup popup
             closePopup();
@@ -187,3 +189,20 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
             alert(`Gagal memperbarui user: ${error.message}`);
         });
 });
+
+// Fungsi untuk memperbarui baris tabel pengguna secara lokal
+function updateTableRow(userId, fullnameBaru, emailBaru) {
+    const tableRows = document.querySelectorAll('#user-table-body tr');
+    tableRows.forEach(row => {
+        // Periksa ID user di tombol edit
+        const editButton = row.querySelector('button[onclick^="showPopupEdit"]');
+        if (editButton && editButton.getAttribute('onclick').includes(userId)) {
+            // Perbarui kolom Nama dan Email di baris ini
+            const nameCell = row.children[0];
+            const emailCell = row.children[1];
+
+            if (nameCell) nameCell.textContent = fullnameBaru;
+            if (emailCell) emailCell.textContent = emailBaru;
+        }
+    });
+}
