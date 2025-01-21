@@ -72,94 +72,78 @@ function fetchFacilities(jwtToken) {
 
 
 
+// Fungsi untuk menampilkan popup Tambah Fasilitas
 function showPopup() {
     const popup = document.getElementById('popupTambahFasilitas');
     if (popup) {
-        popup.style.display = 'block';
+        popup.style.display = 'block'; // Tampilkan popup
     } else {
-        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
+        console.error("Popup Tambah Fasilitas tidak ditemukan.");
     }
 }
 
+// Fungsi untuk menangani submit formulir tambah fasilitas
+document.getElementById('formTambahFasilitas').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
 
-// POST
-// Fungsi untuk menambahkan fasilitas baru
-function addFacility() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    const facilityName = document.getElementById('namaFasilitas').value;
-    const facilityType = document.getElementById('jenisFasilitas').value; // Ambil nilai type dari input
-    if (!facilityName || !facilityType) {
-        alert('Nama dan jenis fasilitas tidak boleh kosong!');
+    const namaFasilitas = document.getElementById('namaFasilitas').value.trim();
+    const typeFasilitas = document.querySelector('input[name="typeFasilitas"]:checked')?.value;
+
+    if (!namaFasilitas || !typeFasilitas) {
+        alert("Nama fasilitas dan tipe fasilitas tidak boleh kosong!");
         return;
     }
 
-    const newFacility = {
-        name: facilityName,
-        type: facilityType
+    const requestBody = {
+        name: namaFasilitas,
+        type: typeFasilitas
     };
 
+    // Kirim permintaan POST ke API
     fetch('https://kosconnect-server.vercel.app/api/facility/', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newFacility)
+        body: JSON.stringify(requestBody)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fasilitas berhasil ditambahkan:", data);
-        alert("Fasilitas berhasil ditambahkan!");
-        closePopup();
-        addFacilityToTable(data); // Tambahkan ke tabel tanpa refresh
-    })
-    .catch(error => {
-        console.error("Gagal menambahkan fasilitas:", error);
-        alert("Gagal menambahkan fasilitas. Silakan coba lagi.");
-    });
-}
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil ditambahkan:", data);
+            alert("Fasilitas berhasil ditambahkan!");
 
-function addFacilityToTable(facility) {
-    const tbody = document.querySelector('table tbody');
-    const row = document.createElement('tr');
+            // Perbarui tabel fasilitas
+            fetchFacilities(jwtToken);
 
-    const nameCell = document.createElement('td');
-    nameCell.textContent = facility.name;
-    row.appendChild(nameCell);
-
-    const actionCell = document.createElement('td');
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Hapus';
-    deleteButton.addEventListener('click', () => deleteFacility(facility.facility_id));
-    actionCell.appendChild(deleteButton);
-    row.appendChild(actionCell);
-
-    tbody.appendChild(row);
-}
-
-
-document.getElementById('formTambahFasilitas').addEventListener('submit', function (e) {
-    e.preventDefault();
-    addFacility();
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan fasilitas:", error);
+            alert(`Gagal menambahkan fasilitas: ${error.message}`);
+        });
 });
-
 
 // Fungsi untuk menutup popup
 function closePopup() {
-    const popups = document.querySelectorAll('.popup');
-    popups.forEach(popup => {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
         popup.style.display = 'none';
-    });
+    }
 }
 
 
