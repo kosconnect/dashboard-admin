@@ -237,12 +237,11 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
 
 let facilityIdToDelete = null; // Menyimpan id fasilitas yang akan dihapus
 
-// Fungsi untuk menampilkan popup konfirmasi hapus
-function showPopupDelete(facilityId, facilityName) {
+
+function showPopupDelete(facilityId) {
     const popup = document.getElementById('popupHapusFasilitas');
     if (popup) {
-        const subtitle = popup.querySelector('.popup-subtitle');
-        subtitle.textContent = `Apakah Anda yakin ingin menghapus fasilitas "${facilityName}"?`;
+        popup.style.display = 'block'; // Tampilkan popup
         
         // Simpan id fasilitas yang akan dihapus
         facilityIdToDelete = facilityId;
