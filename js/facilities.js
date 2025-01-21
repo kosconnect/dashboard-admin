@@ -70,44 +70,79 @@ function fetchFacilities(jwtToken) {
     });
 }
 
-// Fungsi untuk menampilkan popup Tambah Fasilitas
-function showPopup() {
+
+ // Fungsi untuk menampilkan popup Tambah Fasilitas
+ function showPopup() {
     const popup = document.getElementById('popupTambahFasilitas');
-    popup ? popup.style.display = 'block' : console.error("Popup Tambah Fasilitas tidak ditemukan.");
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+    } else {
+        console.error("Popup Tambah Fasilitas tidak ditemukan.");
+    }
 }
 
 // Fungsi untuk menangani submit formulir tambah fasilitas
 document.getElementById('formTambahFasilitas').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const jwtToken = getJwtToken();
-    if (!jwtToken) return alert("Tidak ada token JWT.");
-    
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
+    const jwtToken = getJwtToken(); // Fungsi untuk mendapatkan token JWT
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
     const namaFasilitas = document.getElementById('namaFasilitas').value.trim();
-    if (!namaFasilitas) return alert("Nama fasilitas tidak boleh kosong!");
-    
-    fetch('https://kosconnect-server.vercel.app/api/facility/', {
+    if (!namaFasilitas) {
+        alert("Nama fasilitas tidak boleh kosong!");
+        return;
+    }
+
+    const requestBody = {
+        name: namaFasilitas
+    };
+
+    // Kirim permintaan POST ke API
+    fetch('https://kosconnect-server.vercel.app/api/facilities/', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: namaFasilitas })
+        body: JSON.stringify(requestBody)
     })
-    .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
-    .then(data => {
-        alert("Fasilitas berhasil ditambahkan!");
-        fetchFacilities(jwtToken);
-        closePopup();
-    })
-    .catch(error => {
-        console.error("Gagal menambahkan fasilitas:", error);
-        alert(`Gagal menambahkan fasilitas: ${error.message || error}`);
-    });
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil ditambahkan:", data);
+            alert("Fasilitas berhasil ditambahkan!");
+            
+            // Perbarui daftar fasilitas
+            fetchFacilities(jwtToken);
+            
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal menambahkan fasilitas:", error);
+            alert(`Gagal menambahkan fasilitas: ${error.message}`);
+        });
 });
 
+// Fungsi untuk menutup popup
 function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
+        popup.style.display = 'none';
+    });
 }
+
+
 
 function showPopupEdit(facilityId, facilityName) {
     const popup = document.getElementById('popupEditFasilitas');
