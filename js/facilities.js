@@ -234,3 +234,68 @@ document.getElementById('formEditFasilitas').addEventListener('submit', function
             alert(`Gagal memperbarui fasilitas: ${error.message}`);
         });
 });
+
+let facilityIdToDelete = null; // Menyimpan id fasilitas yang akan dihapus
+
+// Fungsi untuk menampilkan popup konfirmasi hapus
+function showPopupDelete(facilityId, facilityName) {
+    const popup = document.getElementById('popupHapusFasilitas');
+    if (popup) {
+        const subtitle = popup.querySelector('.popup-subtitle');
+        subtitle.textContent = `Apakah Anda yakin ingin menghapus fasilitas "${facilityName}"?`;
+        
+        // Simpan id fasilitas yang akan dihapus
+        facilityIdToDelete = facilityId;
+
+        // Tampilkan popup
+        popup.style.display = 'block';
+    } else {
+        console.error("Popup Hapus Fasilitas tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk mengeksekusi penghapusan fasilitas
+function executeDelete() {
+    if (!facilityIdToDelete) {
+        console.error("ID fasilitas tidak ditemukan.");
+        return;
+    }
+
+    // Kirim permintaan DELETE ke API
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    fetch(`https://kosconnect-server.vercel.app/api/facility/${facilityIdToDelete}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || `HTTP error! status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Fasilitas berhasil dihapus:", data);
+        alert("Fasilitas berhasil dihapus!");
+
+        // Perbarui tabel fasilitas
+        const jwtToken = getJwtToken(); // Ambil token JWT baru
+        fetchFacilities(jwtToken); // Mengambil ulang data fasilitas setelah penghapusan
+
+        // Tutup popup
+        closePopup();
+    })
+    .catch(error => {
+        console.error("Gagal menghapus fasilitas:", error);
+        alert(`Gagal menghapus fasilitas: ${error.message}`);
+    });
+}
