@@ -102,7 +102,7 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     };
 
     // Kirim permintaan POST ke API
-    fetch('https://kosconnect-server.vercel.app/api/facilities', {
+    fetch('https://kosconnect-server.vercel.app/api/facility', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
