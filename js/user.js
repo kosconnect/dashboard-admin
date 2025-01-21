@@ -58,8 +58,12 @@ function fetchUsers(jwtToken) {
 
             // Loop data pengguna dan tambahkan ke tabel
             data.users.forEach(user => {
+                if (!user.id) {
+                    console.error("ID pengguna tidak ditemukan:", user);
+                    return; // Lewati user ini jika ID-nya tidak ada
+                }
                 const tr = document.createElement('tr');
-
+                
                 // Kolom Nama
                 const tdNama = document.createElement('td');
                 tdNama.textContent = user.fullname || "N/A";
@@ -78,9 +82,7 @@ function fetchUsers(jwtToken) {
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
-                    <i class="fas fa-trash"></i> Hapus</button>
+                    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>                    <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
                     <button class="btn btn-primary dropdown-button">
                         <i class="fas fa-ellipsis-v"></i> Lainnya</button>
@@ -111,7 +113,8 @@ function fetchUsers(jwtToken) {
 
 // Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
 function showPopupEdit(userId, fullname, email) {
-    // Isi data di dalam form dengan data pengguna yang dipilih
+    console.log("Sedang mengedit user dengan ID:", userId);  // Debugging
+    // Set data user di form
     document.getElementById('editUserId').value = userId;
     document.getElementById('editFullName').value = fullname;
     document.getElementById('editEmail').value = email;
