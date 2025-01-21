@@ -75,7 +75,11 @@ function fetchFacilities(jwtToken) {
 function showPopup() {
     const popup = document.getElementById('popupTambahFasilitas');
     if (popup) {
-        popup.style.display = 'block';
+        // Kosongkan nilai input formulir
+        document.getElementById('namaFasilitas').value = '';
+        document.getElementById('typeFasilitas').value = '';
+
+        popup.style.display = 'block'; // Tampilkan popup
     } else {
         console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
     }
@@ -158,13 +162,13 @@ function closePopup() {
 }
 
 
-function showEditPopup(facility) {
+function showPopupEdit(facilityId, facilityName, facilityType) {
     const popup = document.getElementById('popupEditFasilitas');
     if (popup) {
-        // Isi data ke dalam form
-        document.getElementById('editFacilityId').value = facility.id;
-        document.getElementById('editNamaFasilitas').value = facility.name;
-        document.getElementById('editTypeFasilitas').value = facility.type;
+        // Isi data ke dalam form edit
+        document.getElementById('editFacilityId').value = facilityId;
+        document.getElementById('editNamaFasilitas').value = facilityName;
+        document.getElementById('editTypeFasilitas').value = facilityType;
 
         // Tampilkan popup
         popup.style.display = 'block';
@@ -172,6 +176,7 @@ function showEditPopup(facility) {
         console.error("Popup Edit Fasilitas tidak ditemukan.");
     }
 }
+
 
 // Fungsi untuk menangani submit formulir edit fasilitas
 document.getElementById('formEditFasilitas').addEventListener('submit', function (event) {
