@@ -80,7 +80,6 @@ function fetchFacilities(jwtToken) {
     });
 }
 
-
 // POST
 // Fungsi untuk menampilkan popup Tambah Fasilitas
 function showPopup() {
@@ -109,8 +108,7 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     }
 
     const requestBody = {
-        name: namaFasilitas,
-        type: "boarding_house" // Sesuaikan dengan tipe fasilitas
+        name: namaFasilitas
     };
 
     // Kirim permintaan POST ke API
