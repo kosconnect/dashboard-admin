@@ -107,19 +107,14 @@
             <form id="formTambahFasilitas" method="POST">
                 <label for="namaFasilitas" class="form-label">Masukkan nama fasilitas!</label>
                 <input type="text" id="namaFasilitas" name="name" placeholder="Nama Fasilitas " required>
-                <p class="form-label">Pilih tipe fasilitas:</p>
-                <div>
-                    <label>
-                        <input type="radio" name="typeFasilitas" value="boarding_house" required>
-                        Boarding House
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        <input type="radio" name="typeFasilitas" value="room" required>
-                        Room
-                    </label>
-                </div>
+
+                <!-- Dropdown untuk tipe fasilitas -->
+                <label for="typeFasilitas" class="form-label">Pilih tipe fasilitas:</label>
+                <select id="typeFasilitas" name="typeFasilitas" required class="styled-select">
+                    <option value="boarding_house">Boarding House</option>
+                    <option value="room">Room</option>
+                </select>
+                
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan</button>
                 </div>
@@ -142,6 +137,14 @@
                 <input type="hidden" id="editFacilityId" name="id">
                 <label for="editNamaFasilitas" class="form-label">Perbarui nama fasilitas!</label>
                 <input type="text" id="editNamaFasilitas" name="name" placeholder="Nama Fasilitas" required>
+
+                <!-- Dropdown untuk tipe fasilitas -->
+                <label for="editTypeFasilitas" class="form-label">Pilih Tipe Fasilitas</label>
+                <select id="editTypeFasilitas" name="typeFasilitas" required class="styled-select">
+                    <option value="boarding_house">Boarding House</option>
+                    <option value="room">Room</option>
+                </select>
+
                 <div class="popup-actions">
                     <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
                 </div>

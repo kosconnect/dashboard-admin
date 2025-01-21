@@ -72,6 +72,17 @@ function fetchFacilities(jwtToken) {
 
 
 
+function showPopup() {
+    const popup = document.getElementById('popupTambahFasilitas');
+    if (popup) {
+        popup.style.display = 'block';
+    } else {
+        console.error("Popup dengan ID 'popupTambahFasilitas' tidak ditemukan.");
+    }
+}
+
+
+// POST
 // Fungsi untuk menampilkan popup Tambah Fasilitas
 function showPopup() {
     const popup = document.getElementById('popupTambahFasilitas');
@@ -93,7 +104,7 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
     }
 
     const namaFasilitas = document.getElementById('namaFasilitas').value.trim();
-    const typeFasilitas = document.querySelector('input[name="typeFasilitas"]:checked')?.value;
+    const typeFasilitas = document.getElementById('typeFasilitas').value.trim();
 
     if (!namaFasilitas || !typeFasilitas) {
         alert("Nama fasilitas dan tipe fasilitas tidak boleh kosong!");
@@ -140,50 +151,81 @@ document.getElementById('formTambahFasilitas').addEventListener('submit', functi
 
 // Fungsi untuk menutup popup
 function closePopup() {
-    const popup = document.getElementById('popupTambahFasilitas');
-    if (popup) {
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
         popup.style.display = 'none';
-    }
+    });
 }
 
 
-
-function showPopupEdit(facilityId, facilityName) {
+function showEditPopup(facility) {
     const popup = document.getElementById('popupEditFasilitas');
     if (popup) {
+        // Isi data ke dalam form
+        document.getElementById('editFacilityId').value = facility.id;
+        document.getElementById('editNamaFasilitas').value = facility.name;
+        document.getElementById('editTypeFasilitas').value = facility.type;
+
+        // Tampilkan popup
         popup.style.display = 'block';
-        document.getElementById('editFacilityId').value = facilityId;
-        document.getElementById('editNamaFasilitas').value = facilityName;
     } else {
         console.error("Popup Edit Fasilitas tidak ditemukan.");
     }
 }
 
+// Fungsi untuk menangani submit formulir edit fasilitas
 document.getElementById('formEditFasilitas').addEventListener('submit', function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
     const jwtToken = getJwtToken();
-    if (!jwtToken) return alert("Tidak ada token JWT.");
-    
-    const facilityId = document.getElementById('editFacilityId').value;
-    const namaFasilitasBaru = document.getElementById('editNamaFasilitas').value.trim();
-    if (!namaFasilitasBaru) return alert("Nama fasilitas tidak boleh kosong!");
-    
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const facilityId = document.getElementById('editFacilityId').value.trim();
+    const namaFasilitas = document.getElementById('editNamaFasilitas').value.trim();
+    const typeFasilitas = document.getElementById('editTypeFasilitas').value.trim();
+
+    if (!facilityId || !namaFasilitas || !typeFasilitas) {
+        alert("Semua field wajib diisi!");
+        return;
+    }
+
+    const requestBody = {
+        name: namaFasilitas,
+        type: typeFasilitas
+    };
+
+    // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/facility/${facilityId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: namaFasilitasBaru })
+        body: JSON.stringify(requestBody)
     })
-    .then(response => response.ok ? response.json() : response.json().then(err => Promise.reject(err)))
-    .then(data => {
-        alert("Fasilitas berhasil diperbarui!");
-        fetchFacilities(jwtToken);
-        closePopup();
-    })
-    .catch(error => {
-        console.error("Gagal memperbarui fasilitas:", error);
-        alert(`Gagal memperbarui fasilitas: ${error.message || error}`);
-    });
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fasilitas berhasil diperbarui:", data);
+            alert("Fasilitas berhasil diperbarui!");
+
+            // Perbarui tabel fasilitas
+            fetchFacilities(jwtToken);
+
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui fasilitas:", error);
+            alert(`Gagal memperbarui fasilitas: ${error.message}`);
+        });
 });
