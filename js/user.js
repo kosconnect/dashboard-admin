@@ -109,60 +109,81 @@ function fetchUsers(jwtToken) {
 }
 
 
-// Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
-function showPopupEdit(userId, fullname, email) {
-    // Isi data di dalam form dengan data pengguna yang dipilih
-    document.getElementById('editUserId').value = userId;
-    document.getElementById('editFullName').value = fullname;
-    document.getElementById('editEmail').value = email;
-
-    // Tampilkan popup
-    document.getElementById('popupEditUser').style.display = 'block';
-}
-
 // Fungsi untuk menutup popup
 function closePopup() {
     document.getElementById('popupEditUser').style.display = 'none';
 }
 
-// Fungsi untuk menangani form submit Edit User
-document.getElementById('formEditUser').addEventListener('submit', function(event) {
-    event.preventDefault(); // Mencegah form untuk refresh halaman
 
-    const userId = document.getElementById('editUserId').value;
-    const fullname = document.getElementById('editFullName').value;
-    const email = document.getElementById('editEmail').value;
+// Fungsi untuk menampilkan popup Edit User
+function showPopupEdit(userId, fullname, email) {
+    const popup = document.getElementById('popupEditUser');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+
+        // Isi input form dengan data user yang akan diubah
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editFullName').value = fullname;
+        document.getElementById('editEmail').value = email;
+    } else {
+        console.error("Popup Edit User tidak ditemukan.");
+    }
+}
+
+
+// Fungsi untuk menangani submit formulir Edit User
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
 
     const jwtToken = getJwtToken();
     if (!jwtToken) {
-        console.error("Token tidak ditemukan.");
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    // Request untuk mengupdate data pengguna
+    const userId = document.getElementById('editUserId').value;
+    const fullnameBaru = document.getElementById('editFullName').value.trim();
+    const emailBaru = document.getElementById('editEmail').value.trim();
+
+    if (!fullnameBaru || !emailBaru) {
+        alert("Nama lengkap dan email tidak boleh kosong!");
+        return;
+    }
+
+    const requestBody = {
+        fullname: fullnameBaru,
+        email: emailBaru
+    };
+
+    // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            fullname: fullname,
-            email: email
+        body: JSON.stringify(requestBody)
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("User updated successfully!");
-            // Refresh data pengguna setelah edit
+        .then(data => {
+            console.log("User berhasil diperbarui:", data);
+            alert("User berhasil diperbarui!");
+
+            // Perbarui tabel pengguna
             fetchUsers(jwtToken);
-        } else {
-            alert("Error updating user.");
-        }
-        closePopup(); // Tutup popup setelah selesai
-    })
-    .catch(error => {
-        console.error("Error updating user:", error);
-    });
+
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui user:", error);
+            alert(`Gagal memperbarui user: ${error.message}`);
+        });
 });
