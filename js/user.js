@@ -113,35 +113,48 @@ window.addEventListener('load', fetchUsers);
 let usersData = [];
 console.log("Data pengguna di usersData:", usersData);
 
-// Fungsi untuk menutup popup Edit User
-function closePopup() {
-    const popup = document.getElementById('popupEditUser');
-    if (popup) {
-        popup.style.display = 'none'; // Sembunyikan popup
-    }
-}
 
 // Fungsi untuk membuka popup edit dengan data pengguna
 function showPopupEdit(userId) {
-    const user = usersData.find(user => user.user_id === userId);
-    if (!user) {
-        console.error("Pengguna tidak ditemukan.");
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("JWT token tidak ditemukan.");
         return;
     }
 
-    // Isi data pengguna di popup edit
-    document.getElementById('editUserId').value = user.user_id;
-    document.getElementById('editFullName').value = user.fullname;
-    document.getElementById('editEmail').value = user.email;
+    // Ambil data pengguna dari server berdasarkan user_id
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(user => {
+            if (!user) {
+                console.error("Pengguna tidak ditemukan.");
+                return;
+            }
 
-    // Tampilkan popup edit
-    document.getElementById('popupEditUser').style.display = 'block';
-}
+            // Isi data pengguna di popup edit
+            document.getElementById('editUserId').value = user.user_id;
+            document.getElementById('editFullName').value = user.fullname;
+            document.getElementById('editEmail').value = user.email;
 
-// Fungsi untuk menyembunyikan popup
-function closePopup() {
-    document.getElementById('popupEditUser').style.display = 'none';
-}
+            // Tampilkan popup edit
+            document.getElementById('popupEditUser').style.display = 'block';
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data pengguna:", error);
+            alert("Terjadi kesalahan saat mengambil data pengguna.");
+        });
+
+    }
 
 // Fungsi untuk memperbarui data pengguna
 function updateUser() {
