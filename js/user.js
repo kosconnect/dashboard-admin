@@ -78,7 +78,7 @@ function fetchUsers(jwtToken) {
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-primary" onclick="showPopupEdit('${user.user_id}')"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
@@ -108,6 +108,10 @@ function fetchUsers(jwtToken) {
         });
 }
 
+window.addEventListener('load', fetchUsers);
+
+let usersData = [];
+console.log("Data pengguna di usersData:", usersData);
 
 // Fungsi untuk menutup popup Edit User
 function closePopup() {
@@ -118,8 +122,8 @@ function closePopup() {
 }
 
 // Fungsi untuk membuka popup edit dengan data pengguna
-function showPopupEdit(fullname) {
-    const user = usersData.find(user => user.fullname === fullname);
+function showPopupEdit(userId) {
+    const user = usersData.find(user => user.user_id === userId);
     if (!user) {
         console.error("Pengguna tidak ditemukan.");
         return;
