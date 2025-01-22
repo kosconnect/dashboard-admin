@@ -117,92 +117,85 @@ function closePopup() {
     }
 }
 
-// Fungsi untuk menampilkan popup Edit User
-function showPopupEdit(userId, fullname, email) {
-    const popup = document.getElementById('popupEditUser');
-    if (popup) {
-        popup.style.display = 'block'; // Tampilkan popup
-
-        // Isi input form dengan data user yang akan diubah
-        document.getElementById('editUserId').value = userId;
-        document.getElementById('editFullName').value = fullname;
-        document.getElementById('editEmail').value = email;
-    } else {
-        console.error("Popup Edit User tidak ditemukan.");
+// Fungsi untuk membuka popup edit dengan data pengguna
+function showPopupEdit(fullname) {
+    const user = usersData.find(user => user.fullname === fullname);
+    if (!user) {
+        console.error("Pengguna tidak ditemukan.");
+        return;
     }
+
+    // Isi data pengguna di popup edit
+    document.getElementById('editUserId').value = user.user_id;
+    document.getElementById('editFullName').value = user.fullname;
+    document.getElementById('editEmail').value = user.email;
+
+    // Tampilkan popup edit
+    document.getElementById('popupEditUser').style.display = 'block';
 }
 
+// Fungsi untuk menyembunyikan popup
+function closePopup() {
+    document.getElementById('popupEditUser').style.display = 'none';
+}
 
-// Fungsi untuk menangani submit formulir Edit User
-document.getElementById('formEditUser').addEventListener('submit', function (event) {
-    event.preventDefault(); // Mencegah reload halaman saat form disubmit
-
+// Fungsi untuk memperbarui data pengguna
+function updateUser() {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
+    // Ambil data dari form
     const userId = document.getElementById('editUserId').value;
-    const fullnameBaru = document.getElementById('editFullName').value.trim();
-    const emailBaru = document.getElementById('editEmail').value.trim();
+    const updatedFullName = document.getElementById('editFullName').value;
+    const updatedEmail = document.getElementById('editEmail').value;
 
-    if (!fullnameBaru || !emailBaru) {
-        alert("Nama lengkap dan email tidak boleh kosong!");
+    // Validasi data input
+    if (!userId || !updatedFullName || !updatedEmail) {
+        alert("Semua field wajib diisi.");
         return;
     }
 
-    const requestBody = {
-        fullname: fullnameBaru,
-        email: emailBaru
-    };
-
-    // Kirim permintaan PUT ke API
+    // Lakukan permintaan PUT ke server
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+            fullname: updatedFullName,
+            email: updatedEmail
+        })
     })
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
-                });
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("User berhasil diperbarui:", data);
-            alert("User berhasil diperbarui!");
-
-            // Perbarui tabel pengguna secara lokal
-            updateTableRow(userId, fullnameBaru, emailBaru);
+            console.log("Pengguna berhasil diperbarui:", data);
 
             // Tutup popup
             closePopup();
+
+            // Refresh data pengguna di tabel
+            fetchUsers();
+
+            // Tampilkan notifikasi berhasil
+            alert("Data pengguna berhasil diperbarui.");
         })
         .catch(error => {
-            console.error("Gagal memperbarui user:", error);
-            alert(`Gagal memperbarui user: ${error.message}`);
+            console.error("Gagal memperbarui pengguna:", error);
+            alert("Terjadi kesalahan saat memperbarui pengguna.");
         });
-});
-
-// Fungsi untuk memperbarui baris tabel pengguna secara lokal
-function updateTableRow(userId, fullnameBaru, emailBaru) {
-    const tableRows = document.querySelectorAll('#user-table-body tr');
-    tableRows.forEach(row => {
-        // Periksa ID user di tombol edit
-        const editButton = row.querySelector('button[onclick^="showPopupEdit"]');
-        if (editButton && editButton.getAttribute('onclick').includes(userId)) {
-            // Perbarui kolom Nama dan Email di baris ini
-            const nameCell = row.children[0];
-            const emailCell = row.children[1];
-
-            if (nameCell) nameCell.textContent = fullnameBaru;
-            if (emailCell) emailCell.textContent = emailBaru;
-        }
-    });
 }
+
+// Tambahkan event listener untuk form submit
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault(); // Cegah form melakukan submit default
+    updateUser(); // Panggil fungsi update user
+});
