@@ -1,4 +1,4 @@
-// Fetch JWT Token from Cookies
+// Fungsi untuk mendapatkan JWT token
 function getJwtToken() {
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
@@ -11,15 +11,21 @@ function getJwtToken() {
     return null;
 }
 
-// GET Boarding Houses and Populate Table
-function fetchBoardingHouses() {
+// Tunggu hingga seluruh DOM dimuat
+document.addEventListener('DOMContentLoaded', function () {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    fetch('https://kosconnect-server.vercel.app/api/boardingHouses/', {
+    // Panggil fungsi fetchBoardingHouses setelah token ditemukan
+    fetchBoardingHouses(jwtToken);
+});
+
+// Fungsi untuk mengambil data kos
+function fetchBoardingHouses(jwtToken) {
+    fetch('https://kosconnect-server.vercel.app/api/boarding-houses/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
@@ -27,7 +33,6 @@ function fetchBoardingHouses() {
         }
     })
         .then(response => {
-            console.log(response);  // Tambahkan ini untuk debug
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -36,73 +41,40 @@ function fetchBoardingHouses() {
         .then(data => {
             console.log("Data boarding houses:", data);
 
-            const tbody = document.querySelector('table tbody');
-            if (!tbody) {
-                console.error("Elemen tbody tidak ditemukan di DOM.");
+            const container = document.querySelector('.cards-container');
+            if (!container) {
+                console.error("Elemen .cards-container tidak ditemukan di DOM.");
                 return;
             }
 
-            // Kosongkan tabel sebelum menambah data baru
-            tbody.innerHTML = '';
+            container.innerHTML = ''; // Kosongkan kontainer
 
-            // Loop data dan tambahkan ke tabel
-            data.data.forEach((house, index) => {
-                const tr = document.createElement('tr');
+            data.forEach(kos => {
+                const card = document.createElement('div');
+                card.className = 'card';
 
-                // Simpan ID boarding house di atribut data-id
-                tr.setAttribute('data-id', house.boarding_house_id);
-
-                // Kolom No
-                const tdNo = document.createElement('td');
-                tdNo.textContent = index + 1;
-                tr.appendChild(tdNo);
-
-                // Kolom Nama Pemilik dan ID
-                const tdOwnerId = document.createElement('td');
-                tdOwnerId.textContent = `Owner ID: ${house.owner_id}`;  // Menampilkan Owner ID
-                tr.appendChild(tdOwnerId);
-
-                // Kolom Fasilitas
-                const tdFacilities = document.createElement('td');
-                // Memastikan facilities_id ada dan merupakan array, jika tidak tampilkan 'N/A'
-                tdFacilities.textContent = Array.isArray(house.facilities_id) && house.facilities_id.length > 0
-                    ? house.facilities_id.join(", ")
-                    : 'N/A';
-                tr.appendChild(tdFacilities);
-
-                // Kolom Alamat
-                const tdAddress = document.createElement('td');
-                tdAddress.textContent = house.address || 'N/A';
-                tr.appendChild(tdAddress);
-
-                // Kolom Long & Lat
-                const tdCoordinates = document.createElement('td');
-                tdCoordinates.textContent = `${house.longitude || 'N/A'}, ${house.latitude || 'N/A'}`;
-                tr.appendChild(tdCoordinates);
-
-                // Kolom Foto
-                const tdPhoto = document.createElement('td');
-                if (Array.isArray(house.images) && house.images.length > 0) {
-                    const img = document.createElement('img');
-                    img.src = house.images[0];  // Menampilkan gambar pertama
-                    img.alt = "Boarding House Image";
-                    img.style.width = "100px";  // Mengatur ukuran gambar
-                    tdPhoto.appendChild(img);
-                } else {
-                    tdPhoto.textContent = 'No Image';
-                }
-                tr.appendChild(tdPhoto);
-
-                // Kolom Aksi
-                const tdAction = document.createElement('td');
-                tdAction.innerHTML = `
-                    <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn btn-danger"><i class="fas fa-trash"></i> Hapus</button>
+                card.innerHTML = `
+                    <div class="header">
+                        <h2>${kos.name || 'Nama Kos Tidak Tersedia'}</h2>
+                    </div>
+                    <div class="card-content">
+                        <h3>Owner</h3>
+                        <p>Owner Id: ${kos.owner_id || 'Tidak Diketahui'}</p>
+                        <h3>Detail</h3>
+                        <p>Fasilitas: ${kos.facilities ? kos.facilities.length : 0}</p>
+                        <p>Alamat: ${kos.address || 'Alamat Tidak Tersedia'}</p>
+                        <p>Latitude & Longitude: ${kos.latitude || 'N/A'}, ${kos.longitude || 'N/A'}</p>
+                        <h3>Foto</h3>
+                        <div class="images">
+                            ${kos.images && kos.images.length > 0 ? kos.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
+                        </div>
+                        <h3>Aksi</h3>
+                        <button class="btn btn-primary" onclick="editBoardingHouse('${kos.boarding_house_id}')">Edit</button>
+                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${kos.boarding_house_id}')">Hapus</button>
+                    </div>
                 `;
-                tr.appendChild(tdAction);
 
-                // Tambahkan baris ke tabel
-                tbody.appendChild(tr);
+                container.appendChild(card);
             });
         })
         .catch(error => {
@@ -110,5 +82,12 @@ function fetchBoardingHouses() {
         });
 }
 
-// Panggil fungsi fetch ketika halaman dimuat
-document.addEventListener('DOMContentLoaded', fetchBoardingHouses);
+// Fungsi Edit (placeholder)
+function editBoardingHouse(boardingHouseId) {
+    alert(`Edit boarding house: ${boardingHouseId}`);
+}
+
+// Fungsi Hapus (placeholder)
+function deleteBoardingHouse(boardingHouseId) {
+    alert(`Hapus boarding house: ${boardingHouseId}`);
+}
