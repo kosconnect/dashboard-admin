@@ -75,7 +75,6 @@ function fetchBoardingHouses(jwtToken) {
                                         <h3>Kategori</h3>
                                         <p>Category: ${categoryName || 'Tidak Diketahui'}</p>
                                         <h3>Detail</h3>
-                                        <p>Fasilitas: ${boardingHouse.facilities ? boardingHouse.facilities.length : 0}</p>
                                         <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
                                         <p>Latitude & Longitude: ${boardingHouse.latitude || 'N/A'}, ${boardingHouse.longitude || 'N/A'}</p>
                                         <h3>Foto</h3>
@@ -122,7 +121,7 @@ function fetchCategory(categoryId, jwtToken) {
 
 // Fungsi untuk mengambil owner berdasarkan ID
 function fetchOwner(ownerId, jwtToken) {
-    return fetch(`https://kosconnect-server.vercel.app/api/users/owner/${ownerId}`, {
+    return fetch(`https://kosconnect-server.vercel.app/api/users/${ownerId}`, { // Perbaikan endpoint
         headers: {
             Authorization: `Bearer ${jwtToken}`,
         },
