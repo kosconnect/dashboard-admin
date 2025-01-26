@@ -86,9 +86,9 @@ function fetchUsers(jwtToken) {
                     <button class="btn btn-primary dropdown-button">
                         <i class="fas fa-ellipsis-v"></i> Lainnya</button>
                     <div class="dropdown-aksi-content">
-                        <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.fullname}', '${user.role}')">
-                            <i class="fas fa-user-cog"></i> Update Role
-                        </button>
+                    <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.id}', '${user.fullname}', '${user.role}')">
+                        <i class="fas fa-user-cog"></i> Update Role
+                    </button>
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
                             <i class="fas fa-key"></i> Change Password
                         </button>
@@ -192,7 +192,7 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
 
             // Tutup popup sebelum menampilkan alert
             closePopup('popupEditUser');
-            
+
             // Tampilkan notifikasi berhasil
             alert("User berhasil diperbarui!");
 
@@ -268,5 +268,82 @@ function closePopup() {
         selectedUserId = null; // Reset user ID yang tersimpan
     } else {
         console.error("Popup tidak ditemukan untuk ditutup.");
+    }
+}
+
+
+// Fungsi untuk menampilkan popup Ubah Role User
+function showPopupUbahRoleUser(userId, userName, currentRole) {
+    const popup = document.getElementById('popupUbahRoleUser');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+        document.getElementById('userIdHidden').value = userId; // Set ID user ke input hidden
+        document.getElementById('userName').value = userName; // Set nama pengguna ke input
+        document.getElementById('userRole').value = currentRole; // Set role saat ini ke dropdown
+    } else {
+        console.error("Popup Ubah Role User tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menangani submit formulir Ubah Role User
+document.getElementById('formUbahRoleUser').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
+    const jwtToken = getJwtToken(); // Ambil token JWT
+    if (!jwtToken) {
+        alert("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const userId = document.getElementById('userIdHidden').value; // Ambil ID user dari input hidden
+    const newRole = document.getElementById('userRole').value; // Ambil role baru dari dropdown
+
+    if (!userId || !newRole) {
+        alert("Terjadi kesalahan: User ID atau role baru tidak valid.");
+        return;
+    }
+
+    // Permintaan PUT ke API untuk mengubah role user
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}/role`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ role: newRole }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Role pengguna berhasil diubah:", data);
+
+            // Tutup popup sebelum menampilkan alert
+            closePopup('popupUbahRoleUser');
+
+            // Tampilkan notifikasi berhasil
+            alert("Role pengguna berhasil diubah!");
+
+            // Perbarui daftar pengguna (panggil fungsi fetchUsers jika ada)
+            fetchUsers(jwtToken);
+        })
+        .catch(error => {
+            console.error("Gagal mengubah role pengguna:", error);
+            alert(`Gagal mengubah role pengguna: ${error.message}`);
+        });
+});
+
+// Fungsi untuk menutup popup
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    } else {
+        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
     }
 }
