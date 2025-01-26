@@ -58,23 +58,23 @@ function fetchUsers(jwtToken) {
 
             // Loop data pengguna dan tambahkan ke tabel
             data.users.forEach(user => {
-            
+
                 const tr = document.createElement('tr');
-            
+
                 // Kolom Nama
                 const tdNama = document.createElement('td');
                 tdNama.textContent = user.fullname || "N/A";
                 tr.appendChild(tdNama);
-            
+
                 // Kolom Email
                 const tdEmail = document.createElement('td');
                 tdEmail.textContent = user.email || "N/A";
                 tr.appendChild(tdEmail);
-            
+
                 // Kolom Role
                 const tdRole = document.createElement('td');
                 tdRole.textContent = user.role || "N/A";
-                tr.appendChild(tdRole);            
+                tr.appendChild(tdRole);
 
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
@@ -130,9 +130,15 @@ function showPopupEdit(userId, fullName, email) {
     }
 }
 
+
 // Fungsi untuk menutup popup
-function closePopup() {
-    document.getElementById('popupEditUser').style.display = 'none';
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    } else {
+        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
+    }
 }
 
 // Fungsi untuk menangani submit formulir Edit User
@@ -188,8 +194,8 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
             // Perbarui tabel user
             fetchUsers(jwtToken);
 
-            // Tutup popup
-            closePopup();
+            // Tutup popup edit
+            closePopup('popupEditUser');
         })
         .catch(error => {
             console.error("Gagal memperbarui user:", error);
@@ -233,24 +239,24 @@ function confirmDelete() {
             'Authorization': `Bearer ${jwtToken}`
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(err.message || `HTTP error! status: ${response.status}`);
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("User berhasil dihapus:", data); // Log hasil penghapusan
-        alert("User berhasil dihapus!"); // Tampilkan notifikasi berhasil
-        fetchUsers(jwtToken); // Perbarui daftar user
-        closePopup(); // Tutup popup setelah alert berhasil
-    })
-    .catch(error => {
-        console.error("Gagal menghapus user:", error); // Log error
-        alert(`Gagal menghapus user: ${error.message}`); // Tampilkan notifikasi gagal
-    });
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("User berhasil dihapus:", data); // Log hasil penghapusan
+            alert("User berhasil dihapus!"); // Tampilkan notifikasi berhasil
+            fetchUsers(jwtToken); // Perbarui daftar user
+            closePopup(); // Tutup popup setelah alert berhasil
+        })
+        .catch(error => {
+            console.error("Gagal menghapus user:", error); // Log error
+            alert(`Gagal menghapus user: ${error.message}`); // Tampilkan notifikasi gagal
+        });
 }
 
 // Fungsi untuk menutup popup
