@@ -10,12 +10,10 @@ function getJwtToken() {
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.startsWith('authToken=')) {
-            const token = cookie.substring('authToken='.length);
-            console.log("Token JWT ditemukan:", token); // Debug: Periksa token
-            return token;
+            return cookie.substring('authToken='.length);
         }
     }
-    console.error("Token tidak ditemukan di cookie.");
+    console.error("Token tidak ditemukan.");
     return null;
 }
 
@@ -80,7 +78,7 @@ function fetchUsers(jwtToken) {
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                    <button class="btn btn-primary" onclick="showPopupEdit('${user.user_id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
@@ -110,73 +108,38 @@ function fetchUsers(jwtToken) {
         });
 }
 
-// window.addEventListener('load', fetchUsers);
 
-// let usersData = [];
-// console.log("Data pengguna di usersData:", usersData);
+// Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
+function showPopupEdit(userId, fullname, email) {
+    // Isi data di dalam form dengan data pengguna yang dipilih
+    document.getElementById('editUserId').value = userId;
+    document.getElementById('editFullName').value = fullname;
+    document.getElementById('editEmail').value = email;
 
-
-// Fungsi untuk membuka popup edit
-function showPopupEdit(userId) {
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("JWT token tidak ditemukan.");
-        return;
-    }
-
-    // Ambil data pengguna dari server berdasarkan user_id
-    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-        }
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(user => {
-            if (!user) {
-                console.error("Pengguna tidak ditemukan.");
-                return;
-            }
-
-            // Isi data pengguna di popup edit
-            document.getElementById('editUserId').value = user.user_id;
-            document.getElementById('editFullName').value = user.fullname;
-            document.getElementById('editEmail').value = user.email;
-
-            // Tampilkan popup edit
-            document.getElementById('popupEditUser').style.display = 'block';
-        })
-        .catch(error => {
-            console.error("Gagal mengambil data pengguna:", error);
-            alert("Terjadi kesalahan saat mengambil data pengguna.");
-        });
+    // Tampilkan popup
+    document.getElementById('popupEditUser').style.display = 'block';
 }
 
-// Fungsi untuk memperbarui data pengguna
-function updateUser() {
+// Fungsi untuk menutup popup
+function closePopup() {
+    document.getElementById('popupEditUser').style.display = 'none';
+}
+
+// Fungsi untuk menangani form submit Edit User
+document.getElementById('formEditUser').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah form untuk refresh halaman
+
+    const userId = document.getElementById('editUserId').value;
+    const fullname = document.getElementById('editFullName').value;
+    const email = document.getElementById('editEmail').value;
+
     const jwtToken = getJwtToken();
     if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        console.error("Token tidak ditemukan.");
         return;
     }
 
-    // Ambil data dari form
-    const userId = document.getElementById('editUserId').value;
-    const updatedFullName = document.getElementById('editFullName').value;
-    const updatedEmail = document.getElementById('editEmail').value;
-
-    // Validasi data input
-    if (!userId || !updatedFullName || !updatedEmail) {
-        alert("Semua field wajib diisi.");
-        return;
-    }
-
-    // Lakukan permintaan PUT ke server
+    // Request untuk mengupdate data pengguna
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
@@ -184,46 +147,22 @@ function updateUser() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            fullname: updatedFullName,
-            email: updatedEmail
+            fullname: fullname,
+            email: email
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Pengguna berhasil diperbarui:", data);
-
-            // Tutup popup
-            closePopup();
-
-            // Refresh data pengguna di tabel
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("User updated successfully!");
+            // Refresh data pengguna setelah edit
             fetchUsers(jwtToken);
-
-            // Tampilkan notifikasi berhasil
-            alert("Data pengguna berhasil diperbarui.");
-        })
-        .catch(error => {
-            console.error("Gagal memperbarui pengguna:", error);
-            alert("Terjadi kesalahan saat memperbarui pengguna.");
-        });
-}
-
-// Tunggu hingga DOM dimuat, lalu panggil fetchUsers
-document.addEventListener('DOMContentLoaded', function () {
-    const jwtToken = getJwtToken();
-    if (jwtToken) {
-        fetchUsers(jwtToken);
-    } else {
-        alert("Tidak ada token JWT. Harap login kembali.");
-    }
-});
-
-// Tambahkan event listener untuk form submit
-document.getElementById('formEditUser').addEventListener('submit', function (event) {
-    event.preventDefault(); // Cegah form melakukan submit default
-    updateUser(); // Panggil fungsi update user
+        } else {
+            alert("Error updating user.");
+        }
+        closePopup(); // Tutup popup setelah selesai
+    })
+    .catch(error => {
+        console.error("Error updating user:", error);
+    });
 });
