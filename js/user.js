@@ -111,7 +111,7 @@ function fetchUsers(jwtToken) {
 
 // Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
 function showPopupEdit(userId, fullname, email) {
-    console.log("Editing user with ID:", userId); // Debugging: pastikan userId ada
+    console.log("Editing user with ID:", userId); // Debug userId
     document.getElementById('editUserId').value = userId;
     document.getElementById('editFullName').value = fullname;
     document.getElementById('editEmail').value = email;
@@ -125,7 +125,7 @@ function closePopup() {
 }
 
 // Fungsi untuk menangani form submit Edit User
-document.getElementById('formEditUser').addEventListener('submit', function (event) {
+document.getElementById('formEditUser').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const userId = document.getElementById('editUserId').value;
@@ -133,9 +133,9 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
     const email = document.getElementById('editEmail').value;
 
     // Validasi userId
-    if (!userId || isNaN(userId)) {
-        console.error("Invalid User ID format.");
-        alert("Terjadi kesalahan: User ID tidak valid.");
+    if (!userId) {
+        console.error("User ID is missing!");
+        alert("User ID tidak valid. Tidak dapat mengupdate data.");
         return;
     }
 
@@ -145,7 +145,7 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
         return;
     }
 
-    // Request untuk mengupdate data pengguna
+    // Kirim permintaan PUT
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
@@ -154,18 +154,18 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
         },
         body: JSON.stringify({ fullname, email })
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Server Response:", data);
-            if (data.success) {
-                alert("User updated successfully!");
-                fetchUsers(jwtToken);
-            } else {
-                alert(`Error updating user: ${data.message || "Unknown error"}`);
-            }
-            closePopup();
-        })
-        .catch(error => {
-            console.error("Error updating user:", error);
-        });
+    .then(response => response.json())
+    .then(data => {
+        console.log("Server Response:", data);
+        if (data.success) {
+            alert("User berhasil diupdate!");
+            fetchUsers(jwtToken);
+        } else {
+            alert(`Error updating user: ${data.error || "Unknown error"}`);
+        }
+        closePopup();
+    })
+    .catch(error => {
+        console.error("Error updating user:", error);
+    });
 });
