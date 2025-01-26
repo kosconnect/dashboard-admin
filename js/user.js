@@ -58,27 +58,30 @@ function fetchUsers(jwtToken) {
 
             // Loop data pengguna dan tambahkan ke tabel
             data.users.forEach(user => {
+                console.log("User Data:", user); // Debug: Periksa data user
+                console.log("User ID:", user.user_id); // Debug: Pastikan user_id tersedia
+            
                 const tr = document.createElement('tr');
-
+            
                 // Kolom Nama
                 const tdNama = document.createElement('td');
                 tdNama.textContent = user.fullname || "N/A";
                 tr.appendChild(tdNama);
-
+            
                 // Kolom Email
                 const tdEmail = document.createElement('td');
                 tdEmail.textContent = user.email || "N/A";
                 tr.appendChild(tdEmail);
-
+            
                 // Kolom Role
                 const tdRole = document.createElement('td');
                 tdRole.textContent = user.role || "N/A";
-                tr.appendChild(tdRole);
+                tr.appendChild(tdRole);            
 
                 // Kolom Aksi dengan Dropdown
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
-                     <button class="btn btn-primary" onclick="showPopupEdit('${user.id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
+                     <button class="btn btn-primary" onclick="showPopupEdit('${user.user_id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
@@ -111,15 +114,16 @@ function fetchUsers(jwtToken) {
 
 // Fungsi untuk menampilkan popup Edit User
 function showPopupEdit(userId, fullName, email) {
-    console.log("User ID:", userId); // Debug
-    console.log("Full Name:", fullName); // Debug
-    console.log("Email:", email); // Debug
+    console.log("User ID yang diterima di showPopupEdit:", userId); // Debug
+    if (!userId) {
+        console.error("User ID tidak ditemukan!");
+        alert("Terjadi kesalahan: User ID tidak ditemukan.");
+        return;
+    }
 
     const popup = document.getElementById('popupEditUser');
     if (popup) {
         popup.style.display = 'block'; // Tampilkan popup
-
-        // Isi input form dengan data user yang akan diubah
         document.getElementById('editUserId').value = userId;
         document.getElementById('editFullName').value = fullName;
         document.getElementById('editEmail').value = email;
@@ -137,13 +141,13 @@ function closePopup() {
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
     event.preventDefault(); // Mencegah reload halaman saat form disubmit
 
-    const jwtToken = getJwtToken(); // Fungsi untuk mendapatkan JWT Token
+    const jwtToken = getJwtToken();
     if (!jwtToken) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
     }
 
-    const userId = document.getElementById('editUserId').value;
+    const userId = document.getElementById('editUserId').value; // Pastikan ini berisi user_id
     const fullNameBaru = document.getElementById('editFullName').value.trim();
     const emailBaru = document.getElementById('editEmail').value.trim();
 
@@ -160,17 +164,16 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
 
     const requestBody = {
         fullname: fullNameBaru,
-        email: emailBaru
+        email: emailBaru,
     };
 
-    // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
     })
         .then(response => {
             if (!response.ok) {
@@ -185,7 +188,7 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
             alert("User berhasil diperbarui!");
 
             // Perbarui tabel user
-            fetchUsers(jwtToken); // Fungsi untuk memuat ulang daftar user
+            fetchUsers(jwtToken);
 
             // Tutup popup
             closePopup();
