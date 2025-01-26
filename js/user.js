@@ -153,14 +153,14 @@ document.getElementById('formEditUser').addEventListener('submit', function(even
     })
     .then(response => response.json())
     .then(data => {
+        console.log("Server Response:", data);
         if (data.success) {
             alert("User updated successfully!");
-            // Refresh data pengguna setelah edit
-            fetchUsers(jwtToken);
+            fetchUsers(jwtToken); // Refresh data pengguna
         } else {
-            alert("Error updating user.");
+            alert(`Error updating user: ${data.message || "Unknown error"}`);
         }
-        closePopup(); // Tutup popup setelah selesai
+        closePopup();
     })
     .catch(error => {
         console.error("Error updating user:", error);
