@@ -335,63 +335,66 @@ document.getElementById('formUbahRoleUser').addEventListener('submit', function 
         });
 });
 
+
+
+// Fungsi untuk menampilkan popup Reset Password
+function showPopupResetPassword(userId) {
+    const popup = document.getElementById('popupResetPassword');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+        document.getElementById('resetUserId').value = userId; // Set user ID ke hidden input
+    } else {
+        console.error("Popup Reset Password tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menutup popup
+function closePopup() {
+    const popup = document.getElementById('popupResetPassword');
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    } else {
+        console.error("Popup tidak ditemukan.");
+    }
+}
+
 // Fungsi untuk toggle visibility password
 function togglePasswordVisibility(passwordId, iconId) {
     const passwordInput = document.getElementById(passwordId);
     const passwordIcon = document.getElementById(iconId);
 
     if (passwordInput.type === 'password') {
-        passwordInput.type = 'text'; // Menampilkan password
-        passwordIcon.classList.remove('fa-eye');
+        passwordInput.type = 'text'; // Tampilkan password
+        passwordIcon.classList.remove('fa-eye'); // Ubah ikon
         passwordIcon.classList.add('fa-eye-slash');
     } else {
-        passwordInput.type = 'password'; // Menyembunyikan password
-        passwordIcon.classList.remove('fa-eye-slash');
+        passwordInput.type = 'password'; // Sembunyikan password
+        passwordIcon.classList.remove('fa-eye-slash'); // Ubah ikon
         passwordIcon.classList.add('fa-eye');
     }
 }
 
-// Fungsi untuk menutup popup
-function closePopup(popupId) {
-    const popup = document.getElementById(popupId);
-    if (popup) {
-        popup.style.display = 'none';
-    } else {
-        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
-    }
-}
-
-// Fungsi untuk menampilkan popup reset password
-function showPopupResetPassword(userId) {
-    const popup = document.getElementById('popupResetPassword');
-    if (popup) {
-        popup.style.display = 'block'; // Tampilkan popup
-        document.getElementById('resetUserId').value = userId; // Set user ID
-    }
-}
-
-// Fungsi untuk submit form reset password
+// Fungsi untuk menangani submit form Reset Password
 document.getElementById('formResetPassword').addEventListener('submit', function (event) {
     event.preventDefault(); // Mencegah reload halaman
 
-    const userId = document.getElementById('resetUserId').value;
-    const oldPassword = document.getElementById('oldPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const jwtToken = getJwtToken();
+    const userId = document.getElementById('resetUserId').value; // Ambil ID pengguna
+    const newPassword = document.getElementById('newPassword').value; // Ambil password baru
+    const jwtToken = getJwtToken(); // Fungsi untuk mengambil token JWT
 
-    if (!userId || !oldPassword || !newPassword) {
-        alert("Semua kolom harus diisi.");
+    if (!userId || !newPassword) {
+        alert("Data tidak lengkap. Pastikan semua input diisi.");
         return;
     }
 
-    // Kirim permintaan PUT ke endpoint reset password
+    // Kirim permintaan PUT ke API untuk reset password
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}/reset-password`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ oldPassword, newPassword })
+        body: JSON.stringify({ newPassword: newPassword })
     })
         .then(response => {
             if (!response.ok) {
@@ -402,9 +405,8 @@ document.getElementById('formResetPassword').addEventListener('submit', function
             return response.json();
         })
         .then(data => {
-            // Tampilkan alert sukses
             alert("Password berhasil direset!");
-            closePopup('popupResetPassword'); // Tutup popup setelah alert
+            closePopup(); // Tutup popup setelah berhasil
         })
         .catch(error => {
             console.error("Gagal mereset password:", error);
