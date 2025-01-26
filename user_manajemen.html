@@ -182,16 +182,22 @@
                 <!-- Hidden input for User ID (if required) -->
                 <input type="hidden" id="resetUserId" name="userId">
 
+                <!-- Input untuk Password Lama -->
                 <label for="oldPassword" class="form-label">Password Lama</label>
-                <input type="password" id="oldPassword" name="oldPassword" placeholder="Masukkan password lama"
-                    required>
+                <div class="password-container">
+                    <input type="text" id="oldPassword" name="oldPassword" placeholder="Masukkan Password Lama"
+                        required>
+                    <i class="fa-solid fa-eye" id="toggleOldPassword"
+                        onclick="togglePasswordVisibility('oldPassword', 'toggleOldPassword')"></i>
+                </div>
 
+                <!-- Input untuk Password Baru -->
                 <label for="newPassword" class="form-label">Password Baru</label>
-                <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan password baru"
-                    required>
-
-                <div class="popup-actions">
-                    <button type="submit" class="btn btn-simpan">Reset Password</button>
+                <div class="password-container">
+                    <input type="text" id="newPassword" name="newPassword" placeholder="Masukkan Password Baru"
+                        required>
+                    <i class="fa-solid fa-eye" id="toggleNewPassword"
+                        onclick="togglePasswordVisibility('newPassword', 'toggleNewPassword')"></i>
                 </div>
             </form>
         </div>

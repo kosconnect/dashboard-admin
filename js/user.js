@@ -361,9 +361,9 @@ function showPopupResetPassword(userId) {
 document.getElementById('formResetPassword').addEventListener('submit', function (event) {
     event.preventDefault(); // Mencegah reload halaman
 
-    const userId = document.getElementById('resetUserId').value;
-    const oldPassword = document.getElementById('oldPassword').value.trim();
-    const newPassword = document.getElementById('newPassword').value.trim();
+    const userId = document.getElementById('resetUserId').value; // ID pengguna
+    const oldPassword = document.getElementById('oldPassword').value; // Password lama
+    const newPassword = document.getElementById('newPassword').value; // Password baru
     const jwtToken = getJwtToken();
 
     if (!jwtToken || !userId || !oldPassword || !newPassword) {
@@ -379,24 +379,21 @@ document.getElementById('formResetPassword').addEventListener('submit', function
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            oldPassword: oldPassword, // Ambil dari input
-            newPassword: newPassword  // Ambil dari input
+            oldPassword: oldPassword,
+            newPassword: newPassword
         })
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(err.message || `HTTP error! status: ${response.status}`);
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert("Password berhasil diperbarui!"); // Tampilkan notifikasi berhasil
-        closePopup(); // Tutup popup setelah berhasil
-
-            // Perbarui daftar pengguna jika perlu (panggil fungsi fetchUsers jika ada)
-            // fetchUsers(jwtToken);
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Password berhasil diperbarui!"); // Notifikasi berhasil
+            closePopup(); // Menutup popup setelah alert
         })
         .catch(error => {
             console.error("Gagal memperbarui password:", error);
@@ -405,11 +402,27 @@ document.getElementById('formResetPassword').addEventListener('submit', function
 });
 
 // Fungsi untuk menutup popup
-function closePopup(popupId) {
-    const popup = document.getElementById(popupId);
+function closePopup() {
+    const popup = document.getElementById('popupResetPassword');
     if (popup) {
-        popup.style.display = 'none'; // Sembunyikan popup
+        popup.style.display = 'none'; // Menyembunyikan popup
     } else {
-        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
+        console.error("Popup tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk toggle visibility password
+function togglePasswordVisibility(passwordId, iconId) {
+    const passwordInput = document.getElementById(passwordId);
+    const passwordIcon = document.getElementById(iconId);
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text'; // Menampilkan password
+        passwordIcon.classList.remove('fa-eye'); // Ganti ikon
+        passwordIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password'; // Menyembunyikan password
+        passwordIcon.classList.remove('fa-eye-slash'); // Ganti ikon
+        passwordIcon.classList.add('fa-eye');
     }
 }
