@@ -55,36 +55,70 @@ function fetchBoardingHouses(jwtToken) {
             // Clear previous cards
             container.innerHTML = "";
 
+            // Loop untuk setiap boarding house
             boardingHouses.forEach((boardingHouse) => {
-                const card = document.createElement("div");
-                card.className = "card";
-                
-                card.innerHTML = `
-                    <div class="header">
-                        <h2>${boardingHouse.name || 'Nama Kos Tidak Tersedia'}</h2>
-                    </div>
-                    <div class="card-content">
-                        <h3>Owner</h3>
-                        <p>Owner Id: ${boardingHouse.owner_id || 'Tidak Diketahui'}</p>
-                        <h3>Detail</h3>
-                        <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
-                        <p>Deskripsi: ${boardingHouse.description || 'Deskripsi Tidak Tersedia'}</p>
-                        <p>Aturan: ${boardingHouse.rules || 'Tidak Ada Aturan'}</p>
-                        <h3>Foto</h3>
-                        <div class="images">
-                            ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
-                        </div>
-                        <h3>Aksi</h3>
-                        <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouse.boarding_house_id}')">Edit</button>
-                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouse.boarding_house_id}')">Hapus</button>
-                    </div>
-                `;
+                // Ambil nama kategori dan owner
+                fetchCategory(boardingHouse.category_id)
+                    .then(categoryName => {
+                        return fetchOwner(boardingHouse.owner_id)
+                            .then(ownerName => {
+                                // Membuat card setelah mendapatkan nama kategori dan owner
+                                const card = document.createElement("div");
+                                card.className = "card";
 
-                container.appendChild(card);
+                                card.innerHTML = `
+                                    <div class="header">
+                                        <h2>${boardingHouse.name || 'Nama Kos Tidak Tersedia'}</h2>
+                                    </div>
+                                    <div class="card-content">
+                                        <h3>Owner</h3>
+                                        <p>Nama Owner: ${ownerName || 'Tidak Diketahui'}</p>
+                                        <h3>Detail</h3>
+                                        <p>Nama Kategori: ${categoryName || 'Tidak Diketahui'}</p>
+                                        <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
+                                        <p>Deskripsi: ${boardingHouse.description || 'Deskripsi Tidak Tersedia'}</p>
+                                        <p>Aturan: ${boardingHouse.rules || 'Tidak Ada Aturan'}</p>
+                                        <h3>Foto</h3>
+                                        <div class="images">
+                                            ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
+                                        </div>
+                                        <h3>Aksi</h3>
+                                        <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouse.boarding_house_id}')">Edit</button>
+                                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouse.boarding_house_id}')">Hapus</button>
+                                    </div>
+                                `;
+                                container.appendChild(card);
+                            });
+                    })
+                    .catch(error => {
+                        console.error("Error mendapatkan kategori atau owner:", error);
+                    });
             });
         })
         .catch(error => {
             console.error("Gagal mengambil data boarding houses:", error);
+        });
+}
+
+// Fungsi untuk mendapatkan kategori berdasarkan category_id
+function fetchCategory(categoryId) {
+    return fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`)
+        .then(response => response.json())
+        .then(data => data.name)
+        .catch(error => {
+            console.error("Gagal mendapatkan kategori:", error);
+            return null;
+        });
+}
+
+// Fungsi untuk mendapatkan owner berdasarkan owner_id
+function fetchOwner(ownerId) {
+    return fetch(`https://kosconnect-server.vercel.app/api/owners/${ownerId}`)
+        .then(response => response.json())
+        .then(data => data.name)
+        .catch(error => {
+            console.error("Gagal mendapatkan owner:", error);
+            return null;
         });
 }
 
