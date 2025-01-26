@@ -12,16 +12,16 @@ function getJwtToken() {
 }
 
 // Tunggu hingga seluruh DOM dimuat
-document.addEventListener('DOMContentLoaded', function () {
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
-        return;
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.querySelector(".cards-container");
+    console.log(container ? "Elemen ditemukan" : "Elemen tidak ditemukan");
+    
+    if (container) {
+      fetchBoardingHouses();
+    } else {
+      console.error("Elemen .cards-container tidak ditemukan di DOM.");
     }
-
-    // Panggil fungsi fetchBoardingHouses setelah token ditemukan
-    fetchBoardingHouses(jwtToken);
-});
+  });  
 
 // Fungsi untuk mengambil data kos
 function fetchBoardingHouses(jwtToken) {
