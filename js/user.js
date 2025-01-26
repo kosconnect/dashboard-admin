@@ -250,3 +250,10 @@ function confirmDelete() {
         });
 }
 
+// Fungsi untuk menutup popup
+function closePopup() {
+    const popup = document.getElementById('popupHapusRoleUser');
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    }
+}
