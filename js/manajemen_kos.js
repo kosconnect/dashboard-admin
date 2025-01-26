@@ -148,3 +148,4 @@ function editBoardingHouse(boardingHouseId) {
 function deleteBoardingHouse(boardingHouseId) {
     alert(`Hapus boarding house: ${boardingHouseId}`);
 }
+
