@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Fungsi untuk mengambil data kos
 function fetchBoardingHouses(jwtToken) {
-    fetch('https://kosconnect-server.vercel.app/api/boarding-houses/', {
+    fetch('https://kosconnect-server.vercel.app/api/boardingHouses/', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
