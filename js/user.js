@@ -92,7 +92,7 @@ function fetchUsers(jwtToken) {
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
                             <i class="fas fa-key"></i> Change Password
                         </button>
-                        <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.id}')">
+                        <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.user_id}')">
                             <i class="fas fa-redo"></i> Reset Password
                         </button>
                     </div>
@@ -332,6 +332,74 @@ document.getElementById('formUbahRoleUser').addEventListener('submit', function 
         .catch(error => {
             console.error("Gagal mengubah role pengguna:", error);
             alert(`Gagal mengubah role pengguna: ${error.message}`);
+        });
+});
+
+// Fungsi untuk menutup popup
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none'; // Sembunyikan popup
+    } else {
+        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
+    }
+}
+
+
+// Fungsi untuk menampilkan popup Reset Password
+function showPopupResetPassword(userId) {
+    const popup = document.getElementById('popupResetPassword');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+        document.getElementById('resetUserId').value = userId; // Isi hidden user ID
+    } else {
+        console.error("Popup Reset Password tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menangani submit formulir Reset Password
+document.getElementById('formResetPassword').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman
+
+    const userId = document.getElementById('resetUserId').value;
+    const oldPassword = document.getElementById('oldPassword').value.trim();
+    const newPassword = document.getElementById('newPassword').value.trim();
+    const jwtToken = getJwtToken();
+
+    if (!jwtToken || !userId || !oldPassword || !newPassword) {
+        alert("Data tidak lengkap.");
+        return;
+    }
+
+    // Kirim permintaan PUT untuk reset password
+    fetch(`https://kosconnect-server.vercel.app/api/users/${userId}/reset-password`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ oldPassword, newPassword })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Password berhasil direset!"); // Menampilkan notifikasi
+
+            // Tutup popup
+            closePopup('popupResetPassword');
+
+            // Perbarui daftar pengguna jika perlu (panggil fungsi fetchUsers jika ada)
+            // fetchUsers(jwtToken);
+        })
+        .catch(error => {
+            console.error("Gagal mereset password:", error);
+            alert(`Gagal mereset password: ${error.message}`);
         });
 });
 
