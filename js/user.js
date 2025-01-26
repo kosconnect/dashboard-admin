@@ -143,6 +143,12 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
     const fullNameBaru = document.getElementById('editFullName').value.trim();
     const emailBaru = document.getElementById('editEmail').value.trim();
 
+    if (!userId) {
+        console.error("ID user tidak ditemukan.");
+        alert("Terjadi kesalahan: ID user tidak ditemukan.");
+        return;
+    }
+
     if (!fullNameBaru || !emailBaru) {
         alert("Nama lengkap dan email tidak boleh kosong!");
         return;
