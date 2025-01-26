@@ -261,13 +261,12 @@ function confirmDelete() {
 }
 
 // Fungsi untuk menutup popup
-function closePopup() {
-    const popup = document.getElementById('popupUbahRoleUser');
-    if (popup) {
-        popup.style.display = 'none'; // Sembunyikan popup
-    }
-}
-
+// function closePopup() {
+//     const popup = document.getElementById('popupUbahRoleUser');
+//     if (popup) {
+//         popup.style.display = 'none';
+//     }
+// }
 
 function showPopupUbahRoleUser(userId, userName, currentRole) {
     console.log("User ID:", userId);  // Debug ID pengguna
@@ -321,13 +320,11 @@ document.getElementById('formUbahRoleUser').addEventListener('submit', function 
             return response.json();
         })
         .then(data => {
-            alert("Role pengguna berhasil diubah!"); // Menampilkan notifikasi
-
-            // Tutup popup sebelum menampilkan alert
-            closePopup('popupUbahRoleUser');
-
             // Tampilkan notifikasi berhasil
             alert("Role pengguna berhasil diubah!");
+
+            // Setelah alert diklik OK, tutup popup
+            closePopup('popupUbahRoleUser');
 
             // Perbarui daftar pengguna (panggil fungsi fetchUsers jika ada)
             fetchUsers(jwtToken);
