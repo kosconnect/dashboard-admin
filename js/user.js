@@ -58,8 +58,6 @@ function fetchUsers(jwtToken) {
 
             // Loop data pengguna dan tambahkan ke tabel
             data.users.forEach(user => {
-                console.log("User Data:", user); // Debug: Periksa data user
-                console.log("User ID:", user.user_id); // Debug: Pastikan user_id tersedia
             
                 const tr = document.createElement('tr');
             
