@@ -109,14 +109,19 @@ function fetchUsers(jwtToken) {
 }
 
 
-// Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
-function showPopupEdit(userId, fullname, email) {
-    console.log("Editing user with ID:", userId); // Debug userId
-    document.getElementById('editUserId').value = userId;
-    document.getElementById('editFullName').value = fullname;
-    document.getElementById('editEmail').value = email;
+// Fungsi untuk menampilkan popup Edit User
+function showPopupEdit(userId, fullName, email) {
+    const popup = document.getElementById('popupEditUser');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
 
-    document.getElementById('popupEditUser').style.display = 'block';
+        // Isi input form dengan data user yang akan diubah
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editFullName').value = fullName;
+        document.getElementById('editEmail').value = email;
+    } else {
+        console.error("Popup Edit User tidak ditemukan.");
+    }
 }
 
 // Fungsi untuk menutup popup
@@ -124,48 +129,59 @@ function closePopup() {
     document.getElementById('popupEditUser').style.display = 'none';
 }
 
-// Fungsi untuk menangani form submit Edit User
-document.getElementById('formEditUser').addEventListener('submit', function(event) {
-    event.preventDefault();
+// Fungsi untuk menangani submit formulir Edit User
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+
+    const jwtToken = getJwtToken(); // Fungsi untuk mendapatkan JWT Token
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
 
     const userId = document.getElementById('editUserId').value;
-    const fullname = document.getElementById('editFullName').value;
-    const email = document.getElementById('editEmail').value;
+    const fullNameBaru = document.getElementById('editFullName').value.trim();
+    const emailBaru = document.getElementById('editEmail').value.trim();
 
-    // Validasi userId
-    if (!userId) {
-        console.error("User ID is missing!");
-        alert("User ID tidak valid. Tidak dapat mengupdate data.");
+    if (!fullNameBaru || !emailBaru) {
+        alert("Nama lengkap dan email tidak boleh kosong!");
         return;
     }
 
-    const jwtToken = getJwtToken();
-    if (!jwtToken) {
-        console.error("Token tidak ditemukan.");
-        return;
-    }
+    const requestBody = {
+        fullname: fullNameBaru,
+        email: emailBaru
+    };
 
-    // Kirim permintaan PUT
+    // Kirim permintaan PUT ke API
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fullname, email })
+        body: JSON.stringify(requestBody)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Server Response:", data);
-        if (data.success) {
-            alert("User berhasil diupdate!");
-            fetchUsers(jwtToken);
-        } else {
-            alert(`Error updating user: ${data.error || "Unknown error"}`);
-        }
-        closePopup();
-    })
-    .catch(error => {
-        console.error("Error updating user:", error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("User berhasil diperbarui:", data);
+            alert("User berhasil diperbarui!");
+
+            // Perbarui tabel user
+            fetchUsers(jwtToken); // Fungsi untuk memuat ulang daftar user
+
+            // Tutup popup
+            closePopup();
+        })
+        .catch(error => {
+            console.error("Gagal memperbarui user:", error);
+            alert(`Gagal memperbarui user: ${error.message}`);
+        });
 });
