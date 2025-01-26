@@ -80,7 +80,7 @@ function fetchUsers(jwtToken) {
                 const tdAksi = document.createElement('td');
                 tdAksi.innerHTML = `
                      <button class="btn btn-primary" onclick="showPopupEdit('${user.user_id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="btn btn-primary" onclick="showPopupDelete('${user.id}')">
+                    <button class="btn btn-primary" onclick="showPopupDelete('${user.user_id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
                     <div class="dropdown-aksi">
                     <button class="btn btn-primary dropdown-button">
@@ -196,3 +196,57 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
             alert(`Gagal memperbarui user: ${error.message}`);
         });
 });
+
+
+let selectedUserId = null; // Variabel untuk menyimpan user ID yang akan dihapus
+
+// Fungsi untuk menampilkan popup hapus user
+function showPopupDelete(userId) {
+    selectedUserId = userId; // Simpan user ID yang akan dihapus
+    const popup = document.getElementById('popupHapusRoleUser');
+    if (popup) {
+        popup.style.display = 'block'; // Tampilkan popup
+    } else {
+        alert("Popup Hapus User tidak ditemukan.");
+    }
+}
+
+// Fungsi untuk menangani konfirmasi penghapusan user
+function confirmDelete() {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        alert("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    if (!selectedUserId) {
+        alert("User ID tidak valid.");
+        closePopup(); // Tutup popup jika ada masalah
+        return;
+    }
+
+    // Kirim permintaan DELETE ke API
+    fetch(`https://kosconnect-server.vercel.app/api/users/${selectedUserId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("User berhasil dihapus!"); // Notifikasi berhasil
+            fetchUsers(jwtToken); // Perbarui daftar user
+            closePopup(); // Tutup popup
+        })
+        .catch(error => {
+            alert(`Gagal menghapus user: ${error.message}`); // Notifikasi gagal
+        });
+}
+
