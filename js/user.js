@@ -207,21 +207,22 @@ function showPopupDelete(userId) {
     if (popup) {
         popup.style.display = 'block'; // Tampilkan popup
     } else {
-        alert("Popup Hapus User tidak ditemukan.");
+        console.error("Popup Hapus User tidak ditemukan.");
+        alert("Popup Hapus User tidak ditemukan."); // Notifikasi jika popup tidak ditemukan
     }
 }
 
 // Fungsi untuk menangani konfirmasi penghapusan user
 function confirmDelete() {
-    const jwtToken = getJwtToken();
+    const jwtToken = getJwtToken(); // Ambil JWT Token
     if (!jwtToken) {
-        alert("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        alert("Tidak ada token JWT, tidak dapat melanjutkan permintaan."); // Notifikasi jika token tidak ditemukan
         return;
     }
 
     if (!selectedUserId) {
-        alert("User ID tidak valid.");
-        closePopup(); // Tutup popup jika ada masalah
+        alert("User ID tidak valid. Tidak dapat menghapus user."); // Notifikasi jika ID tidak valid
+        closePopup(); // Tutup popup jika ID tidak valid
         return;
     }
 
@@ -232,22 +233,24 @@ function confirmDelete() {
             'Authorization': `Bearer ${jwtToken}`
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert("User berhasil dihapus!"); // Notifikasi berhasil
-            fetchUsers(jwtToken); // Perbarui daftar user
-            closePopup(); // Tutup popup
-        })
-        .catch(error => {
-            alert(`Gagal menghapus user: ${error.message}`); // Notifikasi gagal
-        });
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || `HTTP error! status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("User berhasil dihapus:", data); // Log hasil penghapusan
+        alert("User berhasil dihapus!"); // Tampilkan notifikasi berhasil
+        fetchUsers(jwtToken); // Perbarui daftar user
+        closePopup(); // Tutup popup setelah alert berhasil
+    })
+    .catch(error => {
+        console.error("Gagal menghapus user:", error); // Log error
+        alert(`Gagal menghapus user: ${error.message}`); // Tampilkan notifikasi gagal
+    });
 }
 
 // Fungsi untuk menutup popup
@@ -255,5 +258,8 @@ function closePopup() {
     const popup = document.getElementById('popupHapusRoleUser');
     if (popup) {
         popup.style.display = 'none'; // Sembunyikan popup
+        selectedUserId = null; // Reset user ID yang tersimpan
+    } else {
+        console.error("Popup tidak ditemukan untuk ditutup.");
     }
 }
