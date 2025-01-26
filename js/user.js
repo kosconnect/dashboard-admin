@@ -189,20 +189,21 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
         })
         .then(data => {
             console.log("User berhasil diperbarui:", data);
+
+            // Tutup popup sebelum menampilkan alert
+            closePopup('popupEditUser');
+            
+            // Tampilkan notifikasi berhasil
             alert("User berhasil diperbarui!");
 
             // Perbarui tabel user
             fetchUsers(jwtToken);
-
-            // Tutup popup edit
-            closePopup('popupEditUser');
         })
         .catch(error => {
             console.error("Gagal memperbarui user:", error);
             alert(`Gagal memperbarui user: ${error.message}`);
         });
-});
-
+})
 
 let selectedUserId = null; // Variabel untuk menyimpan user ID yang akan dihapus
 
