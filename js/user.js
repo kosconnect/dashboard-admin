@@ -10,10 +10,12 @@ function getJwtToken() {
     for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.startsWith('authToken=')) {
-            return cookie.substring('authToken='.length);
+            const token = cookie.substring('authToken='.length);
+            console.log("Token JWT ditemukan:", token); // Debug: Periksa token
+            return token;
         }
     }
-    console.error("Token tidak ditemukan.");
+    console.error("Token tidak ditemukan di cookie.");
     return null;
 }
 
@@ -108,13 +110,13 @@ function fetchUsers(jwtToken) {
         });
 }
 
-window.addEventListener('load', fetchUsers);
+// window.addEventListener('load', fetchUsers);
 
-let usersData = [];
-console.log("Data pengguna di usersData:", usersData);
+// let usersData = [];
+// console.log("Data pengguna di usersData:", usersData);
 
 
-// Fungsi untuk membuka popup edit dengan data pengguna
+// Fungsi untuk membuka popup edit
 function showPopupEdit(userId) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -153,8 +155,7 @@ function showPopupEdit(userId) {
             console.error("Gagal mengambil data pengguna:", error);
             alert("Terjadi kesalahan saat mengambil data pengguna.");
         });
-
-    }
+}
 
 // Fungsi untuk memperbarui data pengguna
 function updateUser() {
@@ -200,7 +201,7 @@ function updateUser() {
             closePopup();
 
             // Refresh data pengguna di tabel
-            fetchUsers();
+            fetchUsers(jwtToken);
 
             // Tampilkan notifikasi berhasil
             alert("Data pengguna berhasil diperbarui.");
@@ -210,6 +211,16 @@ function updateUser() {
             alert("Terjadi kesalahan saat memperbarui pengguna.");
         });
 }
+
+// Tunggu hingga DOM dimuat, lalu panggil fetchUsers
+document.addEventListener('DOMContentLoaded', function () {
+    const jwtToken = getJwtToken();
+    if (jwtToken) {
+        fetchUsers(jwtToken);
+    } else {
+        alert("Tidak ada token JWT. Harap login kembali.");
+    }
+});
 
 // Tambahkan event listener untuk form submit
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
