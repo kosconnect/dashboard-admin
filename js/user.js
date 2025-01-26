@@ -111,12 +111,11 @@ function fetchUsers(jwtToken) {
 
 // Fungsi untuk menampilkan popup Edit User dan mengisi data pengguna
 function showPopupEdit(userId, fullname, email) {
-    // Isi data di dalam form dengan data pengguna yang dipilih
+    console.log("Editing user with ID:", userId); // Debugging: pastikan userId ada
     document.getElementById('editUserId').value = userId;
     document.getElementById('editFullName').value = fullname;
     document.getElementById('editEmail').value = email;
 
-    // Tampilkan popup
     document.getElementById('popupEditUser').style.display = 'block';
 }
 
@@ -126,12 +125,19 @@ function closePopup() {
 }
 
 // Fungsi untuk menangani form submit Edit User
-document.getElementById('formEditUser').addEventListener('submit', function(event) {
-    event.preventDefault(); // Mencegah form untuk refresh halaman
+document.getElementById('formEditUser').addEventListener('submit', function (event) {
+    event.preventDefault();
 
     const userId = document.getElementById('editUserId').value;
     const fullname = document.getElementById('editFullName').value;
     const email = document.getElementById('editEmail').value;
+
+    // Validasi userId
+    if (!userId || isNaN(userId)) {
+        console.error("Invalid User ID format.");
+        alert("Terjadi kesalahan: User ID tidak valid.");
+        return;
+    }
 
     const jwtToken = getJwtToken();
     if (!jwtToken) {
@@ -146,23 +152,20 @@ document.getElementById('formEditUser').addEventListener('submit', function(even
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            fullname: fullname,
-            email: email
+        body: JSON.stringify({ fullname, email })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Server Response:", data);
+            if (data.success) {
+                alert("User updated successfully!");
+                fetchUsers(jwtToken);
+            } else {
+                alert(`Error updating user: ${data.message || "Unknown error"}`);
+            }
+            closePopup();
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Server Response:", data);
-        if (data.success) {
-            alert("User updated successfully!");
-            fetchUsers(jwtToken); // Refresh data pengguna
-        } else {
-            alert(`Error updating user: ${data.message || "Unknown error"}`);
-        }
-        closePopup();
-    })
-    .catch(error => {
-        console.error("Error updating user:", error);
-    });
+        .catch(error => {
+            console.error("Error updating user:", error);
+        });
 });
