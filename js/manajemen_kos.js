@@ -58,25 +58,25 @@ function fetchBoardingHouses(jwtToken) {
             boardingHouses.forEach((boardingHouse) => {
                 const card = document.createElement("div");
                 card.className = "card";
-
+                
                 card.innerHTML = `
                     <div class="header">
-                        <h2>${kos.name || 'Nama Kos Tidak Tersedia'}</h2>
+                        <h2>${boardingHouse.name || 'Nama Kos Tidak Tersedia'}</h2>
                     </div>
                     <div class="card-content">
                         <h3>Owner</h3>
-                        <p>Owner Id: ${kos.owner_id || 'Tidak Diketahui'}</p>
+                        <p>Owner Id: ${boardingHouse.owner_id || 'Tidak Diketahui'}</p>
                         <h3>Detail</h3>
-                        <p>Fasilitas: ${kos.facilities ? kos.facilities.length : 0}</p>
-                        <p>Alamat: ${kos.address || 'Alamat Tidak Tersedia'}</p>
-                        <p>Latitude & Longitude: ${kos.latitude || 'N/A'}, ${kos.longitude || 'N/A'}</p>
+                        <p>Fasilitas: ${boardingHouse.facilities ? boardingHouse.facilities.length : 0}</p>
+                        <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
+                        <p>Latitude & Longitude: ${boardingHouse.latitude || 'N/A'}, ${boardingHouse.longitude || 'N/A'}</p>
                         <h3>Foto</h3>
                         <div class="images">
-                            ${kos.images && kos.images.length > 0 ? kos.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
+                            ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
                         </div>
                         <h3>Aksi</h3>
-                        <button class="btn btn-primary" onclick="editBoardingHouse('${kos.boarding_house_id}')">Edit</button>
-                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${kos.boarding_house_id}')">Hapus</button>
+                        <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouse.boarding_house_id}')">Edit</button>
+                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouse.boarding_house_id}')">Hapus</button>
                     </div>
                 `;
 
