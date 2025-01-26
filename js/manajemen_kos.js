@@ -12,46 +12,52 @@ function getJwtToken() {
 }
 
 // Tunggu hingga seluruh DOM dimuat
-document.addEventListener("DOMContentLoaded", () => {
-    const container = document.querySelector(".cards-container");
-    console.log(container ? "Elemen ditemukan" : "Elemen tidak ditemukan");
-    
-    if (container) {
-      fetchBoardingHouses();
-    } else {
-      console.error("Elemen .cards-container tidak ditemukan di DOM.");
+document.addEventListener("DOMContentLoaded", function () {
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
     }
-  });  
+
+    fetchBoardingHouses(jwtToken);
+});
 
 // Fungsi untuk mengambil data kos
 function fetchBoardingHouses(jwtToken) {
-    fetch('https://kosconnect-server.vercel.app/api/boardingHouses/', {
-        method: 'GET',
+    fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
         headers: {
-            'Authorization': `Bearer ${jwtToken}`,
-            'Content-Type': 'application/json'
-        }
+            Authorization: `Bearer ${jwtToken}`,
+        },
     })
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return response.json(); // Parsing JSON dari respons
         })
-        .then(data => {
-            console.log("Data boarding houses:", data);
+        .then((result) => {
+            console.log("Data boarding houses:", result);
 
-            const container = document.querySelector('.cards-container');
+            // Mengakses array 'data' dari respons
+            const boardingHouses = result.data;
+
+            // Validasi apakah boardingHouses adalah array
+            if (!Array.isArray(boardingHouses)) {
+                throw new TypeError("Respons API tidak sesuai, 'data' bukan array.");
+            }
+
+            const container = document.querySelector(".cards-container");
             if (!container) {
                 console.error("Elemen .cards-container tidak ditemukan di DOM.");
                 return;
             }
 
-            container.innerHTML = ''; // Kosongkan kontainer
+            // Clear previous cards
+            container.innerHTML = "";
 
-            data.forEach(kos => {
-                const card = document.createElement('div');
-                card.className = 'card';
+            boardingHouses.forEach((boardingHouse) => {
+                const card = document.createElement("div");
+                card.className = "card";
 
                 card.innerHTML = `
                     <div class="header">
