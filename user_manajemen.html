@@ -185,7 +185,7 @@
                 <!-- Input untuk Password Lama -->
                 <label for="oldPassword" class="form-label">Password Lama</label>
                 <div class="password-container">
-                    <input type="text" id="oldPassword" name="oldPassword" placeholder="Masukkan Password Lama"
+                    <input type="password" id="oldPassword" name="oldPassword" placeholder="Masukkan Password Lama"
                         required>
                     <i class="fa-solid fa-eye" id="toggleOldPassword"
                         onclick="togglePasswordVisibility('oldPassword', 'toggleOldPassword')"></i>
@@ -194,10 +194,14 @@
                 <!-- Input untuk Password Baru -->
                 <label for="newPassword" class="form-label">Password Baru</label>
                 <div class="password-container">
-                    <input type="text" id="newPassword" name="newPassword" placeholder="Masukkan Password Baru"
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan Password Baru"
                         required>
                     <i class="fa-solid fa-eye" id="toggleNewPassword"
                         onclick="togglePasswordVisibility('newPassword', 'toggleNewPassword')"></i>
+                </div>
+
+                <div class="popup-actions">
+                    <button type="submit" class="btn btn-simpan">Reset Password</button>
                 </div>
             </form>
         </div>
