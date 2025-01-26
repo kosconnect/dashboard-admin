@@ -92,7 +92,7 @@ function fetchUsers(jwtToken) {
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
                             <i class="fas fa-key"></i> Change Password
                         </button>
-                        <button class="btn btn-primary" style="background-color: #E53935;" onclick="resetPassword('${user.user_id}')">
+                        <button class="btn btn-primary" style="background-color: #E53935;" onclick="showPopupResetPassword('${user.user_id.toString()}')">
                             <i class="fas fa-redo"></i> Reset Password
                         </button>
                     </div>
@@ -351,7 +351,7 @@ function showPopupResetPassword(userId) {
     const popup = document.getElementById('popupResetPassword');
     if (popup) {
         popup.style.display = 'block'; // Tampilkan popup
-        document.getElementById('resetUserId').value = userId; // Isi hidden user ID
+        document.getElementById('resetUserId').value = userId; // Isi ID pengguna di input tersembunyi
     } else {
         console.error("Popup Reset Password tidak ditemukan.");
     }
@@ -378,28 +378,29 @@ document.getElementById('formResetPassword').addEventListener('submit', function
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ oldPassword, newPassword })
-    })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || `HTTP error! status: ${response.status}`);
-                });
-            }
-            return response.json();
+        body: JSON.stringify({
+            oldPassword: oldPassword, // Ambil dari input
+            newPassword: newPassword  // Ambil dari input
         })
-        .then(data => {
-            alert("Password berhasil direset!"); // Menampilkan notifikasi
-
-            // Tutup popup
-            closePopup('popupResetPassword');
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || `HTTP error! status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert("Password berhasil diperbarui!"); // Tampilkan notifikasi berhasil
+        closePopup(); // Tutup popup setelah berhasil
 
             // Perbarui daftar pengguna jika perlu (panggil fungsi fetchUsers jika ada)
             // fetchUsers(jwtToken);
         })
         .catch(error => {
-            console.error("Gagal mereset password:", error);
-            alert(`Gagal mereset password: ${error.message}`);
+            console.error("Gagal memperbarui password:", error);
+            alert(`Gagal memperbarui password: ${error.message}`);
         });
 });
 
