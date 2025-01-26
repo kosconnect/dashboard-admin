@@ -86,7 +86,7 @@ function fetchUsers(jwtToken) {
                     <button class="btn btn-primary dropdown-button">
                         <i class="fas fa-ellipsis-v"></i> Lainnya</button>
                     <div class="dropdown-aksi-content">
-                    <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.id}', '${user.fullname}', '${user.role}')">
+                    <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.user_id}', '${user.fullname}', '${user.role}')">
                         <i class="fas fa-user-cog"></i> Update Role
                     </button>
                         <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
@@ -262,24 +262,29 @@ function confirmDelete() {
 
 // Fungsi untuk menutup popup
 function closePopup() {
-    const popup = document.getElementById('popupHapusRoleUser');
+    const popup = document.getElementById('popupUbahRoleUser');
     if (popup) {
         popup.style.display = 'none'; // Sembunyikan popup
-        selectedUserId = null; // Reset user ID yang tersimpan
-    } else {
-        console.error("Popup tidak ditemukan untuk ditutup.");
     }
 }
 
 
-// Fungsi untuk menampilkan popup Ubah Role User
 function showPopupUbahRoleUser(userId, userName, currentRole) {
+    console.log("User ID:", userId);  // Debug ID pengguna
+    console.log("User Name:", userName);  // Debug nama pengguna
+    console.log("Current Role:", currentRole);  // Debug role pengguna
+
+    if (!userId || !userName || !currentRole) {
+        alert("Terjadi kesalahan: Data pengguna tidak lengkap.");
+        return;
+    }
+
     const popup = document.getElementById('popupUbahRoleUser');
     if (popup) {
         popup.style.display = 'block'; // Tampilkan popup
-        document.getElementById('userIdHidden').value = userId; // Set ID user ke input hidden
-        document.getElementById('userName').value = userName; // Set nama pengguna ke input
-        document.getElementById('userRole').value = currentRole; // Set role saat ini ke dropdown
+        document.getElementById('userIdHidden').value = userId;
+        document.getElementById('userName').value = userName;
+        document.getElementById('userRole').value = currentRole;
     } else {
         console.error("Popup Ubah Role User tidak ditemukan.");
     }
@@ -287,30 +292,25 @@ function showPopupUbahRoleUser(userId, userName, currentRole) {
 
 // Fungsi untuk menangani submit formulir Ubah Role User
 document.getElementById('formUbahRoleUser').addEventListener('submit', function (event) {
-    event.preventDefault(); // Mencegah reload halaman saat form disubmit
+    event.preventDefault(); // Mencegah reload halaman
 
-    const jwtToken = getJwtToken(); // Ambil token JWT
-    if (!jwtToken) {
-        alert("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+    const userId = document.getElementById('userIdHidden').value; // ID pengguna dari hidden input
+    const userRole = document.getElementById('userRole').value; // Role baru yang dipilih
+    const jwtToken = getJwtToken();
+
+    if (!jwtToken || !userId || !userRole) {
+        alert("Data tidak lengkap.");
         return;
     }
 
-    const userId = document.getElementById('userIdHidden').value; // Ambil ID user dari input hidden
-    const newRole = document.getElementById('userRole').value; // Ambil role baru dari dropdown
-
-    if (!userId || !newRole) {
-        alert("Terjadi kesalahan: User ID atau role baru tidak valid.");
-        return;
-    }
-
-    // Permintaan PUT ke API untuk mengubah role user
+    // Kirim permintaan PUT untuk mengubah role
     fetch(`https://kosconnect-server.vercel.app/api/users/${userId}/role`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${jwtToken}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ role: newRole }),
+        body: JSON.stringify({ role: userRole })
     })
         .then(response => {
             if (!response.ok) {
@@ -321,7 +321,7 @@ document.getElementById('formUbahRoleUser').addEventListener('submit', function 
             return response.json();
         })
         .then(data => {
-            console.log("Role pengguna berhasil diubah:", data);
+            alert("Role pengguna berhasil diubah!"); // Menampilkan notifikasi
 
             // Tutup popup sebelum menampilkan alert
             closePopup('popupUbahRoleUser');
