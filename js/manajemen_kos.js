@@ -73,10 +73,12 @@ function fetchBoardingHouses(jwtToken) {
                                         <h3>Owner</h3>
                                         <p>Owner: ${ownerName || 'Tidak Diketahui'}</p>
                                         <h3>Kategori</h3>
-                                        <p>Category: ${categoryName || 'Tidak Diketahui'}</p>
+                                        <p>Nama Kategori: ${categoryName || 'Tidak Diketahui'}</p>
                                         <h3>Detail</h3>
                                         <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
                                         <p>Latitude & Longitude: ${boardingHouse.latitude || 'N/A'}, ${boardingHouse.longitude || 'N/A'}</p>
+                                        <p>Deskripsi: ${boardingHouse.description || 'Deskripsi Tidak Tersedia'}</p>
+                                        <p>Aturan: ${boardingHouse.rules || 'Tidak Ada Aturan'}</p>
                                         <h3>Foto</h3>
                                         <div class="images">
                                             ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
