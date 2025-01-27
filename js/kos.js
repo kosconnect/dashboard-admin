@@ -13,7 +13,7 @@ function getCookie(name) {
 // Fungsi untuk merender daftar Kos ke dalam card
 async function renderBoardingHouses() {
   try {
-      const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses");
+      const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/");
       const boardingHouses = await response.json();
 
       console.log(boardingHouses); // Tambahkan ini untuk memeriksa data respons
