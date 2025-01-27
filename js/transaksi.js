@@ -90,3 +90,5 @@ window.onload = async () => {
         console.error("Gagal mengambil data:", error);
     }
 };
+
+console.log(orders.data);
