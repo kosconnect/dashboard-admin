@@ -141,7 +141,7 @@ function fetchOwner(ownerId, jwtToken) {
         })
         .then(result => {
             console.log(`Hasil owner (ID: ${ownerId}):`, result);
-            return result.data.name;
+            return result.user.name;
         })
         .catch(error => {
             console.error("Gagal mengambil data owner:", error);
