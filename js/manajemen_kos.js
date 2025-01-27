@@ -109,12 +109,16 @@ function fetchCategory(categoryId, jwtToken) {
         },
     })
         .then(response => {
+            console.log(`Response kategori (ID: ${categoryId}):`, response); // Log response
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
-        .then(result => result.data.name) // Menampilkan nama kategori
+        .then(result => {
+            console.log(`Hasil kategori (ID: ${categoryId}):`, result);
+            return result.data.name;
+        })
         .catch(error => {
             console.error("Gagal mengambil data kategori:", error);
             return 'Tidak Diketahui';
@@ -123,23 +127,28 @@ function fetchCategory(categoryId, jwtToken) {
 
 // Fungsi untuk mengambil owner berdasarkan ID
 function fetchOwner(ownerId, jwtToken) {
-    return fetch(`https://kosconnect-server.vercel.app/api/users/${ownerId}`, { // Perbaikan endpoint
+    return fetch(`https://kosconnect-server.vercel.app/api/users/${ownerId}`, {
         headers: {
             Authorization: `Bearer ${jwtToken}`,
         },
     })
         .then(response => {
+            console.log(`Response owner (ID: ${ownerId}):`, response); // Log response
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
-        .then(result => result.data.name) // Menampilkan nama owner
+        .then(result => {
+            console.log(`Hasil owner (ID: ${ownerId}):`, result);
+            return result.data.name;
+        })
         .catch(error => {
             console.error("Gagal mengambil data owner:", error);
             return 'Tidak Diketahui';
         });
 }
+
 
 // Fungsi Edit (placeholder)
 function editBoardingHouse(boardingHouseId) {
