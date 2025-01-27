@@ -17,7 +17,7 @@ async function renderBoardingHouses() {
   try {
       const authToken = getCookie("authToken"); // Ambil token otentikasi dari cookie
       const response = await fetch(
-          `https://kosconnect-server.vercel.app/api/boardingHouses`, // Endpoint untuk mengambil daftar kos
+          `https://kosconnect-server.vercel.app/api/boardingHouses/`, // Endpoint untuk mengambil daftar kos
           {
               method: 'GET',
               headers: {
