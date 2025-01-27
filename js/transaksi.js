@@ -46,13 +46,16 @@ async function renderOrderTable(orders) {
         // Ambil room_type dari roomDetail
         const roomType = roomDetail[0]?.room_type || "Tidak Diketahui"; // default "Tidak Diketahui" jika tidak ada room_type
 
+        // Ambil full_name dari personal_info
+        const fullName = order.personal_info?.full_name || "Tidak Diketahui"; // default jika tidak ada personal_info atau full_name
+
         const totalFormatted = `Rp ${order.total.toLocaleString("id-ID")}`;
         const row = document.createElement("tr");
 
         row.innerHTML = `
         <td>${orders.data.indexOf(order) + 1}</td>
         <td>${order.transaction_code}</td>
-        <td>${order.full_name || "Tidak Diketahui"}</td>
+        <td>${fullName}</td>
         <td>${roomType}</td> <!-- Tampilkan room_type di sini -->
         <td>${totalFormatted}</td>
         <td>
@@ -91,4 +94,4 @@ window.onload = async () => {
     }
 };
 
-console.log(order); 
+console.log(order.personal_info);
