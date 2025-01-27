@@ -14,19 +14,24 @@ function getCookie(name) {
 async function renderBoardingHouses() {
   try {
       const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/");
-      const boardingHouses = await response.json();
+      const result = await response.json();
+      console.log(result); // Log seluruh respons untuk memeriksa struktur data
 
-      console.log(boardingHouses); // Tambahkan ini untuk memeriksa data respons
-
-      // Cek apakah data yang diterima adalah array
+      // Akses array dari properti `data` dalam respons
+      const boardingHouses = result.data;
+  
+      // Cek apakah `data` adalah array
       if (Array.isArray(boardingHouses)) {
-          // Mendapatkan container untuk menampilkan card
-          const cardsContainer = document.querySelector(".cards-container");
-
-          // Jika ada data kos, tampilkan dalam bentuk card
-          boardingHouses.forEach(boardingHouse => {
-              const card = document.createElement('div');
-              card.classList.add('card-item');
+        // Mendapatkan container untuk menampilkan card
+        const cardsContainer = document.querySelector(".cards-container");
+  
+        // Pastikan container kosong sebelum menambahkan card baru
+        cardsContainer.innerHTML = "";
+  
+        // Iterasi melalui data dan tampilkan setiap boardingHouse dalam bentuk card
+        boardingHouses.forEach((boardingHouse) => {
+          const card = document.createElement("div");
+          card.classList.add("card-item");
               
               // Isi konten card sesuai template
               card.innerHTML = `
