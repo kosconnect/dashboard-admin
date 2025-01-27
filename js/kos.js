@@ -1,72 +1,76 @@
-// Fungsi untuk Mengambil JWT Token dari Cookie
-function getJwtToken() {
-    const cookieName = 'authToken=';
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.startsWith(cookieName)) {
-            return cookie.substring(cookieName.length);  // Ambil token setelah "authToken="
-        }
-    }
-    console.error("Token tidak ditemukan.");
-    return null;
+// Fungsi untuk membaca nilai cookie berdasarkan nama
+function getCookie(name) {
+  const cookies = document.cookie.split("; ");
+  for (let cookie of cookies) {
+      const [key, value] = cookie.split("=");
+      if (key === name) {
+          return decodeURIComponent(value);
+      }
+  }
+  return null;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("boardingHousesContainer");
-  const token = getJwtToken();
+// Fungsi untuk merender daftar Kos ke dalam card
+async function renderBoardingHouses() {
+  const cardsContainer = document.querySelector('.cards-container');
 
-  if (!token) {
-    container.innerHTML = '<p>Token tidak ditemukan. Silakan login terlebih dahulu.</p>';
-    return;
-  }
+  try {
+      const authToken = getCookie("authToken"); // Ambil token otentikasi dari cookie
+      const response = await fetch(
+          `https://kosconnect-server.vercel.app/api/boardingHouses`, // Endpoint untuk mengambil daftar kos
+          {
+              method: 'GET',
+              headers: {
+                  Authorization: `Bearer ${authToken}`,
+              }
+          }
+      );
 
-  fetch('https://kosconnect-server.vercel.app/api/boardingHouses/', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.data && data.data.length > 0) {
-        data.data.forEach(house => {
-            const facilities = Array.isArray(house.facilities) ? house.facilities.join(', ') : 'Tidak tersedia';
-            const images = Array.isArray(house.images) ? house.images.map(img => `<img src="${img}" alt="${house.name}" width="100">`).join('') : 'Tidak ada gambar';
-            
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
+      if (!response.ok) {
+          throw new Error('Gagal mengambil data kos');
+      }
+
+      const boardingHouses = await response.json();
+
+      // Jika data kos ada, tampilkan dalam bentuk card
+      boardingHouses.forEach(boardingHouse => {
+          const card = document.createElement('div');
+          card.classList.add('card-item');
+          
+          // Isi konten card sesuai template
+          card.innerHTML = `
               <div class="header">
-                <h2>Manajemen Kos</h2>
+                  <h2>${boardingHouse.name || 'Nama Kos Tidak Tersedia'}</h2>
               </div>
               <div class="card-content">
-                <h3>Owner</h3>
-                <p>Email: ${house.owner_email || 'Tidak tersedia'}</p>
-                <p>Nama Kos: ${house.name || 'Tidak tersedia'}</p>
-        
-                <h3>Detail</h3>
-                <p>Fasilitas: ${facilities}</p>
-                <p>Alamat: ${house.address || 'Tidak tersedia'}</p>
-                <p>Latitude & Longitude: ${house.latitude || 'N/A'}, ${house.longitude || 'N/A'}</p>
-        
-                <h3>Foto</h3>
-                ${images}
-        
-                <h3>Aksi</h3>
-                <button>Edit</button>
-                <button>Delete</button>
+                  <h3>Owner</h3>
+                  <p>Owner: ${boardingHouse.owner_name || 'Tidak Diketahui'}</p>
+                  <h3>Kategori</h3>
+                  <p>Nama Kategori: ${boardingHouse.category_name || 'Tidak Diketahui'}</p>
+                  <h3>Detail</h3>
+                  <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
+                  <p>Latitude & Longitude: ${boardingHouse.latitude || 'N/A'}, ${boardingHouse.longitude || 'N/A'}</p>
+                  <p>Deskripsi: ${boardingHouse.description || 'Deskripsi Tidak Tersedia'}</p>
+                  <p>Aturan: ${boardingHouse.rules || 'Tidak Ada Aturan'}</p>
+                  <h3>Foto</h3>
+                  <div class="images">
+                      ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
+                  </div>
+                  <h3>Aksi</h3>
+                  <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouse.boarding_house_id}')">Edit</button>
+                  <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouse.boarding_house_id}')">Hapus</button>
               </div>
-            `;
-            container.appendChild(card);
-        });
-    } else {
-      container.innerHTML = '<p>No boarding houses found</p>';
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    container.innerHTML = '<p>Gagal mengambil data boarding house.</p>';
-  });
-});
+          `;
+          
+          // Tambahkan card ke dalam container
+          cardsContainer.appendChild(card);
+      });
+  } catch (error) {
+      console.error('Gagal mengambil data kos:', error);
+  }
+}
+
+// Panggil fungsi renderBoardingHouses saat halaman dimuat
+window.onload = () => {
+  renderBoardingHouses();
+};
