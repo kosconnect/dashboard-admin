@@ -10,20 +10,8 @@ function getCookie(name) {
   return null;
 }
 
-// Fungsi untuk mendapatkan parameter ID dari URL
-function getIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id"); // Mengambil nilai dari parameter "id"
-}
-
-// Fungsi untuk merender detail boarding house
-async function renderBoardingHouseDetails() {
-  const id = getIdFromURL(); // Ambil ID dari URL
-  if (!id) {
-    alert("ID kos tidak ditemukan di URL.");
-    return;
-  }
-
+// Fungsi untuk merender detail boarding house berdasarkan ID yang diambil dari data-id
+async function renderBoardingHouseDetails(boardingHouseId) {
   const cardsContainer = document.querySelector(".cards-container");
 
   try {
@@ -32,7 +20,7 @@ async function renderBoardingHouseDetails() {
 
     // Fetch detail boarding house dari API
     const response = await fetch(
-      `https://kosconnect-server.vercel.app/api/boardingHouses/${id}/detail`,
+      `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`,
       {
         method: "GET",
         headers: {
@@ -70,17 +58,11 @@ async function renderBoardingHouseDetails() {
         <p>Aturan: ${detail.rules || "Tidak Ada Aturan"}</p>
         <h3>Foto</h3>
         <div class="images">
-          ${
-            detail.images && detail.images.length > 0
-              ? detail.images
-                  .map((img) => `<img src="${img}" alt="Foto Kos" class="kos-image">`)
-                  .join("")
-              : "Tidak Ada Foto"
-          }
+          ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
         </div>
         <h3>Aksi</h3>
-        <button class="btn btn-primary" onclick="editBoardingHouse('${id}')">Edit</button>
-        <button class="btn btn-primary" onclick="deleteBoardingHouse('${id}')">Hapus</button>
+        <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouseId}')">Edit</button>
+        <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouseId}')">Hapus</button>
       </div>
     `;
 
@@ -106,7 +88,8 @@ function deleteBoardingHouse(boardingHouseId) {
   }
 }
 
-// Render detail boarding house saat halaman dimuat
-window.onload = () => {
-  renderBoardingHouseDetails();
-};
+// Menambahkan event listener ke tombol untuk menampilkan detail kos saat diklik
+document.getElementById("viewDetails").addEventListener("click", () => {
+  const boardingHouseId = document.getElementById("viewDetails").getAttribute("data-id");
+  renderBoardingHouseDetails(boardingHouseId);
+});
