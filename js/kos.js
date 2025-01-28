@@ -10,85 +10,103 @@ function getCookie(name) {
   return null;
 }
 
-// Fungsi untuk merender daftar Kos ke dalam card
-async function renderBoardingHouses() {
+// Fungsi untuk mendapatkan parameter ID dari URL
+function getIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id"); // Mengambil nilai dari parameter "id"
+}
+
+// Fungsi untuk merender detail boarding house
+async function renderBoardingHouseDetails() {
+  const id = getIdFromURL(); // Ambil ID dari URL
+  if (!id) {
+    alert("ID kos tidak ditemukan di URL.");
+    return;
+  }
+
+  const cardsContainer = document.querySelector(".cards-container");
+
   try {
-    // Fetch daftar ID kos dari endpoint awal
-    const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/");
-    const result = await response.json();
+    // Ambil token autentikasi dari cookie
+    const authToken = getCookie("authToken");
 
-    // Pastikan format data sesuai
-    const boardingHouses = result.data;
-    console.log("Data Kos:", boardingHouses);
+    // Fetch detail boarding house dari API
+    const response = await fetch(
+      `https://kosconnect-server.vercel.app/api/boardingHouses/${id}/detail`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
 
-    // Ambil container card
-    const cardsContainer = document.querySelector(".cards-container");
-    if (!cardsContainer) {
-      console.error("Element .cards-container tidak ditemukan di HTML.");
-      return;
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data detail boarding house.");
     }
 
-    // Hapus konten lama sebelum render
+    const detail = await response.json();
+
+    // Hapus isi kontainer sebelum menampilkan data baru
     cardsContainer.innerHTML = "";
 
-    // Periksa apakah data berbentuk array
-    if (Array.isArray(boardingHouses)) {
-      // Iterasi setiap ID kos untuk mendapatkan detailnya
-      for (let boardingHouse of boardingHouses) {
-        const detailResponse = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouse.boarding_house_id}/detail`);
-        const detailResult = await detailResponse.json();
-        const detail = detailResult.data;
+    // Render detail boarding house
+    const card = document.createElement("div");
+    card.classList.add("card-item");
 
-        // Buat elemen card untuk setiap kos
-        const card = document.createElement("div");
-        card.classList.add("card-item");
+    card.innerHTML = ` 
+      <div class="header">
+        <h2>${detail.name || "Nama Kos Tidak Tersedia"}</h2>
+      </div>
+      <div class="card-content">
+        <h3>Owner</h3>
+        <p>Owner: ${detail.owner_name || "Tidak Diketahui"}</p>
+        <h3>Kategori</h3>
+        <p>Nama Kategori: ${detail.category_name || "Tidak Diketahui"}</p>
+        <h3>Detail</h3>
+        <p>Alamat: ${detail.address || "Alamat Tidak Tersedia"}</p>
+        <p>Latitude & Longitude: ${detail.latitude || "N/A"}, ${detail.longitude || "N/A"}</p>
+        <p>Deskripsi: ${detail.description || "Deskripsi Tidak Tersedia"}</p>
+        <p>Aturan: ${detail.rules || "Tidak Ada Aturan"}</p>
+        <h3>Foto</h3>
+        <div class="images">
+          ${
+            detail.images && detail.images.length > 0
+              ? detail.images
+                  .map((img) => `<img src="${img}" alt="Foto Kos" class="kos-image">`)
+                  .join("")
+              : "Tidak Ada Foto"
+          }
+        </div>
+        <h3>Aksi</h3>
+        <button class="btn btn-primary" onclick="editBoardingHouse('${id}')">Edit</button>
+        <button class="btn btn-primary" onclick="deleteBoardingHouse('${id}')">Hapus</button>
+      </div>
+    `;
 
-        // Isi konten card sesuai template
-        card.innerHTML = `
-          <div class="header">
-            <h2>${detail.name || "Nama Kos Tidak Tersedia"}</h2>
-          </div>
-          <div class="card-content">
-            <h3>Owner</h3>
-            <p>Owner: ${detail.owner_name || "Tidak Diketahui"}</p>
-            <h3>Kategori</h3>
-            <p>Nama Kategori: ${detail.category_name || "Tidak Diketahui"}</p>
-            <h3>Detail</h3>
-            <p>Alamat: ${detail.address || "Alamat Tidak Tersedia"}</p>
-            <p>Latitude & Longitude: ${detail.latitude || "N/A"}, ${detail.longitude || "N/A"}</p>
-            <p>Deskripsi: ${detail.description || "Deskripsi Tidak Tersedia"}</p>
-            <p>Aturan: ${detail.rules || "Tidak Ada Aturan"}</p>
-            <h3>Foto</h3>
-            <div class="images">
-                ${detail.images && detail.images.length > 0 ? detail.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
-            </div>
-            <h3>Aksi</h3>
-            <button class="btn btn-primary" onclick="editBoardingHouse('${detail.boarding_house_id}')">Edit</button>
-            <button class="btn btn-primary" onclick="deleteBoardingHouse('${detail.boarding_house_id}')">Hapus</button>
-          </div>
-        `;
-
-        // Tambahkan card ke dalam container
-        cardsContainer.appendChild(card);
-      }
-    } else {
-      console.error("Data tidak berbentuk array");
-    }
+    // Tambahkan card ke dalam container
+    cardsContainer.appendChild(card);
   } catch (error) {
-    console.error("Gagal mengambil data kos:", error);
+    console.error("Error:", error);
+    cardsContainer.innerHTML = `<p>Terjadi kesalahan saat mengambil detail boarding house.</p>`;
   }
 }
 
-// Event listener untuk memastikan DOM siap sebelum JavaScript dijalankan
-document.addEventListener("DOMContentLoaded", () => {
-  renderBoardingHouses();
-});
-
-// Dummy fungsi untuk edit dan delete (update sesuai kebutuhan)
-function editBoardingHouse(id) {
-  alert(`Edit kos dengan ID: ${id}`);
+// Fungsi untuk edit boarding house
+function editBoardingHouse(boardingHouseId) {
+  alert(`Edit boarding house dengan ID: ${boardingHouseId}`);
 }
 
-function deleteBoardingHouse(id) {
-  alert(`Hapus kos dengan ID: ${id}`);
+// Fungsi untuk hapus boarding house
+function deleteBoardingHouse(boardingHouseId) {
+  const confirmDelete = confirm("Apakah Anda yakin ingin menghapus kos ini?");
+  if (confirmDelete) {
+    alert(`Hapus boarding house dengan ID: ${boardingHouseId}`);
+    // Tambahkan implementasi delete di sini
+  }
 }
+
+// Render detail boarding house saat halaman dimuat
+window.onload = () => {
+  renderBoardingHouseDetails();
+};
