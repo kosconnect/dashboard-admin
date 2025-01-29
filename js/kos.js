@@ -279,18 +279,15 @@ function submitAddBoardingHouseForm(event) {
 }
 
 document.getElementById("imagesKos").addEventListener("change", function () {
-    const maxImages = 5; // Maksimal 5 gambar untuk boarding house
-    if (this.files.length > maxImages) {
+    const maxImages = 5;
+    const images = this.files;
+    
+    if (images.length > maxImages) {
         alert(`Maksimal hanya bisa memilih ${maxImages} gambar untuk boarding house.`);
         this.value = ""; // Reset input file
+        return; // ✅ Sekarang return berada dalam fungsi
     }
 });
-
-const images = document.getElementById("imagesKos").files;
-if (images.length > 5) {
-    alert("Maksimal hanya 5 gambar yang dapat diunggah untuk boarding house.");
-    return;
-}
 
 
 document.addEventListener("DOMContentLoaded", () => {
