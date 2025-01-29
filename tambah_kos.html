@@ -107,7 +107,7 @@
                             required></textarea>
 
                         <label for="fasilitasKos" class="form-label">Pilih Fasilitas</label>
-                        <select id="fasilitasKos" name="fasilitasKos" required>
+                        <select id="fasilitasKos" name="fasilitasKos" multiple required>
                             <option value="">Pilih Fasilitas</option>
                             <!-- Data Fasilitas akan diisi menggunakan JavaScript -->
                         </select>
@@ -117,20 +117,20 @@
                         <input type="file" id="imagesKos" multiple accept="image/*">
 
                         <label for="rulesKos" class="form-label">Aturan Kos</label>
-                        <textarea id="rulesKos" name="rulesKos" placeholder="Aturan Kos"
-                            required></textarea>
+                        <textarea id="rulesKos" name="rulesKos" placeholder="Aturan Kos" required></textarea>
 
-                            <div class="popup-actions">
-                                <button type="button" class="btn btn-batal" onclick="window.location.href='manajemen_kos.html'">Batal</button>
-                                <button type="submit" class="btn btn-save">Simpan</button>
-                            </div>                            
+                        <div class="popup-actions">
+                            <button type="button" class="btn btn-batal"
+                                onclick="window.location.href='manajemen_kos.html'">Batal</button>
+                            <button type="submit" class="btn btn-save">Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="js/kos.js"></script>
+    <script src="js/tambah_kos.js"></script>
     <script src="js/navbar.js"></script>
 </body>
 
