@@ -251,7 +251,7 @@ async function addBoardingHouse(formData) {
 function submitAddBoardingHouseForm(event) {
     event.preventDefault();
 
-    const formData = new FormData(); // Pakai FormData untuk menangani file
+    const formData = new FormData();
 
     formData.append("name", document.getElementById("namaKos").value);
     formData.append("address", document.getElementById("alamatKos").value);
@@ -266,13 +266,21 @@ function submitAddBoardingHouseForm(event) {
         .map(option => option.value);
     selectedFacilities.forEach(facility => formData.append("facilities[]", facility));
 
+    // Ambil file gambar dan pastikan format benar
     const imageFiles = document.getElementById("imagesKos").files;
+    if (imageFiles.length > 5) {
+        alert("Maksimal hanya bisa memilih 5 gambar untuk boarding house.");
+        return;
+    }
+    
     for (let i = 0; i < imageFiles.length; i++) {
-        formData.append("images", imageFiles[i]); // Tambahkan file ke FormData
+        formData.append("images", imageFiles[i]); // Harus dengan key "images" yang sama
     }
 
+    console.log("FormData sebelum dikirim:", [...formData.entries()]); // Debugging
     addBoardingHouse(formData);
 }
+
 
 // document.getElementById("imagesKos").addEventListener("change", function () {
 //     const maxImages = 5;
