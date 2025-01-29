@@ -1,41 +1,49 @@
-// Fungsi untuk membaca nilai cookie berdasarkan nama
-function getCookie(name) {
-    const cookies = document.cookie.split("; ");
+// Fungsi untuk mendapatkan JWT token dari cookie
+function getJwtToken() {
+    const cookies = document.cookie.split('; ');
     for (let cookie of cookies) {
-        const [key, value] = cookie.split("=");
-        if (key === name) {
+        const [key, value] = cookie.split('=');
+        if (key === 'authToken') {
             return decodeURIComponent(value);
         }
     }
+    console.error("Token tidak ditemukan.");
     return null;
 }
 
 // Ambil token dari cookie
-const token = getCookie("token");
+const token = getJwtToken();
 
 // Fungsi untuk fetch data dan isi dropdown
 async function fetchData(url, selectElement) {
-    try {
-        const token = localStorage.getItem("token"); // Ambil token dari localStorage
-        if (!token) {
-            throw new Error("Token tidak tersedia. Silakan login ulang.");
-        }
+    if (!token) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
 
+    try {
         const response = await fetch(url, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,  // Kirim token sebagai Bearer Token
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // Pastikan token digunakan dengan benar
             }
         });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error("Gagal mengambil data");
 
         const data = await response.json();
-        console.log("Data fetched:", data); // Debugging
-        populateDropdown(selectElement, data);
+        
+        // Kosongkan dropdown sebelum diisi
+        selectElement.innerHTML = `<option value="">Pilih</option>`;
+
+        // Tambahkan data ke dropdown
+        data.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.id;  // Sesuaikan dengan key dari API
+            option.textContent = item.name;  // Sesuaikan dengan key dari API
+            selectElement.appendChild(option);
+        });
+
     } catch (error) {
         console.error("Error:", error);
     }
