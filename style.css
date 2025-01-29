@@ -577,6 +577,7 @@ form .btn-primary {
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    gap: 10px; 
 }
 
 .btn-simpan:hover {
@@ -722,6 +723,39 @@ textarea {
 /* Hover effect pada gambar */
 .image-preview:hover {
     opacity: 0.8;
+}
+
+.btn-batal {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background-color: #005f73;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    gap: 10px; 
+}
+
+.btn-batal, .btn-save {
+    width: auto; /* Pastikan tombol tidak memenuhi 100% */
+    padding: 14px;
+    font-size: 18px;
+    background-color: #005f73;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-batal {
+    margin-right: 10px; /* Jarak antara tombol */
+}
+
+.btn-batal:hover, .btn-simpan:hover {
+    background-color: #003f53;
 }
 
 /* Focus effect pada form input dan select */
