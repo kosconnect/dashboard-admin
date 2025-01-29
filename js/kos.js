@@ -1,30 +1,68 @@
-// Fungsi untuk membaca nilai cookie berdasarkan nama
-function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-        const [key, value] = cookie.split("=");
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-    return null;
-}
-
-// Variabel global untuk menyimpan semua data boarding houses
-let allBoardingHouseData = [];
-
-// Fungsi untuk merender tabel boarding house
+// Fungsi untuk merender kartu boarding house
 async function renderBoardingHouseTable(boardingHouses) {
-    const tbody = document.querySelector(".cards-container");
-    tbody.innerHTML = "";
+    const container = document.querySelector(".cards-container");
+    container.innerHTML = ""; // Menghapus konten sebelumnya
 
     if (boardingHouses.length === 0) {
-        tbody.innerHTML = `
-        <tr>
-          <td colspan="6">Tidak ada boarding house yang ditemukan.</td>
-        </tr>
+        container.innerHTML = `
+        <div class="card">
+            <p>Tidak ada boarding house yang ditemukan.</p>
+        </div>
       `;
         return;
+    }
+
+    for (let boardingHouse of boardingHouses) {
+        // Ambil data owner dan kategori berdasarkan ID
+        const ownerName = await fetchOwnerName(boardingHouse.owner_id);
+        const categoryName = await fetchCategoryName(boardingHouse.category_id);
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        card.innerHTML = `
+            <img src="${boardingHouse.images[0]}" alt="Kos Image" class="card-image">
+            <div class="card-content">
+                <h3>${boardingHouse.name}</h3>
+                <p>Alamat: ${boardingHouse.address}</p>
+                <p>Owner: ${ownerName || "Owner Tidak Diketahui"}</p>
+                <p>Kategori: ${categoryName || "Kategori Tidak Diketahui"}</p>
+                <p>${boardingHouse.description}</p>
+                <button onclick="fetchBoardingHouseDetail('${boardingHouse.boarding_house_id}')">Lihat Detail</button>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    }
+}
+
+// Fungsi untuk mengambil nama owner berdasarkan ID
+async function fetchOwnerName(ownerId) {
+    try {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/owners/${ownerId}`);
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data owner");
+        }
+        const data = await response.json();
+        return data.name || "Nama Owner Tidak Diketahui";
+    } catch (error) {
+        console.error("Gagal mengambil data owner:", error);
+        return "Nama Owner Tidak Diketahui";
+    }
+}
+
+// Fungsi untuk mengambil nama kategori berdasarkan ID
+async function fetchCategoryName(categoryId) {
+    try {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`);
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data kategori");
+        }
+        const data = await response.json();
+        return data.name || "Kategori Tidak Diketahui";
+    } catch (error) {
+        console.error("Gagal mengambil data kategori:", error);
+        return "Kategori Tidak Diketahui";
     }
 }
 
@@ -46,7 +84,8 @@ window.onload = async () => {
             throw new Error("Gagal mengambil data boarding house");
         }
 
-        allBoardingHouseData = await response.json();
+        const data = await response.json(); // Dapatkan data dalam bentuk JSON
+        allBoardingHouseData = data.data; // Ambil array dari 'data'
         await renderBoardingHouseTable(allBoardingHouseData);
     } catch (error) {
         console.error("Gagal mengambil data:", error);
@@ -67,6 +106,7 @@ async function fetchBoardingHouseDetail(boardingHouseId) {
     }
 }
 
+// Fungsi untuk merender detail boarding house
 function renderBoardingHouseDetail(detail, boardingHouseId) {
     const card = document.querySelector(".card");
     card.innerHTML = `
@@ -80,7 +120,7 @@ function renderBoardingHouseDetail(detail, boardingHouseId) {
             <p>Nama Kategori: ${detail.category_name || "Tidak Diketahui"}</p>
             <h3>Detail</h3>
             <p>Alamat: ${detail.address || "Alamat Tidak Tersedia"}</p>
-            <p>Latitude & Longitude: ${detail.latitude || "N/A"}, ${detail.longitude || "N/A"}</p>
+            <p>Latitude & Longitude: ${detail.latitude || "N/A"}, ${detail.longitude  || "N/A"}</p>
             <p>Deskripsi: ${detail.description || "Deskripsi Tidak Tersedia"}</p>
             <p>Aturan: ${detail.rules || "Tidak Ada Aturan"}</p>
             <h3>Foto</h3>
