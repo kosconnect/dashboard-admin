@@ -16,28 +16,26 @@ const token = getCookie("token");
 // Fungsi untuk fetch data dan isi dropdown
 async function fetchData(url, selectElement) {
     try {
+        const token = localStorage.getItem("token"); // Ambil token dari localStorage
+        if (!token) {
+            throw new Error("Token tidak tersedia. Silakan login ulang.");
+        }
+
         const response = await fetch(url, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken}` // Jika butuh autentikasi
+                "Authorization": `Bearer ${token}`,  // Kirim token sebagai Bearer Token
+                "Content-Type": "application/json"
             }
         });
-        if (!response.ok) throw new Error("Gagal mengambil data");
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
 
         const data = await response.json();
-        
-        // Kosongkan dropdown sebelum diisi
-        selectElement.innerHTML = `<option value="">Pilih</option>`;
-
-        // Tambahkan data ke dropdown
-        data.forEach(item => {
-            const option = document.createElement("option");
-            option.value = item.id;  // Sesuaikan dengan key dari API
-            option.textContent = item.name;  // Sesuaikan dengan key dari API
-            selectElement.appendChild(option);
-        });
-
+        console.log("Data fetched:", data); // Debugging
+        populateDropdown(selectElement, data);
     } catch (error) {
         console.error("Error:", error);
     }
