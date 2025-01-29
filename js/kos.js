@@ -36,7 +36,7 @@ async function renderBoardingHouseTable(boardingHouses) {
         const detail = await detailResponse.json();
         
         // Ambil data full_name (owner) dan category_name dari detail
-        const ownerName = detail[0]?.full_name || "Owner Tidak Diketahui"; // Menggunakan full_name
+        const ownerName = detail[0]?.fullname || "Owner Tidak Diketahui"; // Menggunakan full_name
         const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
 
     // Membuat card untuk setiap boarding house
@@ -48,7 +48,7 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Alamat: ${address}</p>
                 <p>Owner: ${ownerName}</p>
                 <p>Kategori: ${categoryName}</p>
-                <p>${description}</p>
+                <p>Deskripsi: ${description}</p>
                 <p>Aturan: ${rules}</p>
             </div>
         </div>
