@@ -274,16 +274,16 @@ function submitAddBoardingHouseForm(event) {
     addBoardingHouse(formData);
 }
 
-document.getElementById("imagesKos").addEventListener("change", function () {
-    const maxImages = 5;
-    const images = this.files;
+// document.getElementById("imagesKos").addEventListener("change", function () {
+//     const maxImages = 5;
+//     const images = this.files;
     
-    if (images.length > maxImages) {
-        alert(`Maksimal hanya bisa memilih ${maxImages} gambar untuk boarding house.`);
-        this.value = ""; // Reset input file
-        return; // ✅ Sekarang return berada dalam fungsi
-    }
-});
+//     if (images.length > maxImages) {
+//         alert(`Maksimal hanya bisa memilih ${maxImages} gambar untuk boarding house.`);
+//         this.value = ""; // Reset input file
+//         return; //  Sekarang return berada dalam fungsi
+//     }
+// });
 
 
 document.addEventListener("DOMContentLoaded", () => {
