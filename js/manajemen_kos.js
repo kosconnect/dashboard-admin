@@ -1,162 +1,87 @@
-// Fungsi untuk mendapatkan JWT token
-function getJwtToken() {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith('authToken=')) {
-            return cookie.substring('authToken='.length);
+// Fungsi untuk membaca nilai cookie berdasarkan nama
+function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) {
+            return decodeURIComponent(value);
         }
     }
-    console.error("Token tidak ditemukan.");
     return null;
 }
 
-// Tunggu hingga seluruh DOM dimuat
-document.addEventListener("DOMContentLoaded", function () {
-    const jwtToken = getJwtToken(); // Dapatkan JWT token
-    if (!jwtToken) {
-        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+// Variabel global untuk menyimpan semua data boarding houses
+let allBoardingHouseData = [];
+
+// Fungsi untuk merender tabel boarding house
+async function renderBoardingHouseTable(boardingHouses) {
+    const container = document.querySelector(".cards-container");
+    container.innerHTML = ""; // Menghapus konten sebelumnya
+
+    if (boardingHouses.length === 0) {
+        container.innerHTML = `
+        <div class="card">
+            <p>Tidak ada boarding house yang ditemukan.</p>
+        </div>
+      `;
         return;
     }
 
-    // Panggil fungsi untuk mengambil data kos setelah token didapat
-    fetchBoardingHouses(jwtToken);
-});
+    // Ambil detail untuk setiap boarding house
+    for (let boardingHouse of boardingHouses) {
+        const { boarding_house_id, images, name, address, description, rules } = boardingHouse;
 
-// Fungsi untuk mengambil data kos
-function fetchBoardingHouses(jwtToken) {
-    fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
-        headers: {
-            Authorization: `Bearer ${jwtToken}`,
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json(); // Parsing JSON dari respons
-        })
-        .then((result) => {
-            console.log("Data boarding houses:", result);
+        // Ambil detail (full_name dan category_name) untuk setiap boarding house
+        const detailResponse = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`);
+        const detail = await detailResponse.json();
+        
+        // Ambil data full_name (owner) dan category_name dari detail
+        const ownerName = detail[0]?.owner_fullname || "Owner Tidak Diketahui"; // Menggunakan full_name
+        const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
 
-            // Mengakses array 'data' dari respons
-            const boardingHouses = result.data;
+    // Membuat card untuk setiap boarding house
+    container.innerHTML += `
+        <div class="card">
+            <img src="${images[0]}" alt="Kos Image" class="card-image">
+            <div class="card-content">
+                <h3>${name}</h3>
+                <p>Alamat: ${address}</p>
+                <p>Owner: ${ownerName}</p>
+                <p>Kategori: ${categoryName}</p>
+                <p>Deskripsi: ${description}</p>
+                <p>Aturan: ${rules}</p>
 
-            // Validasi apakah boardingHouses adalah array
-            if (!Array.isArray(boardingHouses)) {
-                throw new TypeError("Respons API tidak sesuai, 'data' bukan array.");
-            }
-
-            const container = document.querySelector(".cards-container");
-            if (!container) {
-                console.error("Elemen .cards-container tidak ditemukan di DOM.");
-                return;
-            }
-
-            // Clear previous cards
-            container.innerHTML = "";
-
-            boardingHouses.forEach((boardingHouse) => {
-                const card = document.createElement("div");
-                card.className = "card";
-
-                // Ambil kategori dan owner menggunakan fetch
-                fetchCategory(boardingHouse.category_id, jwtToken)
-                    .then(categoryName => {
-                        return fetchOwner(boardingHouse.owner_id, jwtToken)
-                            .then(ownerName => {
-                                card.innerHTML = `
-                                    <div class="header">
-                                        <h2>${boardingHouse.name || 'Nama Kos Tidak Tersedia'}</h2>
-                                    </div>
-                                    <div class="card-content">
-                                        <h3>Owner</h3>
-                                        <p>Owner: ${ownerName || 'Tidak Diketahui'}</p>
-                                        <h3>Kategori</h3>
-                                        <p>Nama Kategori: ${categoryName || 'Tidak Diketahui'}</p>
-                                        <h3>Detail</h3>
-                                        <p>Alamat: ${boardingHouse.address || 'Alamat Tidak Tersedia'}</p>
-                                        <p>Latitude & Longitude: ${boardingHouse.latitude || 'N/A'}, ${boardingHouse.longitude || 'N/A'}</p>
-                                        <p>Deskripsi: ${boardingHouse.description || 'Deskripsi Tidak Tersedia'}</p>
-                                        <p>Aturan: ${boardingHouse.rules || 'Tidak Ada Aturan'}</p>
-                                        <h3>Foto</h3>
-                                        <div class="images">
-                                            ${boardingHouse.images && boardingHouse.images.length > 0 ? boardingHouse.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
-                                        </div>
-                                        <h3>Aksi</h3>
-                                        <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouse.boarding_house_id}')">Edit</button>
-                                        <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouse.boarding_house_id}')">Hapus</button>
-                                    </div>
-                                `;
-                                container.appendChild(card);
-                            });
-                    })
-                    .catch(error => {
-                        console.error("Error fetching category or owner:", error);
-                    });
-            });
-        })
-        .catch(error => {
-            console.error("Gagal mengambil data boarding houses:", error);
-        });
+                <h3>Aksi</h3>
+                <button class="btn btn-primary" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button>
+                <button class="btn btn-primary" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
+            </div>
+        </div>
+    `;
+}
 }
 
-// Fungsi untuk mengambil kategori berdasarkan ID
-function fetchCategory(categoryId, jwtToken) {
-    return fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`, {
-        headers: {
-            Authorization: `Bearer ${jwtToken}`,
-        },
-    })
-        .then(response => {
-            console.log(`Response kategori (ID: ${categoryId}):`, response); // Log response
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+// Ambil data boarding house saat halaman dimuat
+window.onload = async () => {
+    try {
+        const authToken = getCookie("authToken");
+        const response = await fetch(
+            "https://kosconnect-server.vercel.app/api/boardingHouses/",
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
             }
-            return response.json();
-        })
-        .then(result => {
-            console.log(`Hasil kategori (ID: ${categoryId}):`, result);
-            return result.data.name;
-        })
-        .catch(error => {
-            console.error("Gagal mengambil data kategori:", error);
-            return 'Tidak Diketahui';
-        });
-}
+        );
 
-// Fungsi untuk mengambil owner berdasarkan ID
-function fetchOwner(ownerId, jwtToken) {
-    return fetch(`https://kosconnect-server.vercel.app/api/users/${ownerId}`, {
-        headers: {
-            Authorization: `Bearer ${jwtToken}`,
-        },
-    })
-        .then(response => {
-            console.log(`Response owner (ID: ${ownerId}):`, response); // Log response
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            console.log(`Hasil owner (ID: ${ownerId}):`, result);
-            return result.user.name;
-        })
-        .catch(error => {
-            console.error("Gagal mengambil data owner:", error);
-            return 'Tidak Diketahui';
-        });
-}
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data boarding house");
+        }
 
-
-// Fungsi Edit (placeholder)
-function editBoardingHouse(boardingHouseId) {
-    alert(`Edit boarding house: ${boardingHouseId}`);
-}
-
-// Fungsi Hapus (placeholder)
-function deleteBoardingHouse(boardingHouseId) {
-    alert(`Hapus boarding house: ${boardingHouseId}`);
-}
-
+        const data = await response.json(); // Dapatkan data dalam bentuk JSON
+        allBoardingHouseData = data.data; // Ambil array dari 'data'
+        await renderBoardingHouseTable(allBoardingHouseData);
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
+    }
+};
