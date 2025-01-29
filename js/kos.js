@@ -27,11 +27,10 @@ async function renderBoardingHouseTable(boardingHouses) {
         return;
     }
 
-    for (let boardingHouse of boardingHouses) {
-        const card = document.createElement("div");
-        card.classList.add("card");
-
-        card.innerHTML = `
+    // Langsung menampilkan data tanpa membuat card terpisah
+    boardingHouses.forEach(boardingHouse => {
+        container.innerHTML += `
+        <div class="card">
             <img src="${boardingHouse.images[0]}" alt="Kos Image" class="card-image">
             <div class="card-content">
                 <h3>${boardingHouse.name}</h3>
@@ -41,10 +40,9 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>${boardingHouse.description}</p>
                 <button onclick="fetchBoardingHouseDetail('${boardingHouse.boarding_house_id}')">Lihat Detail</button>
             </div>
-        `;
-        
-        container.appendChild(card);
-    }
+        </div>
+    `;
+    });
 }
 
 // Ambil data boarding house saat halaman dimuat
