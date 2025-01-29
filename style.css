@@ -661,6 +661,74 @@ input[type="radio"] {
     box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
 }
 
+.form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Style untuk input teks */
+input[type="text"], input[type="number"], textarea, select, input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+/* Style untuk dropdown select */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/svgs/solid/caret-down.svg') no-repeat right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+/* Style untuk textarea */
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    resize: none; /* Disable resizing */
+    margin-bottom: 15px;
+}
+
+
+/* Styling untuk pratinjau gambar */
+.image-preview-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* Gambar pratinjau */
+.image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Hover effect pada gambar */
+.image-preview:hover {
+    opacity: 0.8;
+}
+
+/* Focus effect pada form input dan select */
+/* input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus, input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+} */
 
 /* Responsif */
 @media (max-width: 768px) {
