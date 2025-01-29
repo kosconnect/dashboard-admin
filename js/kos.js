@@ -1,4 +1,19 @@
-// Fungsi untuk merender kartu boarding house
+// Fungsi untuk membaca nilai cookie berdasarkan nama
+function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
+
+// Variabel global untuk menyimpan semua data boarding houses
+let allBoardingHouseData = [];
+
+// Fungsi untuk merender tabel boarding house
 async function renderBoardingHouseTable(boardingHouses) {
     const container = document.querySelector(".cards-container");
     container.innerHTML = ""; // Menghapus konten sebelumnya
@@ -13,10 +28,6 @@ async function renderBoardingHouseTable(boardingHouses) {
     }
 
     for (let boardingHouse of boardingHouses) {
-        // Ambil data owner dan kategori berdasarkan ID
-        const ownerName = await fetchOwnerName(boardingHouse.owner_id);
-        const categoryName = await fetchCategoryName(boardingHouse.category_id);
-
         const card = document.createElement("div");
         card.classList.add("card");
 
@@ -25,44 +36,14 @@ async function renderBoardingHouseTable(boardingHouses) {
             <div class="card-content">
                 <h3>${boardingHouse.name}</h3>
                 <p>Alamat: ${boardingHouse.address}</p>
-                <p>Owner: ${ownerName || "Owner Tidak Diketahui"}</p>
-                <p>Kategori: ${categoryName || "Kategori Tidak Diketahui"}</p>
+                <p>Owner: ${boardingHouse.owner_name || "Owner Tidak Diketahui"}</p>
+                <p>Kategori: ${boardingHouse.category_name || "Kategori Tidak Diketahui"}</p>
                 <p>${boardingHouse.description}</p>
                 <button onclick="fetchBoardingHouseDetail('${boardingHouse.boarding_house_id}')">Lihat Detail</button>
             </div>
         `;
         
         container.appendChild(card);
-    }
-}
-
-// Fungsi untuk mengambil nama owner berdasarkan ID
-async function fetchOwnerName(ownerId) {
-    try {
-        const response = await fetch(`https://kosconnect-server.vercel.app/api/owners/${ownerId}`);
-        if (!response.ok) {
-            throw new Error("Gagal mengambil data owner");
-        }
-        const data = await response.json();
-        return data.name || "Nama Owner Tidak Diketahui";
-    } catch (error) {
-        console.error("Gagal mengambil data owner:", error);
-        return "Nama Owner Tidak Diketahui";
-    }
-}
-
-// Fungsi untuk mengambil nama kategori berdasarkan ID
-async function fetchCategoryName(categoryId) {
-    try {
-        const response = await fetch(`https://kosconnect-server.vercel.app/api/categories/${categoryId}`);
-        if (!response.ok) {
-            throw new Error("Gagal mengambil data kategori");
-        }
-        const data = await response.json();
-        return data.name || "Kategori Tidak Diketahui";
-    } catch (error) {
-        console.error("Gagal mengambil data kategori:", error);
-        return "Kategori Tidak Diketahui";
     }
 }
 
