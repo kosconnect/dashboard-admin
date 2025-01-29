@@ -183,10 +183,44 @@ async function populateFormFields() {
     }
 }
 
+async function populateFormFields() {
+    try {
+        const owners = await fetchOwners();
+        const categories = await fetchCategories();
+        const facilities = await fetchFacilities();
+
+        const ownerSelect = document.getElementById("ownerKos");
+        const categorySelect = document.getElementById("categoryKos");
+        const facilitySelect = document.getElementById("fasilitasKos");
+
+        if (!ownerSelect || !categorySelect || !facilitySelect) {
+            console.error("Dropdown tidak ditemukan di halaman.");
+            return;
+        }
+
+        ownerSelect.innerHTML = `<option value="">Pilih Owner</option>`;
+        owners.forEach(owner => {
+            ownerSelect.innerHTML += `<option value="${owner.id}">${owner.full_name}</option>`;
+        });
+
+        categorySelect.innerHTML = `<option value="">Pilih Kategori</option>`;
+        categories.forEach(category => {
+            categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+        });
+
+        facilitySelect.innerHTML = `<option value="">Pilih Fasilitas</option>`;
+        facilities.forEach(facility => {
+            facilitySelect.innerHTML += `<option value="${facility.id}">${facility.name}</option>`;
+        });
+    } catch (error) {
+        console.error("Error mengisi dropdown:", error);
+    }
+}
+
 // Panggil fungsi populateFormFields saat halaman dimuat
-window.onload = async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     await populateFormFields();
-};
+});
 
 // Fungsi untuk mengirim data boarding house (POST)
 async function addBoardingHouse(formData) {
@@ -197,9 +231,8 @@ async function addBoardingHouse(formData) {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${authToken}`,
-                "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData), // Kirim data dalam bentuk JSON
+            body: formData, // Kirim sebagai FormData, bukan JSON
         });
 
         if (!response.ok) {
@@ -209,7 +242,7 @@ async function addBoardingHouse(formData) {
         const data = await response.json();
         if (data.success) {
             alert("Boarding House berhasil ditambahkan");
-            window.location.reload(); // Reload halaman untuk menampilkan data terbaru
+            window.location.reload();
         } else {
             alert(data.error || "Terjadi kesalahan");
         }
@@ -219,27 +252,52 @@ async function addBoardingHouse(formData) {
     }
 }
 
-// Fungsi untuk mengumpulkan data dari form dan mengirimkan ke server
 function submitAddBoardingHouseForm(event) {
     event.preventDefault();
 
-    // Mengambil data dari form
-    const formData = {
-        name: document.getElementById("namaKos").value,
-        address: document.getElementById("alamatKos").value,
-        description: document.getElementById("descriptionKos").value,
-        rules: document.getElementById("rulesKos").value,
-        category_id: document.getElementById("categoryKos").value, // ID kategori
-        owner_id: document.getElementById("ownerKos").value, // ID owner
-        latitude: document.getElementById("latitudeKos").value,
-        longitude: document.getElementById("longitudeKos").value,
-        facilities: Array.from(document.getElementById("fasilitasKos").selectedOptions).map(option => option.value), // Fasilitas yang dipilih
-        images: document.getElementById("imagesKos").files, // Gambar yang dipilih
-    };
+    const formData = new FormData(); // Pakai FormData untuk menangani file
 
-    // Mengirim data ke server
+    formData.append("name", document.getElementById("namaKos").value);
+    formData.append("address", document.getElementById("alamatKos").value);
+    formData.append("description", document.getElementById("descriptionKos").value);
+    formData.append("rules", document.getElementById("rulesKos").value);
+    formData.append("category_id", document.getElementById("categoryKos").value);
+    formData.append("owner_id", document.getElementById("ownerKos").value);
+    formData.append("latitude", document.getElementById("latitudeKos").value);
+    formData.append("longitude", document.getElementById("longitudeKos").value);
+
+    const selectedFacilities = Array.from(document.getElementById("fasilitasKos").selectedOptions)
+        .map(option => option.value);
+    selectedFacilities.forEach(facility => formData.append("facilities[]", facility));
+
+    const imageFiles = document.getElementById("imagesKos").files;
+    for (let i = 0; i < imageFiles.length; i++) {
+        formData.append("images", imageFiles[i]); // Tambahkan file ke FormData
+    }
+
     addBoardingHouse(formData);
 }
 
-// Tambahkan event listener pada form submit
-document.getElementById("formTambahKos").addEventListener("submit", submitAddBoardingHouseForm);
+document.getElementById("imagesKos").addEventListener("change", function () {
+    const maxImages = 5; // Maksimal 5 gambar untuk boarding house
+    if (this.files.length > maxImages) {
+        alert(`Maksimal hanya bisa memilih ${maxImages} gambar untuk boarding house.`);
+        this.value = ""; // Reset input file
+    }
+});
+
+const images = document.getElementById("imagesKos").files;
+if (images.length > 5) {
+    alert("Maksimal hanya 5 gambar yang dapat diunggah untuk boarding house.");
+    return;
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("formTambahKos");
+    if (form) {
+        form.addEventListener("submit", submitAddBoardingHouseForm);
+    } else {
+        console.error("Form tambah kos tidak ditemukan.");
+    }
+});
