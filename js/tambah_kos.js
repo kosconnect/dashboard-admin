@@ -20,7 +20,7 @@ async function fetchData(url, selectElement) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` // Jika butuh autentikasi
+                "Authorization": `Bearer ${authToken}` // Jika butuh autentikasi
             }
         });
         if (!response.ok) throw new Error("Gagal mengambil data");
