@@ -15,7 +15,7 @@ let allBoardingHouseData = [];
 
 // Fungsi untuk merender tabel boarding house
 async function renderBoardingHouseTable(boardingHouses) {
-    const tbody = document.querySelector("cards-container");
+    const tbody = document.querySelector(".cards-container");
     tbody.innerHTML = "";
 
     if (boardingHouses.length === 0) {
