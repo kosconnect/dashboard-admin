@@ -15,31 +15,32 @@ async function fetchAndFillDropdown(url, dropdownId, valueKey, textKey) {
     try {
         const token = getCookie("token"); // Ambil token dari cookie
         const response = await fetch(url, {
-            method: "POST", // Ganti ke POST
+            method: "POST", // Menggunakan metode POST
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"  // Pastikan headernya mengizinkan JSON
+                "Content-Type": "application/json"  // Pastikan header mengizinkan JSON
             },
             credentials: "include",
-            body: JSON.stringify({})  // Jika perlu body kosong atau data tertentu
+            body: JSON.stringify({})  // Kirimkan body kosong jika diperlukan, atau ganti dengan data yang relevan
         });
 
         if (!response.ok) {
             throw new Error(`Gagal mengambil data dari ${url}`);
         }
 
-        const data = await response.json();
-        const dropdown = document.getElementById(dropdownId);
+        const data = await response.json();  // Parsing data JSON dari server
+        const dropdown = document.getElementById(dropdownId); // Ambil elemen dropdown
         dropdown.innerHTML = '<option value="">Pilih</option>'; // Reset dropdown
 
+        // Isi dropdown dengan data dari server
         data.forEach(item => {
             const option = document.createElement("option");
-            option.value = item[valueKey];  // ID sebagai value
-            option.textContent = item[textKey]; // Nama sebagai teks
-            dropdown.appendChild(option);
+            option.value = item[valueKey];  // Gunakan ID sebagai value
+            option.textContent = item[textKey]; // Gunakan nama sebagai teks
+            dropdown.appendChild(option);  // Tambahkan option ke dropdown
         });
     } catch (error) {
-        console.error(`Error fetching data for ${dropdownId}:`, error);
+        console.error(`Error fetching data for ${dropdownId}:`, error); // Log error jika terjadi kesalahan
     }
 }
 
