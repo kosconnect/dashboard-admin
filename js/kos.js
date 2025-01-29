@@ -274,7 +274,7 @@ function submitAddBoardingHouseForm(event) {
     }
     
     for (let i = 0; i < imageFiles.length; i++) {
-        formData.append("images", imageFiles[i]); // Harus dengan key "images" yang sama
+        formData.append("images[]", imageFiles[i]); // Menggunakan "images[]" agar server mengenali sebagai array
     }
 
     console.log("FormData sebelum dikirim:", [...formData.entries()]); // Debugging
