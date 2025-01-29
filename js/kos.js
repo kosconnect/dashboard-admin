@@ -50,6 +50,10 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Kategori: ${categoryName}</p>
                 <p>Deskripsi: ${description}</p>
                 <p>Aturan: ${rules}</p>
+
+                <h3>Aksi</h3>
+                <button class="btn btn-primary" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button>
+                <button class="btn btn-danger" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
             </div>
         </div>
     `;
@@ -82,44 +86,160 @@ window.onload = async () => {
     }
 };
 
-// Fungsi untuk mengambil detail boarding house
-// async function fetchBoardingHouseDetail(boardingHouseId) {
-//     try {
-//         const response = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`);
-//         if (!response.ok) {
-//             throw new Error("Gagal mengambil detail boarding house");
-//         }
-//         const detail = await response.json();
-//         renderBoardingHouseDetail(detail, boardingHouseId);
-//     } catch (error) {
-//         console.error("Gagal mengambil data detail:", error);
-//     }
-// }
 
-// Fungsi untuk merender detail boarding house
-// function renderBoardingHouseDetail(detail, boardingHouseId) {
-//     const card = document.querySelector(".card");
-//     card.innerHTML = `
-//         <div class="header">
-//             <h2>${detail.name || "Nama Kos Tidak Tersedia"}</h2>
-//         </div>
-//         <div class="card-content">
-//             <h3>Owner</h3>
-//             <p>Owner: ${detail.owner_name || "Tidak Diketahui"}</p>
-//             <h3>Kategori</h3>
-//             <p>Nama Kategori: ${detail.category_name || "Tidak Diketahui"}</p>
-//             <h3>Detail</h3>
-//             <p>Alamat: ${detail.address || "Alamat Tidak Tersedia"}</p>
-//             <p>Latitude & Longitude: ${detail.latitude || "N/A"}, ${detail.longitude  || "N/A"}</p>
-//             <p>Deskripsi: ${detail.description || "Deskripsi Tidak Tersedia"}</p>
-//             <p>Aturan: ${detail.rules || "Tidak Ada Aturan"}</p>
-//             <h3>Foto</h3>
-//             <div class="images">
-//                 ${detail.images && detail.images.length > 0 ? detail.images.map(img => `<img src="${img}" alt="Foto Kos">`).join('') : 'Tidak Ada Foto'}
-//             </div>
-//             <h3>Aksi</h3>
-//             <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouseId}')">Edit</button>
-//             <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouseId}')">Hapus</button>
-//         </div>
-//     `;
-// }
+//POST
+// Fungsi untuk mengambil data owner
+async function fetchOwners() {
+    try {
+        const authToken = getCookie("authToken");
+        const response = await fetch("https://kosconnect-server.vercel.app/api/users/owner", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data owner");
+        }
+        const data = await response.json();
+        return data.data; // Data owner yang diterima
+    } catch (error) {
+        console.error("Error mengambil data owner:", error);
+        return [];
+    }
+}
+
+// Fungsi untuk mengambil data kategori
+async function fetchCategories() {
+    try {
+        const authToken = getCookie("authToken");
+        const response = await fetch("https://kosconnect-server.vercel.app/api/categories/", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data kategori");
+        }
+        const data = await response.json();
+        return data.data; // Data kategori yang diterima
+    } catch (error) {
+        console.error("Error mengambil data kategori:", error);
+        return [];
+    }
+}
+
+// Fungsi untuk mengambil data fasilitas
+async function fetchFacilities() {
+    try {
+        const authToken = getCookie("authToken");
+        const response = await fetch("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data fasilitas");
+        }
+        const data = await response.json();
+        return data.data; // Data fasilitas yang diterima
+    } catch (error) {
+        console.error("Error mengambil data fasilitas:", error);
+        return [];
+    }
+}
+
+// Fungsi untuk mengisi dropdown Owner, Kategori, dan Fasilitas
+async function populateFormFields() {
+    try {
+        const owners = await fetchOwners();
+        const categories = await fetchCategories();
+        const facilities = await fetchFacilities();
+
+        // Mengisi dropdown Owner
+        const ownerSelect = document.getElementById("ownerKos");
+        ownerSelect.innerHTML = `<option value="">Pilih Owner</option>`;
+        owners.forEach(owner => {
+            ownerSelect.innerHTML += `<option value="${owner.id}">${owner.full_name}</option>`;
+        });
+
+        // Mengisi dropdown Kategori
+        const categorySelect = document.getElementById("categoryKos");
+        categorySelect.innerHTML = `<option value="">Pilih Kategori</option>`;
+        categories.forEach(category => {
+            categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+        });
+
+        // Mengisi dropdown Fasilitas
+        const facilitySelect = document.getElementById("fasilitasKos");
+        facilitySelect.innerHTML = `<option value="">Pilih Fasilitas</option>`;
+        facilities.forEach(facility => {
+            facilitySelect.innerHTML += `<option value="${facility.id}">${facility.name}</option>`;
+        });
+    } catch (error) {
+        console.error("Error mengisi dropdown:", error);
+    }
+}
+
+// Panggil fungsi populateFormFields saat halaman dimuat
+window.onload = async () => {
+    await populateFormFields();
+};
+
+// Fungsi untuk mengirim data boarding house (POST)
+async function addBoardingHouse(formData) {
+    try {
+        const authToken = getCookie("authToken");
+
+        const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData), // Kirim data dalam bentuk JSON
+        });
+
+        if (!response.ok) {
+            throw new Error("Gagal menambahkan boarding house");
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            alert("Boarding House berhasil ditambahkan");
+            window.location.reload(); // Reload halaman untuk menampilkan data terbaru
+        } else {
+            alert(data.error || "Terjadi kesalahan");
+        }
+    } catch (error) {
+        console.error("Error saat menambahkan boarding house:", error);
+        alert("Gagal menambahkan boarding house");
+    }
+}
+
+// Fungsi untuk mengumpulkan data dari form dan mengirimkan ke server
+function submitAddBoardingHouseForm(event) {
+    event.preventDefault();
+
+    // Mengambil data dari form
+    const formData = {
+        name: document.getElementById("namaKos").value,
+        address: document.getElementById("alamatKos").value,
+        description: document.getElementById("descriptionKos").value,
+        rules: document.getElementById("rulesKos").value,
+        category_id: document.getElementById("categoryKos").value, // ID kategori
+        owner_id: document.getElementById("ownerKos").value, // ID owner
+        latitude: document.getElementById("latitudeKos").value,
+        longitude: document.getElementById("longitudeKos").value,
+        facilities: Array.from(document.getElementById("fasilitasKos").selectedOptions).map(option => option.value), // Fasilitas yang dipilih
+        images: document.getElementById("imagesKos").files, // Gambar yang dipilih
+    };
+
+    // Mengirim data ke server
+    addBoardingHouse(formData);
+}
+
+// Tambahkan event listener pada form submit
+document.getElementById("formTambahKos").addEventListener("submit", submitAddBoardingHouseForm);
