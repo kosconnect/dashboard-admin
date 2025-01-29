@@ -27,17 +27,17 @@ async function renderBoardingHouseTable(boardingHouses) {
         return;
     }
 
-   // Ambil detail untuk setiap boarding house
-   for (let boardingHouse of boardingHouses) {
-    const { boarding_house_id, images, name, address, description, rules } = boardingHouse;
+    // Ambil detail untuk setiap boarding house
+    for (let boardingHouse of boardingHouses) {
+        const { boarding_house_id, images, name, address, description, rules } = boardingHouse;
 
-    // Ambil detail (full_name dan category_name) untuk setiap boarding house
-    const detailResponse = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`);
-    const detail = await detailResponse.json();
-    
-    // Ambil data full_name (owner) dan category_name dari detail
-    const ownerName = detail[0]?.full_name || "Owner Tidak Diketahui"; // Menggunakan full_name
-    const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
+        // Ambil detail (full_name dan category_name) untuk setiap boarding house
+        const detailResponse = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`);
+        const detail = await detailResponse.json();
+        
+        // Ambil data full_name (owner) dan category_name dari detail
+        const ownerName = detail[0]?.full_name || "Owner Tidak Diketahui"; // Menggunakan full_name
+        const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
 
     // Membuat card untuk setiap boarding house
     container.innerHTML += `
@@ -50,9 +50,6 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Kategori: ${categoryName}</p>
                 <p>${description}</p>
                 <p>Aturan: ${rules}</p>
-            <h3>Aksi</h3>
-            <button class="btn btn-primary" onclick="editBoardingHouse('${boardingHouseId}')">Edit</button>
-            <button class="btn btn-primary" onclick="deleteBoardingHouse('${boardingHouseId}')">Hapus</button>
             </div>
         </div>
     `;
