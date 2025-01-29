@@ -10,48 +10,98 @@ function getCookie(name) {
     return null;
 }
 
-// Fungsi untuk fetch data dan mengisi dropdown dengan metode POST
-async function fetchAndFillDropdown(url, dropdownId, valueKey, textKey) {
+// Ambil token dari cookie
+const token = getCookie("token");
+
+// Fungsi untuk fetch data dan isi dropdown
+async function fetchData(url, selectElement) {
     try {
-        const token = getCookie("token"); // Ambil token dari cookie
         const response = await fetch(url, {
-            method: "POST", // Menggunakan metode POST
+            method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"  // Pastikan header mengizinkan JSON
-            },
-            credentials: "include",
-            body: JSON.stringify({})  // Kirimkan body kosong jika diperlukan, atau ganti dengan data yang relevan
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // Jika butuh autentikasi
+            }
         });
+        if (!response.ok) throw new Error("Gagal mengambil data");
 
-        if (!response.ok) {
-            throw new Error(`Gagal mengambil data dari ${url}`);
-        }
+        const data = await response.json();
+        
+        // Kosongkan dropdown sebelum diisi
+        selectElement.innerHTML = `<option value="">Pilih</option>`;
 
-        const data = await response.json();  // Parsing data JSON dari server
-        const dropdown = document.getElementById(dropdownId); // Ambil elemen dropdown
-        dropdown.innerHTML = '<option value="">Pilih</option>'; // Reset dropdown
-
-        // Isi dropdown dengan data dari server
+        // Tambahkan data ke dropdown
         data.forEach(item => {
             const option = document.createElement("option");
-            option.value = item[valueKey];  // Gunakan ID sebagai value
-            option.textContent = item[textKey]; // Gunakan nama sebagai teks
-            dropdown.appendChild(option);  // Tambahkan option ke dropdown
+            option.value = item.id;  // Sesuaikan dengan key dari API
+            option.textContent = item.name;  // Sesuaikan dengan key dari API
+            selectElement.appendChild(option);
         });
+
     } catch (error) {
-        console.error(`Error fetching data for ${dropdownId}:`, error); // Log error jika terjadi kesalahan
+        console.error("Error:", error);
     }
 }
 
-// Panggil fungsi untuk mengisi dropdown setelah DOM siap
+// Panggil fungsi untuk mengisi dropdown
 document.addEventListener("DOMContentLoaded", () => {
-    // Mengisi dropdown Owner
-    fetchAndFillDropdown("https://kosconnect-server.vercel.app/api/users/owner", "ownerKos", "_id", "full_name");
-    
-    // Mengisi dropdown Kategori
-    fetchAndFillDropdown("https://kosconnect-server.vercel.app/api/categories/", "categoryKos", "_id", "name");
-    
-    // Mengisi dropdown Fasilitas untuk Boarding House
-    fetchAndFillDropdown("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", "fasilitasKos", "_id", "name");
+    fetchData("https://kosconnect-server.vercel.app/api/users/owner", document.getElementById("ownerKos"));
+    fetchData("https://kosconnect-server.vercel.app/api/categories/", document.getElementById("categoryKos"));
+    fetchData("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", document.getElementById("fasilitasKos"));
+});
+
+// Fungsi untuk menangani submit form
+document.getElementById("formTambahKos").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const ownerKos = document.getElementById("ownerKos").value;
+    const categoryKos = document.getElementById("categoryKos").value;
+    const namaKos = document.getElementById("namaKos").value;
+    const alamatKos = document.getElementById("alamatKos").value;
+    const longitudeKos = document.getElementById("longitudeKos").value;
+    const latitudeKos = document.getElementById("latitudeKos").value;
+    const descriptionKos = document.getElementById("descriptionKos").value;
+    const fasilitasKos = Array.from(document.getElementById("fasilitasKos").selectedOptions).map(opt => opt.value);
+    const rulesKos = document.getElementById("rulesKos").value;
+
+    // Ambil file gambar yang diunggah
+    const imagesKos = document.getElementById("imagesKos").files;
+    const formData = new FormData();
+
+    formData.append("owner_id", ownerKos);
+    formData.append("category_id", categoryKos);
+    formData.append("name", namaKos);
+    formData.append("address", alamatKos);
+    formData.append("longitude", longitudeKos);
+    formData.append("latitude", latitudeKos);
+    formData.append("description", descriptionKos);
+    formData.append("rules", rulesKos);
+
+    // Tambahkan fasilitas dalam format array JSON
+    fasilitasKos.forEach(facility => {
+        formData.append("facilities[]", facility);
+    });
+
+    // Tambahkan file gambar jika ada
+    for (let i = 0; i < imagesKos.length; i++) {
+        formData.append("images", imagesKos[i]);
+    }
+
+    try {
+        const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}` // Jika API memerlukan autentikasi
+            },
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Gagal menyimpan data");
+
+        alert("Kos berhasil ditambahkan!");
+        window.location.href = "manajemen_kos.html"; // Redirect setelah sukses
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Terjadi kesalahan saat menambahkan kos.");
+    }
 });
