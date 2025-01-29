@@ -16,14 +16,10 @@ let allBoardingHouseData = [];
 // Fungsi untuk merender tabel boarding house
 async function renderBoardingHouseTable(boardingHouses) {
     const container = document.querySelector(".cards-container");
-    container.innerHTML = ""; // Menghapus konten sebelumnya
+    container.innerHTML = ""; // Bersihkan kontainer
 
     if (boardingHouses.length === 0) {
-        container.innerHTML = `
-        <div class="card">
-            <p>Tidak ada boarding house yang ditemukan.</p>
-        </div>
-      `;
+        container.innerHTML = `<div class="card"><p>Tidak ada boarding house yang ditemukan.</p></div>`;
         return;
     }
 
@@ -53,7 +49,7 @@ async function renderBoardingHouseTable(boardingHouses) {
 
                 <h3>Aksi</h3>
                 <button class="btn btn-primary" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button>
-                <button class="btn btn-danger" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
+                <button class="btn btn-primary" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
             </div>
         </div>
     `;
@@ -183,39 +179,39 @@ async function populateFormFields() {
     }
 }
 
-async function populateFormFields() {
-    try {
-        const owners = await fetchOwners();
-        const categories = await fetchCategories();
-        const facilities = await fetchFacilities();
+// async function populateFormFields() {
+//     try {
+//         const owners = await fetchOwners();
+//         const categories = await fetchCategories();
+//         const facilities = await fetchFacilities();
 
-        const ownerSelect = document.getElementById("ownerKos");
-        const categorySelect = document.getElementById("categoryKos");
-        const facilitySelect = document.getElementById("fasilitasKos");
+//         const ownerSelect = document.getElementById("ownerKos");
+//         const categorySelect = document.getElementById("categoryKos");
+//         const facilitySelect = document.getElementById("fasilitasKos");
 
-        if (!ownerSelect || !categorySelect || !facilitySelect) {
-            console.error("Dropdown tidak ditemukan di halaman.");
-            return;
-        }
+//         if (!ownerSelect || !categorySelect || !facilitySelect) {
+//             console.error("Dropdown tidak ditemukan di halaman.");
+//             return;
+//         }
 
-        ownerSelect.innerHTML = `<option value="">Pilih Owner</option>`;
-        owners.forEach(owner => {
-            ownerSelect.innerHTML += `<option value="${owner.id}">${owner.full_name}</option>`;
-        });
+//         ownerSelect.innerHTML = `<option value="">Pilih Owner</option>`;
+//         owners.forEach(owner => {
+//             ownerSelect.innerHTML += `<option value="${owner.id}">${owner.full_name}</option>`;
+//         });
 
-        categorySelect.innerHTML = `<option value="">Pilih Kategori</option>`;
-        categories.forEach(category => {
-            categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-        });
+//         categorySelect.innerHTML = `<option value="">Pilih Kategori</option>`;
+//         categories.forEach(category => {
+//             categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+//         });
 
-        facilitySelect.innerHTML = `<option value="">Pilih Fasilitas</option>`;
-        facilities.forEach(facility => {
-            facilitySelect.innerHTML += `<option value="${facility.id}">${facility.name}</option>`;
-        });
-    } catch (error) {
-        console.error("Error mengisi dropdown:", error);
-    }
-}
+//         facilitySelect.innerHTML = `<option value="">Pilih Fasilitas</option>`;
+//         facilities.forEach(facility => {
+//             facilitySelect.innerHTML += `<option value="${facility.id}">${facility.name}</option>`;
+//         });
+//     } catch (error) {
+//         console.error("Error mengisi dropdown:", error);
+//     }
+// }
 
 // Panggil fungsi populateFormFields saat halaman dimuat
 document.addEventListener("DOMContentLoaded", async () => {
