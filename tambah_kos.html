@@ -106,11 +106,16 @@
                         <textarea id="descriptionKos" name="descriptionKos" placeholder="Deskripsi Kos"
                             required></textarea>
 
-                        <label for="fasilitasKos" class="form-label">Pilih Fasilitas</label>
+                        <!-- <label for="fasilitasKos" class="form-label">Pilih Fasilitas</label>
                         <select id="fasilitasKos" name="fasilitasKos" multiple required>
-                            <option value="">Pilih Fasilitas</option>
+                            <option value="">Pilih Fasilitas</option> -->
                             <!-- Data Fasilitas akan diisi menggunakan JavaScript -->
-                        </select>
+                        <!-- </select> -->
+
+                        <label for="fasilitasKos" class="form-label">Pilih Fasilitas</label>
+                        <select id="fasilitasKos" name="fasilitasKos[]" multiple required size="5">
+                            <!-- Data Fasilitas akan diisi menggunakan JavaScript -->
+                        </select>                        
 
                         <!-- Input untuk gambar -->
                         <label for="imagesKos" class="form-label">Masukkan Gambar Kos</label>
@@ -130,7 +135,7 @@
         </div>
     </div>
 
-    <script src="js/tambah_kos.js"></script>
+    <script src="js/tambah.js"></script>
     <script src="js/navbar.js"></script>
 </body>
 
