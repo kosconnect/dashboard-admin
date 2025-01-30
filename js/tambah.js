@@ -33,9 +33,13 @@ async function fetchData(url, selectElement, keyId, keyName) {
         if (!response.ok) throw new Error("Gagal mengambil data");
 
         const data = await response.json();
+        
+        // Cek data yang diterima untuk debug
+        console.log(data);
 
         // Pastikan data memiliki properti "data" yang berisi array
-        const listData = data.data || [];
+        const listData = data.data || data; // Untuk kategori dan fasilitas
+        const listOwners = data || []; // Jika ini adalah respons owner langsung
 
         if (!Array.isArray(listData)) {
             throw new Error("Format data tidak sesuai");
@@ -47,8 +51,8 @@ async function fetchData(url, selectElement, keyId, keyName) {
         // Tambahkan data ke dropdown
         listData.forEach(item => {
             const option = document.createElement("option");
-            option.value = item[keyId];  // ID dari fasilitas
-            option.textContent = item[keyName];  // Nama fasilitas
+            option.value = item[keyId];  // ID dari fasilitas/kategori/owner
+            option.textContent = item[keyName];  // Nama fasilitas/kategori/owner
             selectElement.appendChild(option);
         });
 
@@ -63,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchData("https://kosconnect-server.vercel.app/api/categories/", document.getElementById("categoryKos"), "category_id", "name");
     fetchData("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", document.getElementById("fasilitasKos"), "facility_id", "name");
 });
+
 
 // Fungsi untuk menangani submit form
 document.getElementById("formTambahKos").addEventListener("submit", async function (e) {
