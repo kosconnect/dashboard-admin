@@ -38,10 +38,12 @@ async function renderRoomTable(rooms) {
 
             const detail = await detailResponse.json();
 
-            // Ambil boarding house name, room facilities, custom facilities
+            // Pastikan properti ada sebelum mencoba mengaksesnya
             const boardingHouseName = detail.boarding_house_name || "Tidak tersedia";
-            const roomFacilities = detail.room_facilities ? detail.room_facilities.join(", ") : "Tidak ada fasilitas";
-            const customFacilities = detail.custom_facility_details.length > 0
+            const roomFacilities = detail.room_facilities && Array.isArray(detail.room_facilities)
+                ? detail.room_facilities.join(", ")
+                : "Tidak ada fasilitas";
+            const customFacilities = detail.custom_facility_details && Array.isArray(detail.custom_facility_details)
                 ? detail.custom_facility_details.join(", ")
                 : "Tidak ada fasilitas tambahan";
 
