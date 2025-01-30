@@ -669,7 +669,18 @@ input[type="radio"] {
 }
 
 /* Style untuk input teks */
-input[type="text"], input[type="number"], textarea, select, input[type="file"] {
+input[type="text"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+/* Styling untuk input file gambar */
+input[type="file"] {
     width: 100%;
     padding: 10px;
     font-size: 14px;
