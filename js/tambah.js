@@ -14,8 +14,8 @@ function getJwtToken() {
 // Ambil token dari cookie
 const token = getJwtToken();
 
-// Fungsi untuk fetch data dan isi checkbox
-async function fetchData(url, containerElement, keyId, keyName) {
+// Fungsi untuk fetch data dan isi dropdown atau checkbox
+async function fetchData(url, containerElement, keyId, keyName, isCheckbox = false) {
     if (!token) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
         return;
@@ -33,9 +33,6 @@ async function fetchData(url, containerElement, keyId, keyName) {
         if (!response.ok) throw new Error("Gagal mengambil data");
 
         const data = await response.json();
-        
-        // Cek data yang diterima untuk debug
-        console.log(data);
 
         // Pastikan data memiliki properti "data" yang berisi array
         const listData = data.data || data; // Untuk kategori dan fasilitas
@@ -45,24 +42,33 @@ async function fetchData(url, containerElement, keyId, keyName) {
         }
 
         // Kosongkan container sebelum diisi
-        containerElement.innerHTML = "";
+        containerElement.innerHTML = isCheckbox ? "" : `<option value="">Pilih</option>`; // kosongkan jika checkbox, atau pilih untuk dropdown
 
-        // Tambahkan checkbox ke container
+        // Tambahkan data ke container (dropdown/checkbox)
         listData.forEach(item => {
-            const checkboxWrapper = document.createElement("div");
-            const checkboxInput = document.createElement("input");
-            checkboxInput.type = "checkbox";
-            checkboxInput.name = "fasilitasKos[]";
-            checkboxInput.value = item[keyId]; // ID dari fasilitas
-            checkboxInput.id = `fasilitas_${item[keyId]}`;
+            if (isCheckbox) {
+                // Membuat checkbox untuk fasilitas
+                const checkboxWrapper = document.createElement("div");
+                const checkboxInput = document.createElement("input");
+                checkboxInput.type = "checkbox";
+                checkboxInput.name = "fasilitasKos[]";
+                checkboxInput.value = item[keyId];
+                checkboxInput.id = `fasilitas_${item[keyId]}`;
 
-            const checkboxLabel = document.createElement("label");
-            checkboxLabel.setAttribute("for", checkboxInput.id);
-            checkboxLabel.textContent = item[keyName]; // Nama fasilitas
+                const checkboxLabel = document.createElement("label");
+                checkboxLabel.setAttribute("for", checkboxInput.id);
+                checkboxLabel.textContent = item[keyName];
 
-            checkboxWrapper.appendChild(checkboxInput);
-            checkboxWrapper.appendChild(checkboxLabel);
-            containerElement.appendChild(checkboxWrapper);
+                checkboxWrapper.appendChild(checkboxInput);
+                checkboxWrapper.appendChild(checkboxLabel);
+                containerElement.appendChild(checkboxWrapper);
+            } else {
+                // Membuat option untuk dropdown
+                const option = document.createElement("option");
+                option.value = item[keyId];
+                option.textContent = item[keyName];
+                containerElement.appendChild(option);
+            }
         });
 
     } catch (error) {
@@ -70,12 +76,16 @@ async function fetchData(url, containerElement, keyId, keyName) {
     }
 }
 
-// Panggil fungsi untuk mengisi checkbox saat halaman dimuat
+// Panggil fungsi untuk mengisi dropdown dan checkbox saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
+    const ownerKosContainer = document.getElementById("ownerKos");
+    const categoryKosContainer = document.getElementById("categoryKos");
     const fasilitasKosContainer = document.getElementById("fasilitasKos");
-    fetchData("https://kosconnect-server.vercel.app/api/users/owner", document.getElementById("ownerKos"), "user_id", "fullname");
-    fetchData("https://kosconnect-server.vercel.app/api/categories/", document.getElementById("categoryKos"), "category_id", "name");
-    fetchData("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", fasilitasKosContainer, "facility_id", "name");
+
+    // Fetch data untuk Owner, Category, dan Facility
+    fetchData("https://kosconnect-server.vercel.app/api/users/owner", ownerKosContainer, "user_id", "fullname");
+    fetchData("https://kosconnect-server.vercel.app/api/categories/", categoryKosContainer, "category_id", "name");
+    fetchData("https://kosconnect-server.vercel.app/api/facility/type?type=boarding_house", fasilitasKosContainer, "facility_id", "name", true);
 });
 
 // Fungsi untuk menangani submit form
