@@ -33,7 +33,7 @@ async function fetchData(url, selectElement, keyId, keyName) {
         if (!response.ok) throw new Error("Gagal mengambil data");
 
         const data = await response.json();
-        
+
         // Pastikan data memiliki properti "data" yang berisi array
         const listData = data.data || [];
 
@@ -47,8 +47,8 @@ async function fetchData(url, selectElement, keyId, keyName) {
         // Tambahkan data ke dropdown
         listData.forEach(item => {
             const option = document.createElement("option");
-            option.value = item[keyId];  
-            option.textContent = item[keyName];  
+            option.value = item[keyId];  // ID dari fasilitas
+            option.textContent = item[keyName];  // Nama fasilitas
             selectElement.appendChild(option);
         });
 
