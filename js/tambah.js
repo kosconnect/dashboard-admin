@@ -103,9 +103,15 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
 
     // Ambil fasilitas yang dipilih (bisa lebih dari satu)
     const fasilitasKos = Array.from(document.querySelectorAll("input[name='fasilitasKos[]']:checked")).map(opt => opt.value);
-
     // Ambil file gambar yang diunggah
     const imagesKos = document.getElementById("imagesKos").files;
+
+    // Cek apakah jumlah gambar tidak lebih dari 5
+    if (imagesKos.length > 5) {
+        alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
+        return; // Hentikan eksekusi jika gambar lebih dari 5
+    }
+
     const formData = new FormData();
 
     formData.append("owner_id", ownerKos);
@@ -122,11 +128,11 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
         formData.append("facilities[]", facility);
     });
 
-    // Tambahkan file gambar jika ada
+     // Tambahkan file gambar jika ada
     for (let i = 0; i < imagesKos.length; i++) {
         formData.append("images", imagesKos[i]);
     }
-
+    
     try {
         const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
             method: "POST",
