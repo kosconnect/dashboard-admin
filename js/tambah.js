@@ -49,13 +49,32 @@ async function fetchData(url, selectElement, keyId, keyName) {
         selectElement.innerHTML = `<option value="">Pilih</option>`;
 
         // Tambahkan data ke dropdown
-        listData.forEach(item => {
-            const option = document.createElement("option");
-            option.value = item[keyId];  // ID dari fasilitas/kategori/owner
-            option.textContent = item[keyName];  // Nama fasilitas/kategori/owner
-            selectElement.appendChild(option);
-        });
+        // listData.forEach(item => {
+        //     const option = document.createElement("option");
+        //     option.value = item[keyId]; 
+        //     option.textContent = item[keyName]; 
+        //     selectElement.appendChild(option);
+        // });
 
+
+        // Tambahkan checkbox ke container
+        listData.forEach(item => {
+            const checkboxWrapper = document.createElement("div");
+            const checkboxInput = document.createElement("input");
+            checkboxInput.type = "checkbox";
+            checkboxInput.name = "fasilitasKos[]";
+            checkboxInput.value = item[keyId]; // ID dari fasilitas
+            checkboxInput.id = `fasilitas_${item[keyId]}`;
+
+            const checkboxLabel = document.createElement("label");
+            checkboxLabel.setAttribute("for", checkboxInput.id);
+            checkboxLabel.textContent = item[keyName]; // Nama fasilitas
+
+            checkboxWrapper.appendChild(checkboxInput);
+            checkboxWrapper.appendChild(checkboxLabel);
+            containerElement.appendChild(checkboxWrapper);
+        });
+        
     } catch (error) {
         console.error("Error:", error);
     }
