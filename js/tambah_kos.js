@@ -115,6 +115,8 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
 
     const formData = new FormData();
 
+    console.log("Fasilitas yang dikirimkan: ", fasilitasKos);
+
     formData.append("owner_id", ownerKos);
     formData.append("category_id", categoryKos);
     formData.append("name", namaKos);
@@ -125,16 +127,18 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     formData.append("rules", rulesKos);
 
     // Tambahkan fasilitas ke FormData dalam format array JSON
-    fasilitasKos.forEach(facility => {
-        formData.append("facilities[]", facility);
-    });
+    // fasilitasKos.forEach(facility => {
+    //     formData.append("facilities[]", facility);
+    // });
 
-    console.log("Fasilitas yang dikirimkan: ", fasilitasKos);
+    formData.append("facilities", JSON.stringify(fasilitasKos));
 
     // Tambahkan file gambar jika ada
     for (let i = 0; i < imagesKos.length; i++) {
         formData.append("images", imagesKos[i]);
     }
+
+    console.log("Data yang dikirim:", Object.fromEntries(formData.entries()));
     
     try {
         const response = await fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
