@@ -103,6 +103,7 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
 
     // Ambil fasilitas yang dipilih (bisa lebih dari satu)
     const fasilitasKos = Array.from(document.querySelectorAll("input[name='fasilitasKos[]']:checked")).map(opt => opt.value);
+
     // Ambil file gambar yang diunggah
     const imagesKos = document.getElementById("imagesKos").files;
 
@@ -128,7 +129,9 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
         formData.append("facilities[]", facility);
     });
 
-     // Tambahkan file gambar jika ada
+    console.log("Fasilitas yang dikirimkan: ", fasilitasKos);
+
+    // Tambahkan file gambar jika ada
     for (let i = 0; i < imagesKos.length; i++) {
         formData.append("images", imagesKos[i]);
     }
