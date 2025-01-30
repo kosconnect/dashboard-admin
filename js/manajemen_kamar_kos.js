@@ -38,31 +38,35 @@ async function renderRoomTable(rooms) {
 
             const detail = await detailResponse.json();
 
-            // Ambil boarding house, room facilities, dan custom facilities
-            const boardingHouse = detail.boarding_house || "Tidak tersedia";
+            // Ambil boarding house name, room facilities, custom facilities
+            const boardingHouseName = detail.boarding_house_name || "Tidak tersedia";
             const roomFacilities = detail.room_facilities ? detail.room_facilities.join(", ") : "Tidak ada fasilitas";
-            const customFacilities = detail.custom_facilities ? detail.custom_facilities.join(", ") : "Tidak ada fasilitas tambahan";
+            const customFacilities = detail.custom_facility_details.length > 0
+                ? detail.custom_facility_details.join(", ")
+                : "Tidak ada fasilitas tambahan";
 
-            // Pastikan harga tidak menyebabkan error
-            const formattedPrice = price?.quarterly ? price.quarterly.toLocaleString() : "Harga tidak tersedia";
-            
+            // Menghitung harga per bulan (monthly)
+            const yearlyPrice = price?.yearly || 0;
+            const monthlyPrice = yearlyPrice / 12; // Menghitung harga per bulan
+            const formattedMonthlyPrice = monthlyPrice.toLocaleString();
+
             // Membuat card untuk setiap kamar kos
             container.innerHTML += `
             <div class="card">
             <img src="${images[0]}" alt="Room Image" class="card-image">
             <div class="card-content">
-                        <h3>${room_type}</h3>
-                        <p>Kos: ${boardingHouse}</p>
-                        <p>Ukuran: ${size}</p>
-                        <p>Harga: Rp ${formattedPrice}</p>
-                        <p>Status: ${status}</p>
-                        <p>Kamar Tersedia: ${number_available}</p>
-                        <p>Fasilitas: ${roomFacilities}</p>
-                        <p>Fasilitas Tambahan: ${customFacilities}</p>
+                    <h3>${room_type}</h3>
+                    <p>Nama Kos: ${boardingHouseName}</p>
+                    <p>Ukuran: ${size}</p>
+                    <p>Harga per Bulan: Rp ${formattedMonthlyPrice}</p>
+                    <p>Status: ${status}</p>
+                    <p>Kamar Tersedia: ${number_available}</p>
+                    <p>Fasilitas: ${roomFacilities}</p>
+                    <p>Fasilitas Tambahan: ${customFacilities}</p>
 
-                        <h3>Aksi</h3>
-                        <button class="btn btn-primary" onclick="editRoom('${room_id}')">Edit</button>
-                        <button class="btn btn-primary" onclick="deleteRoom('${room_id}')">Hapus</button>
+                    <h3>Aksi</h3>
+                    <button class="btn btn-primary" onclick="editRoom('${room_id}')">Edit</button>
+                    <button class="btn btn-primary" onclick="deleteRoom('${room_id}')">Hapus</button>
                 </div>
             </div>
             `;
@@ -72,28 +76,28 @@ async function renderRoomTable(rooms) {
     }
 }
 
-    // Ambil data kamar kos saat halaman dimuat
-    window.onload = async () => {
-        try {
-            const authToken = getCookie("authToken");
-            const response = await fetch(
-                "https://kosconnect-server.vercel.app/api/rooms/",
-                {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Gagal mengambil data kamar kos");
+// Ambil data kamar kos saat halaman dimuat
+window.onload = async () => {
+    try {
+        const authToken = getCookie("authToken");
+        const response = await fetch(
+            "https://kosconnect-server.vercel.app/api/rooms/",
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
             }
+        );
 
-            const data = await response.json(); // Dapatkan data dalam bentuk JSON
-            allRoomData = data.data; // Ambil array dari 'data'
-            await renderRoomTable(allRoomData);
-        } catch (error) {
-            console.error("Gagal mengambil data:", error);
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data kamar kos");
         }
-    };
+
+        const data = await response.json(); // Dapatkan data dalam bentuk JSON
+        allRoomData = data.data; // Ambil array dari 'data'
+        await renderRoomTable(allRoomData);
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
+    }
+};
