@@ -71,10 +71,10 @@ async function renderRoomTable(rooms) {
             };
 
             let priceListHTML = "<ul>";
-            if (detail[0]?.price && typeof detail[0]?.price === "object") {
+            if (price && typeof price === "object") {
                 Object.entries(priceTypes).forEach(([key, label]) => {
-                    if (detail[0]?.price[key]) {
-                        priceListHTML += `<li>Rp ${detail.price[key].toLocaleString("id-ID")} / ${label}</li>`;
+                    if (price[key]) {
+                        priceListHTML += `<li>Rp ${price[key].toLocaleString("id-ID")} / ${label}</li>`;
                     }
                 });
             }
