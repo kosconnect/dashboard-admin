@@ -44,10 +44,10 @@ async function renderRoomTable(rooms) {
                 ? detail[0]?.room_facilities.join(", ")
                 : "Tidak ada fasilitas";
                 const customFacilities = detail[0]?.custom_facility_details && Array.isArray(detail[0]?.custom_facility_details)
-                ? detail[0].custom_facility_details.map(facility => 
-                    `${facility.name} (Rp ${facility.price.toLocaleString("id-ID")})`
-                  ).join(", ")
-                : "Tidak ada fasilitas tambahan";            
+                ? `<ul>` + detail[0].custom_facility_details.map(facility => 
+                    `<li>${facility.name} (Rp ${facility.price.toLocaleString("id-ID")})</li>`
+                  ).join("") + `</ul>`
+                : "Tidak ada fasilitas tambahan";                      
 
               // Format harga berdasarkan periode
               const priceTypes = {
