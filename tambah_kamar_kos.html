@@ -23,7 +23,6 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <!-- Ganti dengan gambar -->
                 <img src="img/logokos.png" alt="Kosconnect Logo" style="width: 40px; height: 40px; margin-right: 10px;">
                 <h2>KosConnect</h2>
             </div>
@@ -38,7 +37,6 @@
                                     Pengguna</span></a></li>
                         <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
                         <li><a href="facilities.html"><i class="fa-solid fa-house"></i> <span>Fasilitas</span></a></li>
-                        <!-- <li><a href="room_facility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li> -->
                         <li><a href="manajemen_kos.html"><i class="fas fa-house-user"></i> <span>Manajemen
                                     Kos</span></a></li>
                         <li><a href="manajemen_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Manajemen
@@ -53,18 +51,18 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="dashboard-header">
-                <h1>Kamar Kos</h1>
+                <h1>Tambah Kamar Kos</h1>
                 <div class="header-icons">
                     <a href="#"><i class="fas fa-bell"></i></a>
                     <a href="#"><i class="fas fa-cog"></i></a>
                     <div class="user-dropdown">
                         <div class="user-info" onclick="toggleDropdown()">
                             <div class="top-row">
-                                <span class="name"></span> <!-- Nama pengguna akan ditambahkan secara dinamis -->
+                                <span class="name"></span>
                                 <i class="fas fa-user"></i>
                                 <i class="fas fa-caret-down"></i>
                             </div>
-                            <span class="role">Admin</span> <!-- Peran user akan ditambahkan secara dinamis -->
+                            <span class="role">Admin</span>
                         </div>
                     </div>
                     <ul class="dropdown-menu">
@@ -73,24 +71,57 @@
                 </div>
             </div>
 
-            <!-- Tombol Tambah kamar kos -->
-            <div class="button-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                <a href="tambah_kamar_kos.html">
-                    <button class="btn btn-primary">Tambah Kamar Kos</button>
-                </a>
-            </div>
-
+            <!-- Form Tambah Kos -->
             <div class="card">
                 <div class="header">
-                    <h2>Manajemen Kamar Kos</h2>
+                    <h2>Form Tambah Kamar Kos</h2>
                 </div>
-                <div class="cards-container">
-                    <!-- Card akan diisi oleh JavaScript -->
+                <div class="form-container">
+                    <form id="formTambahKamar">
+                        <label for="kos" class="form-label">Pilih Kos</label>
+                        <select id="kos" name="kos" required>
+                            <option value="">Pilih Kos</option>
+                            <!-- Data Kos akan diisi menggunakan JavaScript -->
+                        </select>
+                    
+                        <label for="tipeKamar" class="form-label">Tipe Kamar</label>
+                        <input type="text" id="tipeKamar" name="tipeKamar" placeholder="Contoh: Single, Double" required>
+                    
+                        <label for="ukuranKamar" class="form-label">Ukuran Kamar</label>
+                        <input type="text" id="ukuranKamar" name="ukuranKamar" placeholder="Contoh: 3x4 meter" required>
+                    
+                        <label for="hargaKamar" class="form-label">Harga Kamar</label>
+                        <input type="number" id="hargaKamar" name="hargaKamar" placeholder="Harga per bulan" required>
+                    
+                        <label for="kamarTersedia" class="form-label">Jumlah Kamar Tersedia</label>
+                        <input type="number" id="kamarTersedia" name="kamarTersedia" placeholder="Jumlah kamar yang tersedia" required>
+                    
+                        <!-- Input untuk gambar -->
+                        <label for="imagesKamar" class="form-label">Masukkan Gambar Kamar</label>
+                        <input type="file" id="imagesKamar" name="imagesKamar[]" multiple accept="image/*" class="form-control">
+                    
+                        <label for="fasilitasKamar" class="form-label">Pilih Fasilitas</label>
+                        <div id="fasilitasKamar" name="fasilitasKamar[]" class="checkbox-group">
+                            <!-- Data Fasilitas akan diisi menggunakan JavaScript -->
+                        </div>
+                    
+                        <label for="fasilitasTambahan" class="form-label">Pilih Fasilitas Tambahan</label>
+                        <div id="fasilitasTambahan" name="fasilitasTambahan[]" class="checkbox-group">
+                            <!-- Data Fasilitas Tambahan akan diisi menggunakan JavaScript -->
+                        </div>
+                    
+                        <div class="popup-actions">
+                            <button type="button" class="btn btn-batal" onclick="window.location.href='manajemen_kamar_kos.html'">Batal</button>
+                            <button type="submit" class="btn btn-save">Simpan</button>
+                        </div>
+                    </form>                    
                 </div>
+            </div>
+        </div>
+    </div>
 
-
-                <script src="js/manajemen_kamar_kos.js"></script>
-                <script src="js/navbar.js"></script>
+    <script src="js/tambah_kamar_kos.js"></script>
+    <script src="js/navbar.js"></script>
 </body>
 
 </html>
