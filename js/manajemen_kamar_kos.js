@@ -73,7 +73,7 @@ async function renderRoomTable(rooms) {
             if (detail[0]?.price && typeof detail[0]?.price === "object") {
                 Object.entries(priceTypes).forEach(([key, label]) => {
                     if (detail[0]?.price[key]) {
-                        priceListHTML += `<li>Rp ${detail[0]?.price[key].toLocaleString("id-ID")} / ${label}</li>`;
+                        priceListHTML += `<li>Rp ${detail.price[key].toLocaleString("id-ID")} / ${label}</li>`;
                     }
                 });
             }
