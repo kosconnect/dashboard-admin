@@ -43,24 +43,11 @@ async function renderRoomTable(rooms) {
             const roomFacilities = detail[0]?.room_facilities && Array.isArray(detail[0]?.room_facilities)
                 ? detail[0]?.room_facilities.join(", ")
                 : "Tidak ada fasilitas";
-            const customFacilities = detail[0]?.custom_facility_details && Array.isArray(detail[0]?.custom_facility_details)
-                ? detail[0].custom_facility_details.map(facility => facility.name).join(", ")
-                : "Tidak ada fasilitas tambahan";
-            
-
-            // Pastikan properti ada sebelum mencoba mengaksesnya
-            // const boardingHouseName = detail.boarding_house_name || "Tidak tersedia";
-            // const roomFacilities = detail.room_facilities && Array.isArray(detail.room_facilities)
-            //     ? detail.room_facilities.join(", ")
-            //     : "Tidak ada fasilitas";
-            // const customFacilities = detail.custom_facility_details && Array.isArray(detail.custom_facility_details)
-            //     ? detail.custom_facility_details.join(", ")
-            //     : "Tidak ada fasilitas tambahan";
-
-            // Menghitung harga per bulan (monthly)
-            // const yearlyPrice = price?.yearly || 0;
-            // const monthlyPrice = yearlyPrice / 12; 
-            // const formattedMonthlyPrice = monthlyPrice.toLocaleString();
+                const customFacilities = detail[0]?.custom_facility_details && Array.isArray(detail[0]?.custom_facility_details)
+                ? detail[0].custom_facility_details.map(facility => 
+                    `${facility.name} (Rp ${facility.price.toLocaleString("id-ID")})`
+                  ).join(", ")
+                : "Tidak ada fasilitas tambahan";            
 
               // Format harga berdasarkan periode
               const priceTypes = {
