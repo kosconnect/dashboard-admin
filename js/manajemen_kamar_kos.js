@@ -38,19 +38,46 @@ async function renderRoomTable(rooms) {
 
             const detail = await detailResponse.json();
 
-            // Pastikan properti ada sebelum mencoba mengaksesnya
-            const boardingHouseName = detail.boarding_house_name || "Tidak tersedia";
-            const roomFacilities = detail.room_facilities && Array.isArray(detail.room_facilities)
-                ? detail.room_facilities.join(", ")
+            const ownerName = detail[0]?.owner_name || "Owner Tidak Diketahui";
+            const boardingHouseName = detail[0]?.boarding_house_name || "Tidak tersedia";
+            const roomFacilities = detail[0]?.room_facilities && Array.isArray(detail[0]?.room_facilities)
+                ? detail[0]?.room_facilities.join(", ")
                 : "Tidak ada fasilitas";
-            const customFacilities = detail.custom_facility_details && Array.isArray(detail.custom_facility_details)
-                ? detail.custom_facility_details.join(", ")
+            const customFacilities = detail[0]?.custom_facility_details && Array.isArray(detail[0]?.custom_facility_details)
+                ? detail[0]?.custom_facility_details.join(", ")
                 : "Tidak ada fasilitas tambahan";
 
+            // Pastikan properti ada sebelum mencoba mengaksesnya
+            // const boardingHouseName = detail.boarding_house_name || "Tidak tersedia";
+            // const roomFacilities = detail.room_facilities && Array.isArray(detail.room_facilities)
+            //     ? detail.room_facilities.join(", ")
+            //     : "Tidak ada fasilitas";
+            // const customFacilities = detail.custom_facility_details && Array.isArray(detail.custom_facility_details)
+            //     ? detail.custom_facility_details.join(", ")
+            //     : "Tidak ada fasilitas tambahan";
+
             // Menghitung harga per bulan (monthly)
-            const yearlyPrice = price?.yearly || 0;
-            const monthlyPrice = yearlyPrice / 12; // Menghitung harga per bulan
-            const formattedMonthlyPrice = monthlyPrice.toLocaleString();
+            // const yearlyPrice = price?.yearly || 0;
+            // const monthlyPrice = yearlyPrice / 12; 
+            // const formattedMonthlyPrice = monthlyPrice.toLocaleString();
+
+              // Format harga berdasarkan periode
+              const priceTypes = {
+                monthly: "bulan",
+                quarterly: "3 bulan",
+                semi_annual: "6 bulan",
+                yearly: "tahun",
+            };
+
+            let priceListHTML = "<ul>";
+            if (detail[0]?.price && typeof detail[0]?.price === "object") {
+                Object.entries(priceTypes).forEach(([key, label]) => {
+                    if (detail[0]?.price[key]) {
+                        priceListHTML += `<li>Rp ${detail[0]?.price[key].toLocaleString("id-ID")} / ${label}</li>`;
+                    }
+                });
+            }
+            priceListHTML += "</ul>";
 
             // Membuat card untuk setiap kamar kos
             container.innerHTML += `
@@ -58,9 +85,11 @@ async function renderRoomTable(rooms) {
             <img src="${images[0]}" alt="Room Image" class="card-image">
             <div class="card-content">
                     <h3>${room_type}</h3>
+                    <p>Owner: ${ownerName}</p>
                     <p>Nama Kos: ${boardingHouseName}</p>
                     <p>Ukuran: ${size}</p>
-                    <p>Harga per Bulan: Rp ${formattedMonthlyPrice}</p>
+                    <p>Harga:</p>
+                     ${priceListHTML}
                     <p>Status: ${status}</p>
                     <p>Kamar Tersedia: ${number_available}</p>
                     <p>Fasilitas: ${roomFacilities}</p>
