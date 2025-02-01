@@ -1,7 +1,3 @@
-// const urlParams = new URLSearchParams(window.location.search);
-// const boardingHouseId = urlParams.get('boarding_house_id');
-// console.log("Boarding House ID:", boardingHouseId);
-
 // Fungsi untuk membaca boarding_house_id dari URL
 function getBoardingHouseIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -24,7 +20,7 @@ function getJwtToken() {
 // Ambil token dari cookie
 const token = getJwtToken();
 
-// Fungsi untuk fetch data dan isi dropdown atau checkbox
+// Fungsi untuk fetch data dan isi checkbox
 async function fetchData(url, containerElement, keyId, keyName) {
     if (!token) {
         console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
@@ -87,7 +83,6 @@ async function fetchOwnerIdAndFacilities() {
     }
 
     try {
-        // Fetch data boarding house berdasarkan boarding_house_id
         const response = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}`, {
             method: "GET",
             headers: {
@@ -99,11 +94,9 @@ async function fetchOwnerIdAndFacilities() {
         if (!response.ok) throw new Error("Gagal mengambil data boarding house");
 
         const data = await response.json();
-        console.log("Data boarding house:", data)
+        console.log("Data boarding house:", data);
 
-        // Mengakses 'owner_id' yang ada dalam 'boardingHouse'
         const ownerId = data?.boardingHouse?.owner_id;
-
         if (!ownerId) {
             console.error("Owner ID tidak ditemukan.");
             return;
@@ -135,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("formTambahKamar").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    // Ambil boardingHouseId dari URL
     const boardingHouseId = getBoardingHouseIdFromURL();
     if (!boardingHouseId) {
         alert("Boarding House ID tidak ditemukan di URL.");
@@ -146,41 +138,34 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const ukuranKamar = document.getElementById("ukuranKamar").value;
     const hargaKamar = Array.from(document.querySelectorAll(".hargaKamar"))
         .map(input => input.value.trim())
-        .filter(harga => harga !== "" && !isNaN(harga)); // Hanya ambil harga yang terisi dan valid angka
+        .filter(harga => harga !== "" && !isNaN(harga));
 
     const kamarTersedia = document.getElementById("kamarTersedia").value;
     const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
     const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
-    // Ambil semua input file
+
     const imageInputs = document.querySelectorAll("input[name='imagesKamar[]']");
 
-    // Validasi minimal satu harga harus diisi
     if (hargaKamar.length === 0) {
         alert("Minimal satu harga harus diisi!");
         return;
     }
 
-    // Filter harga kosong agar tidak dikirim ke backend sebagai nilai kosong
-    const hargaKamarFiltered = hargaKamar.filter(harga => harga !== "");
-
     let imageCount = 0;
     const formData = new FormData();
 
-    // Loop untuk mendapatkan file gambar yang diunggah
     imageInputs.forEach((input) => {
         if (input.files.length > 0) {
-            formData.append("images", input.files[0]); // Tambahkan hanya file yang dipilih
+            formData.append("images", input.files[0]);
             imageCount++;
         }
     });
 
-    // Periksa apakah minimal satu gambar diunggah
     if (imageCount < 1) {
         alert("Minimal satu gambar kamar harus diunggah!");
         return;
     }
 
-    // Periksa apakah jumlah gambar tidak lebih dari 5
     if (imageCount > 5) {
         alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
         return;
@@ -188,16 +173,12 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
 
     formData.append("type", tipeKamar);
     formData.append("size", ukuranKamar);
-    formData.append("price", JSON.stringify(hargaKamarFiltered)); // Pastikan harga dikirim dalam format JSON
+    formData.append("price", JSON.stringify(hargaKamar)); 
     formData.append("available_rooms", kamarTersedia);
-    formData.append("facilities", JSON.stringify(fasilitasKamar));
+    formData.append("facilities", JSON.stringify(fasilitasKamar)); 
     formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
 
-    imageInputs.forEach((input) => {
-        if (input.files.length > 0) {
-            formData.append("images", input.files[0]); // Tambahkan hanya file yang dipilih
-        }
-    });
+    console.log("Data yang dikirim:", Object.fromEntries(formData.entries()));
 
     try {
         const response = await fetch(`https://kosconnect-server.vercel.app/api/rooms/${boardingHouseId}`, {
@@ -207,24 +188,16 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
             },
             body: formData
         });
-    
+
         const responseText = await response.text();
         console.log("Server Response:", responseText);
-    
+
         if (!response.ok) throw new Error("Gagal menyimpan data");
-    
+
         alert("Kamar berhasil ditambahkan!");
         window.location.href = "manajemen_kamar_kos.html";
     } catch (error) {
         console.error("Error:", error);
         alert("Terjadi kesalahan saat menambahkan kamar.");
-    }    
+    }
 });
-
-for (let pair of formData.entries()) {
-    console.log(pair[0]+ ': ' + pair[1]);
-}
-
-console.log("Harga Kamar:", JSON.stringify(hargaKamarFiltered));
-console.log("Fasilitas Kamar:", JSON.stringify(fasilitasKamar));
-console.log("Fasilitas Tambahan:", JSON.stringify(fasilitasTambahan));
