@@ -160,6 +160,7 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const hargaKamarFiltered = hargaKamar.filter(harga => harga !== "");
 
     let imageCount = 0;
+    const formData = new FormData();
 
     // Loop untuk mendapatkan file gambar yang diunggah
     imageInputs.forEach((input) => {
@@ -181,7 +182,6 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
         return;
     }
 
-    const formData = new FormData();
     formData.append("type", tipeKamar);
     formData.append("size", ukuranKamar);
     formData.append("price", JSON.stringify(hargaKamarFiltered)); // Pastikan harga dikirim dalam format JSON
