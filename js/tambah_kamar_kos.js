@@ -135,14 +135,19 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("formTambahKamar").addEventListener("submit", async function (e) {
     e.preventDefault();
 
+    // Ambil boardingHouseId dari URL
+    const boardingHouseId = getBoardingHouseIdFromURL();
+    if (!boardingHouseId) {
+        alert("Boarding House ID tidak ditemukan di URL.");
+        return;
+    }
+
     const tipeKamar = document.getElementById("tipeKamar").value;
     const ukuranKamar = document.getElementById("ukuranKamar").value;
-    const hargaKamar = [
-        document.getElementById("hargaKamar1").value.trim(),
-        document.getElementById("hargaKamar2").value.trim(),
-        document.getElementById("hargaKamar3").value.trim(),
-        document.getElementById("hargaKamar4").value.trim()
-    ];
+    const hargaKamar = Array.from(document.querySelectorAll(".hargaKamar"))
+        .map(input => input.value.trim())
+        .filter(harga => harga !== "" && !isNaN(harga)); // Hanya ambil harga yang terisi dan valid angka
+
     const kamarTersedia = document.getElementById("kamarTersedia").value;
     const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
     const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
@@ -150,8 +155,7 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const imageInputs = document.querySelectorAll("input[name='imagesKamar[]']");
 
     // Validasi minimal satu harga harus diisi
-    const isHargaValid = hargaKamar.some(harga => harga !== "" && !isNaN(harga)); // Pastikan harga valid dan bukan kosong
-    if (!isHargaValid) {
+    if (hargaKamar.length === 0) {
         alert("Minimal satu harga harus diisi!");
         return;
     }
