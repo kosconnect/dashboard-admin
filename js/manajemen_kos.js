@@ -52,6 +52,7 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Aturan: ${rules}</p>
 
                 <h3>Aksi</h3>
+                <button class="btn btn-primary" onclick="tambahKamarKos('${boarding_house_id}')">Tambah Kamar Kos</button>
                 <button class="btn btn-primary" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button>
                 <button class="btn btn-primary" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
             </div>

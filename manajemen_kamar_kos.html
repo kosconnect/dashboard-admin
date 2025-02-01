@@ -74,11 +74,15 @@
             </div>
 
             <!-- Tombol Tambah kamar kos -->
-            <div class="button-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <!-- <div class="button-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                 <a href="tambah_kamar_kos.html">
                     <button class="btn btn-primary">Tambah Kamar Kos</button>
                 </a>
+            </div> -->
+            <div class="button-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="cekPilihKos()">Tambah Kamar Kos</button>
             </div>
+
 
             <div class="main-container">
                 <div class="header">
@@ -89,8 +93,30 @@
                 </div>
 
 
+                <script>
+                    function cekPilihKos() {
+                        let kosDipilih = false; // Gantilah dengan logika pengecekan apakah admin sudah memilih kos
+
+                        if (!kosDipilih) {
+                            Swal.fire({
+                                title: "Pilih Kos Terlebih Dahulu!",
+                                text: "Silakan pilih kos sebelum menambahkan kamar.",
+                                icon: "warning",
+                                confirmButtonText: "OK"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "manajemen_kos.html";
+                                }
+                            });
+                        } else {
+                            window.location.href = "tambah_kamar_kos.html";
+                        }
+                    }
+                </script>
+
                 <script src="js/manajemen_kamar_kos.js"></script>
                 <script src="js/navbar.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
