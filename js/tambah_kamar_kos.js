@@ -150,7 +150,7 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const imageInputs = document.querySelectorAll("input[name='imagesKamar[]']");
 
     // Validasi minimal satu harga harus diisi
-    const isHargaValid = hargaKamar.some(harga => harga !== "");
+    const isHargaValid = hargaKamar.some(harga => harga !== "" && !isNaN(harga)); // Pastikan harga valid dan bukan kosong
     if (!isHargaValid) {
         alert("Minimal satu harga harus diisi!");
         return;
@@ -169,13 +169,13 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
             imageCount++;
         }
     });
-    
+
     // Periksa apakah minimal satu gambar diunggah
     if (imageCount < 1) {
         alert("Minimal satu gambar kamar harus diunggah!");
         return;
     }
-    
+
     // Periksa apakah jumlah gambar tidak lebih dari 5
     if (imageCount > 5) {
         alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
@@ -196,7 +196,7 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     });
 
     try {
-        const response = await fetch("https://kosconnect-server.vercel.app/api/rooms/", {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/rooms/${boardingHouseId}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`
