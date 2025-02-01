@@ -182,8 +182,8 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     formData.append("available_rooms", kamarTersedia);
     formData.append("facilities", JSON.stringify(fasilitasKamar)); 
     // formData.append("facilities", fasilitasKamar);
-    // formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
-    formData.append("additional_facilities", JSON.stringify(fasilitasTambahan.length > 0 ? fasilitasTambahan : []));
+    formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
+    // formData.append("additional_facilities", JSON.stringify(fasilitasTambahan.length > 0 ? fasilitasTambahan : []));
 
     console.log("Data yang dikirim:", Object.fromEntries(formData.entries()));
 
