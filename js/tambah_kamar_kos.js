@@ -137,12 +137,17 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const tipeKamar = document.getElementById("tipeKamar").value;
     const ukuranKamar = document.getElementById("ukuranKamar").value;
     const hargaKamar = Array.from(document.querySelectorAll(".hargaKamar"))
-        .map(input => input.value.trim())
-        .filter(harga => harga !== "" && !isNaN(harga));
+    .map(input => input.value.trim()) // Menghapus spasi yang tidak perlu
+    .filter(harga => harga !== "" && !isNaN(harga)) // Memastikan tidak ada nilai kosong atau non-numerik
+    .map(Number); // Mengonversi ke angka
 
     const kamarTersedia = document.getElementById("kamarTersedia").value;
     const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
-    const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
+    // const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
+    const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked"))
+    .map(opt => opt.value)
+    .filter(value => value !== "undefined" && value !== "");
+
 
     const imageInputs = document.querySelectorAll("input[name='imagesKamar[]']");
 
@@ -175,8 +180,10 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     formData.append("size", ukuranKamar);
     formData.append("price", JSON.stringify(hargaKamar)); 
     formData.append("available_rooms", kamarTersedia);
-    formData.append("facilities", JSON.stringify(fasilitasKamar)); 
-    formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
+    // formData.append("facilities", JSON.stringify(fasilitasKamar)); 
+    formData.append("facilities", fasilitasKamar);
+    // formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
+    formData.append("additional_facilities", JSON.stringify(fasilitasTambahan.length > 0 ? fasilitasTambahan : []));
 
     console.log("Data yang dikirim:", Object.fromEntries(formData.entries()));
 
