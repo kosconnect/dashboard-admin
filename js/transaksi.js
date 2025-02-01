@@ -44,10 +44,20 @@ async function renderOrderTable(orders) {
         const roomDetail = await roomResponse.json();
 
         // Ambil room_type dari roomDetail
-        const roomType = roomDetail[0]?.room_type || "Tidak Diketahui"; // default "Tidak Diketahui" jika tidak ada room_type
+        const roomName = roomDetail[0]?.room_name || "Tidak Diketahui"; // default "Tidak Diketahui" jika tidak ada room_type
 
         // Ambil full_name dari personal_info
         const fullName = order.personal_info?.full_name || "Tidak Diketahui"; // default jika tidak ada personal_info atau full_name
+
+        const paymentStatusMap = {
+            pending: "Menunggu",
+            settlement: "Lunas",
+            expire: "Kadaluarsa",
+            deny: "Ditolak atau Gagal",
+          };
+      
+          const paymentStatus =
+            paymentStatusMap[order.payment_status] || "Tidak Diketahui";
 
         const totalFormatted = `Rp ${order.total.toLocaleString("id-ID")}`;
         const row = document.createElement("tr");
@@ -56,7 +66,8 @@ async function renderOrderTable(orders) {
         <td>${orders.data.indexOf(order) + 1}</td>
         <td>${order.transaction_code}</td>
         <td>${fullName}</td>
-        <td>${roomType}</td> <!-- Tampilkan room_type di sini -->
+        <td>${roomName}</td> <!-- Tampilkan room_type di sini -->
+        <td>${paymentStatus}</td>
         <td>${totalFormatted}</td>
         <td>
         <a href="detail.html?transaction_id=${order.transaction_id}" class="btn btn-primary" style="text-decoration: none;">
@@ -94,4 +105,4 @@ window.onload = async () => {
     }
 };
 
-console.log(order.personal_info);
+// console.log(order.personal_info);
