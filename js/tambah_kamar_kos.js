@@ -8,106 +8,170 @@ function getBoardingHouseIdFromURL() {
     return urlParams.get("boarding_house_id");
 }
 
-// Fungsi untuk membaca cookie (untuk autentikasi)
-function getCookie(name) {
-    const cookies = document.cookie.split("; ");
+// Fungsi untuk mendapatkan JWT token dari cookie
+function getJwtToken() {
+    const cookies = document.cookie.split('; ');
     for (let cookie of cookies) {
-        const [key, value] = cookie.split("=");
-        if (key === name) {
+        const [key, value] = cookie.split('=');
+        if (key === 'authToken') {
             return decodeURIComponent(value);
         }
     }
+    console.error("Token tidak ditemukan.");
     return null;
 }
 
-// Fungsi untuk mengambil dan menampilkan fasilitas kamar
-async function loadFacilities() {
+// Ambil token dari cookie
+const token = getJwtToken();
+
+// Fungsi untuk fetch data dan isi dropdown atau checkbox
+async function fetchData(url, containerElement, keyId, keyName) {
+    if (!token) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
     try {
-        const response = await fetch("https://kosconnect-server.vercel.app/api/customFacilities/admin");
-        if (!response.ok) {
-            throw new Error("Gagal mengambil data fasilitas");
-        }
-        const facilities = await response.json();
-
-        const fasilitasContainer = document.getElementById("fasilitasKamar");
-        const fasilitasTambahanContainer = document.getElementById("fasilitasTambahan");
-
-        facilities.forEach((facility) => {
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.value = facility.id;
-            checkbox.name = "fasilitasKamar[]";
-            checkbox.id = `fasilitas-${facility.id}`;
-
-            const label = document.createElement("label");
-            label.htmlFor = `fasilitas-${facility.id}`;
-            label.textContent = facility.name;
-
-            const wrapper = document.createElement("div");
-            wrapper.classList.add("checkbox-item");
-            wrapper.appendChild(checkbox);
-            wrapper.appendChild(label);
-
-            if (facility.type === "primary") {
-                fasilitasContainer.appendChild(wrapper);
-            } else {
-                fasilitasTambahanContainer.appendChild(wrapper);
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             }
         });
+
+        if (!response.ok) throw new Error("Gagal mengambil data");
+
+        const data = await response.json();
+        const listData = data.data || data;
+
+        if (!Array.isArray(listData)) {
+            throw new Error("Format data tidak sesuai");
+        }
+
+        containerElement.innerHTML = "";
+
+        listData.forEach(item => {
+            const checkboxWrapper = document.createElement("div");
+            const checkboxInput = document.createElement("input");
+            checkboxInput.type = "checkbox";
+            checkboxInput.name = containerElement.id + "[]";
+            checkboxInput.value = item[keyId];
+            checkboxInput.id = `${containerElement.id}_${item[keyId]}`;
+
+            const checkboxLabel = document.createElement("label");
+            checkboxLabel.setAttribute("for", checkboxInput.id);
+            checkboxLabel.textContent = item[keyName];
+
+            checkboxWrapper.appendChild(checkboxInput);
+            checkboxWrapper.appendChild(checkboxLabel);
+            containerElement.appendChild(checkboxWrapper);
+        });
+
     } catch (error) {
-        console.error("Error saat mengambil fasilitas:", error);
+        console.error("Error:", error);
     }
 }
 
-// Fungsi untuk menangani pengiriman formulir tambah kamar
-document.getElementById("formTambahKamar").addEventListener("submit", async function (event) {
-    event.preventDefault();
+// Fungsi untuk fetch owner_id dari boarding house
+async function fetchOwnerIdAndFacilities() {
+    const boardingHouseId = getBoardingHouseIdFromURL();
+    if (!boardingHouseId) {
+        console.error("Boarding house ID tidak ditemukan di URL.");
+        return;
+    }
 
-    const authToken = getCookie("authToken");
-    if (!authToken) {
-        alert("Anda harus login terlebih dahulu!");
+    if (!token) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    try {
+        // Fetch data boarding house berdasarkan boarding_house_id
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) throw new Error("Gagal mengambil data boarding house");
+
+        const data = await response.json();
+        const ownerId = data?.data?.owner_id;
+
+        if (!ownerId) {
+            console.error("Owner ID tidak ditemukan.");
+            return;
+        }
+
+        console.log("Owner ID:", ownerId);
+
+        // Fetch custom facilities berdasarkan owner_id
+        const fasilitasTambahanContainer = document.getElementById("fasilitasTambahan");
+        fetchData(`https://kosconnect-server.vercel.app/api/customFacilities/admin?owner_id=${ownerId}`, fasilitasTambahanContainer, "facility_id", "name");
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// Panggil fungsi untuk mengisi fasilitas saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+    const fasilitasKamarContainer = document.getElementById("fasilitasKamar");
+
+    // Fetch fasilitas umum tanpa owner_id
+    fetchData("https://kosconnect-server.vercel.app/api/facility/type?type=room", fasilitasKamarContainer, "facility_id", "name");
+
+    // Fetch fasilitas tambahan berdasarkan owner_id
+    fetchOwnerIdAndFacilities();
+});
+
+// Fungsi untuk menangani submit form
+document.getElementById("formTambahKamar").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const tipeKamar = document.getElementById("tipeKamar").value;
+    const ukuranKamar = document.getElementById("ukuranKamar").value;
+    const hargaKamar = document.getElementById("hargaKamar").value;
+    const kamarTersedia = document.getElementById("kamarTersedia").value;
+    const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
+    const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
+    const imagesKamar = document.getElementById("imagesKamar").files;
+
+    if (imagesKamar.length > 5) {
+        alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
         return;
     }
 
     const formData = new FormData();
-    formData.append("room_type", document.getElementById("tipeKamar").value);
-    formData.append("room_size", document.getElementById("ukuranKamar").value);
-    formData.append("price", document.getElementById("hargaKamar").value);
-    formData.append("available_rooms", document.getElementById("kamarTersedia").value);
+    formData.append("type", tipeKamar);
+    formData.append("size", ukuranKamar);
+    formData.append("price", hargaKamar);
+    formData.append("available_rooms", kamarTersedia);
+    formData.append("facilities", JSON.stringify(fasilitasKamar));
+    formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
 
-    // Ambil fasilitas yang dipilih
-    const selectedFacilities = [...document.querySelectorAll("#fasilitasKamar input:checked")].map(input => input.value);
-    formData.append("facilities", JSON.stringify(selectedFacilities));
-
-    const selectedAdditionalFacilities = [...document.querySelectorAll("#fasilitasTambahan input:checked")].map(input => input.value);
-    formData.append("additional_facilities", JSON.stringify(selectedAdditionalFacilities));
-
-    // Tambahkan gambar ke FormData
-    const imageFiles = document.getElementById("imagesKamar").files;
-    for (let i = 0; i < imageFiles.length; i++) {
-        formData.append("images", imageFiles[i]);
+    for (let i = 0; i < imagesKamar.length; i++) {
+        formData.append("images", imagesKamar[i]);
     }
 
     try {
         const response = await fetch("https://kosconnect-server.vercel.app/api/rooms/", {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${authToken}`
+                "Authorization": `Bearer ${token}`
             },
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error("Gagal menambahkan kamar");
-        }
+        if (!response.ok) throw new Error("Gagal menyimpan data");
 
-        alert("Kamar berhasil ditambahkan!");
-        window.location.href = "manajemen_kamar_kos.html"; // Redirect ke halaman manajemen
+        alert("Kamar berhasil ditambahkan!"); 
+        window.location.href = "manajemen_kamar_kos.html";
     } catch (error) {
         console.error("Error:", error);
-        alert("Terjadi kesalahan saat menambahkan kamar");
+        alert("Terjadi kesalahan saat menambahkan kamar."); 
     }
 });
-
-// Panggil fungsi untuk memuat fasilitas saat halaman dimuat
-window.onload = loadFacilities;
