@@ -70,7 +70,7 @@ async function renderOrderTable(orders) {
         <td>${paymentStatus}</td>
         <td>${totalFormatted}</td>
         <td>
-        <a href="detail.html?transaction_id=${order.transaction_id}" class="btn btn-primary" style="text-decoration: none;">
+        <a href="invoice.html?transaction_id=${order.transaction_id}" class="btn btn-primary" style="text-decoration: none;">
             <i class="fas fa-info-circle"></i> Detail
         </a>
         </td>
