@@ -406,8 +406,9 @@ tbody tr:hover {
     color: white;
 }
 
+
 /* General Card Style */
-.card {
+.main-container, .card {
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 8px;
@@ -416,6 +417,17 @@ tbody tr:hover {
     display: flex;
     flex-direction: column;
     background: #f9f9f9;
+}
+
+.main-container .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card {
+    width: 50%;
 }
 
 .card .header {
