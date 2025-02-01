@@ -146,8 +146,8 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const kamarTersedia = document.getElementById("kamarTersedia").value;
     const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
     const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
-    const imagesKamar = document.getElementById("imagesKamar").files;
-
+    // Ambil semua input file
+    const imageInputs = document.querySelectorAll("input[name='imagesKamar[]']");
 
     // Validasi minimal satu harga harus diisi
     const isHargaValid = hargaKamar.some(harga => harga !== "");
@@ -159,7 +159,24 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     // Filter harga kosong agar tidak dikirim ke backend sebagai nilai kosong
     const hargaKamarFiltered = hargaKamar.filter(harga => harga !== "");
 
-    if (imagesKamar.length > 5) {
+    let imageCount = 0;
+
+    // Loop untuk mendapatkan file gambar yang diunggah
+    imageInputs.forEach((input) => {
+        if (input.files.length > 0) {
+            formData.append("images", input.files[0]); // Tambahkan hanya file yang dipilih
+            imageCount++;
+        }
+    });
+    
+    // Periksa apakah minimal satu gambar diunggah
+    if (imageCount < 1) {
+        alert("Minimal satu gambar kamar harus diunggah!");
+        return;
+    }
+    
+    // Periksa apakah jumlah gambar tidak lebih dari 5
+    if (imageCount > 5) {
         alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
         return;
     }
@@ -187,10 +204,10 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
 
         if (!response.ok) throw new Error("Gagal menyimpan data");
 
-        alert("Kamar berhasil ditambahkan!"); 
+        alert("Kamar berhasil ditambahkan!");
         window.location.href = "manajemen_kamar_kos.html";
     } catch (error) {
         console.error("Error:", error);
-        alert("Terjadi kesalahan saat menambahkan kamar."); 
+        alert("Terjadi kesalahan saat menambahkan kamar.");
     }
 });

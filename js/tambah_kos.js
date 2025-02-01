@@ -104,14 +104,31 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     // Ambil fasilitas yang dipilih (bisa lebih dari satu)
     const fasilitasKos = Array.from(document.querySelectorAll("input[name='fasilitasKos[]']:checked")).map(opt => opt.value);
 
-    // Ambil file gambar yang diunggah
-    const imagesKos = document.getElementById("imagesKos").files;
-
-    // Cek apakah jumlah gambar tidak lebih dari 5
-    if (imagesKos.length > 5) {
-        alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
-        return; // Hentikan eksekusi jika gambar lebih dari 5
+    const imageInputs = document.querySelectorAll("input[name='imagesKos[]']");
+    let selectedImages = [];
+    
+    imageInputs.forEach(input => {
+        if (input.files.length > 0) {
+            selectedImages.push(input.files[0]); // Ambil file pertama dari setiap input
+        }
+    });
+    
+    // Validasi: Minimal 1 gambar harus diunggah
+    if (selectedImages.length < 1) {
+        alert("Minimal 1 gambar harus diunggah.");
+        return;
     }
+    
+    // Validasi: Maksimal 5 gambar
+    if (selectedImages.length > 5) {
+        alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
+        return;
+    }
+    
+    // Tambahkan file gambar ke FormData
+    selectedImages.forEach(file => {
+        formData.append("images", file);
+    });    
 
     const formData = new FormData();
 
