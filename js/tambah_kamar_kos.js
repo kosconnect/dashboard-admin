@@ -189,9 +189,11 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     formData.append("facilities", JSON.stringify(fasilitasKamar));
     formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));
 
-    for (let i = 0; i < imagesKamar.length; i++) {
-        formData.append("images", imagesKamar[i]);
-    }
+    imageInputs.forEach((input) => {
+        if (input.files.length > 0) {
+            formData.append("images", input.files[0]); // Tambahkan hanya file yang dipilih
+        }
+    });
 
     try {
         const response = await fetch("https://kosconnect-server.vercel.app/api/rooms/", {
