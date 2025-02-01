@@ -137,11 +137,27 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
 
     const tipeKamar = document.getElementById("tipeKamar").value;
     const ukuranKamar = document.getElementById("ukuranKamar").value;
-    const hargaKamar = document.getElementById("hargaKamar").value;
+    const hargaKamar = [
+        document.getElementById("hargaKamar1").value.trim(),
+        document.getElementById("hargaKamar2").value.trim(),
+        document.getElementById("hargaKamar3").value.trim(),
+        document.getElementById("hargaKamar4").value.trim()
+    ];
     const kamarTersedia = document.getElementById("kamarTersedia").value;
     const fasilitasKamar = Array.from(document.querySelectorAll("input[name='fasilitasKamar[]']:checked")).map(opt => opt.value);
     const fasilitasTambahan = Array.from(document.querySelectorAll("input[name='fasilitasTambahan[]']:checked")).map(opt => opt.value);
     const imagesKamar = document.getElementById("imagesKamar").files;
+
+
+    // Validasi minimal satu harga harus diisi
+    const isHargaValid = hargaKamar.some(harga => harga !== "");
+    if (!isHargaValid) {
+        alert("Minimal satu harga harus diisi!");
+        return;
+    }
+
+    // Filter harga kosong agar tidak dikirim ke backend sebagai nilai kosong
+    const hargaKamarFiltered = hargaKamar.filter(harga => harga !== "");
 
     if (imagesKamar.length > 5) {
         alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
@@ -151,7 +167,7 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
     const formData = new FormData();
     formData.append("type", tipeKamar);
     formData.append("size", ukuranKamar);
-    formData.append("price", hargaKamar);
+    formData.append("price", JSON.stringify(hargaKamarFiltered)); // Pastikan harga dikirim dalam format JSON
     formData.append("available_rooms", kamarTersedia);
     formData.append("facilities", JSON.stringify(fasilitasKamar));
     formData.append("additional_facilities", JSON.stringify(fasilitasTambahan));

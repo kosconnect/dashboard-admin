@@ -875,7 +875,7 @@ textarea {
   
   .harga-inputs input {
     flex: 1 0 18%; /* Setiap input mengambil 18% dari lebar kontainer */
-    max-width:200px;/* Atur lebar maksimum input */
+    max-width: 150px;
   }
   
   .fasilitas-keterangan {
