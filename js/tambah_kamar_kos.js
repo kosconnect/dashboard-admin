@@ -207,13 +207,24 @@ document.getElementById("formTambahKamar").addEventListener("submit", async func
             },
             body: formData
         });
-
+    
+        const responseText = await response.text();
+        console.log("Server Response:", responseText);
+    
         if (!response.ok) throw new Error("Gagal menyimpan data");
-
+    
         alert("Kamar berhasil ditambahkan!");
         window.location.href = "manajemen_kamar_kos.html";
     } catch (error) {
         console.error("Error:", error);
         alert("Terjadi kesalahan saat menambahkan kamar.");
-    }
+    }    
 });
+
+for (let pair of formData.entries()) {
+    console.log(pair[0]+ ': ' + pair[1]);
+}
+
+console.log("Harga Kamar:", JSON.stringify(hargaKamarFiltered));
+console.log("Fasilitas Kamar:", JSON.stringify(fasilitasKamar));
+console.log("Fasilitas Tambahan:", JSON.stringify(fasilitasTambahan));
