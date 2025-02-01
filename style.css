@@ -454,11 +454,13 @@ tbody tr:hover {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    margin-left: 20px;
 }
 
 .card {
-    width: 50%;
+    width: 45%;
 }
 
 /* 
