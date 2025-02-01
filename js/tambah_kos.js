@@ -104,33 +104,27 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     // Ambil fasilitas yang dipilih (bisa lebih dari satu)
     const fasilitasKos = Array.from(document.querySelectorAll("input[name='fasilitasKos[]']:checked")).map(opt => opt.value);
 
-    const imageInputs = document.querySelectorAll("input[name='imagesKos[]']");
-    let selectedImages = [];
+    const imageInputs = document.querySelectorAll("input[name='imagesKos[]']");  
     
-    imageInputs.forEach(input => {
+    let imageCount = 0;
+    const formData = new FormData();
+
+    imageInputs.forEach((input) => {
         if (input.files.length > 0) {
-            selectedImages.push(input.files[0]); // Ambil file pertama dari setiap input
+            formData.append("images", input.files[0]);
+            imageCount++;
         }
     });
-    
-    // Validasi: Minimal 1 gambar harus diunggah
-    if (selectedImages.length < 1) {
-        alert("Minimal 1 gambar harus diunggah.");
+
+    if (imageCount < 1) {
+        alert("Minimal satu gambar kamar harus diunggah!");
         return;
     }
-    
-    // Validasi: Maksimal 5 gambar
-    if (selectedImages.length > 5) {
+
+    if (imageCount > 5) {
         alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
         return;
     }
-    
-    // Tambahkan file gambar ke FormData
-    selectedImages.forEach(file => {
-        formData.append("images", file);
-    });    
-
-    const formData = new FormData();
 
     console.log("Fasilitas yang dikirimkan: ", fasilitasKos);
 
@@ -151,9 +145,9 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     formData.append("facilities", JSON.stringify(fasilitasKos));
 
     // Tambahkan file gambar jika ada
-    for (let i = 0; i < imagesKos.length; i++) {
-        formData.append("images", imagesKos[i]);
-    }
+    // for (let i = 0; i < imagesKos.length; i++) {
+    //     formData.append("images", imagesKos[i]);
+    // }
 
     console.log("Data yang dikirim:", Object.fromEntries(formData.entries()));
     
