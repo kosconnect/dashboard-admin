@@ -79,36 +79,73 @@
                 <div class="form-container">
                     <form id="formTambahKamar">
                         <label for="tipeKamar" class="form-label">Tipe Kamar</label>
-                        <input type="text" id="tipeKamar" name="tipeKamar" placeholder="Contoh: Single, Double" required>
-                    
+                        <input type="text" id="tipeKamar" name="tipeKamar" placeholder="Contoh: Standar, Deluxe, Regular, Studio" 
+                            required>
+
                         <label for="ukuranKamar" class="form-label">Ukuran Kamar</label>
                         <input type="text" id="ukuranKamar" name="ukuranKamar" placeholder="Contoh: 3x4 meter" required>
-                    
+
+                        <!-- <label for="hargaKamar" class="form-label">Harga Kamar</label>
+                        <input type="number" id="hargaKamar" name="hargaKamar" placeholder="Harga per bulan" required> -->
                         <label for="hargaKamar" class="form-label">Harga Kamar</label>
-                        <input type="number" id="hargaKamar" name="hargaKamar" placeholder="Harga per bulan" required>
-                    
+                        <div class="harga-inputs">
+                            <div class="input-container">
+                                <input type="number" id="hargaKamar1" name="hargaKamar[]" placeholder="Harga/Bulan"
+                                    required class="form-control">
+                                <span>/Bulan</span> 
+                            </div>
+                            <div class="input-container">
+                                <input type="number" id="hargaKamar2" name="hargaKamar[]" placeholder="Harga/3 Bulan"
+                                    required class="form-control">
+                                <span>/3 Bulan</span> 
+                            </div>
+                            <div class="input-container">
+                                <input type="number" id="hargaKamar3" name="hargaKamar[]" placeholder="Harga/6 Bulan"
+                                    required class="form-control">
+                                <span>/6 Bulan</span> 
+                            </div>
+                            <div class="input-container">
+                                <input type="number" id="hargaKamar4" name="hargaKamar[]" placeholder="Harga/Tahun"
+                                    required class="form-control">
+                                <span>/Tahun</span> 
+                            </div>
+                        </div>
+
                         <label for="kamarTersedia" class="form-label">Jumlah Kamar Tersedia</label>
-                        <input type="number" id="kamarTersedia" name="kamarTersedia" placeholder="Jumlah kamar yang tersedia" required>
-                    
+                        <input type="number" id="kamarTersedia" name="kamarTersedia"
+                            placeholder="Jumlah kamar yang tersedia" required>
+
                         <!-- Input untuk gambar -->
-                        <label for="imagesKamar" class="form-label">Masukkan Gambar Kamar</label>
-                        <input type="file" id="imagesKamar" name="imagesKamar[]" multiple accept="image/*" class="form-control">
-                    
+                        <!-- <label for="imagesKamar" class="form-label">Masukkan Gambar Kamar</label>
+                        <input type="file" id="imagesKamar" name="imagesKamar[]" multiple accept="image/*"
+                            class="form-control"> -->
+
+                        <label for="imagesKamar" class="form-label">Masukkan Gambar Kamar</label> 
+                         <div class="image-inputs">
+                            <input type="file" id="imagesKamar1" name="imagesKamar[]" accept="image/*" class="form-control"> 
+                            <input type="file" id="imagesKamar2" name="imagesKamar[]" accept="image/*" class="form-control"> 
+                            <input type="file" id="imagesKamar3" name="imagesKamar[]" accept="image/*" class="form-control"> 
+                            <input type="file" id="imagesKamar4" name="imagesKamar[]" accept="image/*" class="form-control"> 
+                            <input type="file" id="imagesKamar5" name="imagesKamar[]" accept="image/*" class="form-control"> 
+                        </div>
+
                         <label for="fasilitasKamar" class="form-label">Pilih Fasilitas</label>
                         <div id="fasilitasKamar" name="fasilitasKamar[]" class="checkbox-group">
                             <!-- Data Fasilitas akan diisi menggunakan JavaScript -->
                         </div>
-                    
-                        <label for="fasilitasTambahan" class="form-label">Pilih Fasilitas Tambahan</label>
+
+                        <label for="fasilitasTambahan" class="form-label">Pilih Fasilitas Custom</label>
                         <div id="fasilitasTambahan" name="fasilitasTambahan[]" class="checkbox-group">
                             <!-- Data Fasilitas Tambahan akan diisi menggunakan JavaScript -->
                         </div>
-                    
+                        <p class="fasilitas-keterangan">*Merupakan deposito atau pembayaran tiap bulan untuk fasilitas custom
+
                         <div class="popup-actions">
-                            <button type="button" class="btn btn-batal" onclick="window.location.href='manajemen_kamar_kos.html'">Batal</button>
+                            <button type="button" class="btn btn-batal"
+                                onclick="window.location.href='manajemen_kamar_kos.html'">Batal</button>
                             <button type="submit" class="btn btn-save">Simpan</button>
                         </div>
-                    </form>                    
+                    </form>
                 </div>
             </div>
         </div>

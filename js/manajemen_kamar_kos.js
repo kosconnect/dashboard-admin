@@ -81,7 +81,7 @@ async function renderRoomTable(rooms) {
                     <p>Status: ${status}</p>
                     <p>Kamar Tersedia: ${number_available}</p>
                     <p>Fasilitas: ${roomFacilities}</p>
-                    <p>Fasilitas Tambahan: ${customFacilities}</p>
+                    <p>Fasilitas Custom: ${customFacilities}</p>
 
                     <h3>Aksi</h3>
                     <button class="btn btn-primary" onclick="editRoom('${room_id}')">Edit</button>

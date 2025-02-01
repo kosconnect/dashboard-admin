@@ -856,6 +856,35 @@ textarea {
     border: 1px solid #20B2AA;
 }
 
+.image-inputs {
+    display: flex;
+    gap: 10px; /* Menambahkan jarak antar input */
+    flex-wrap: wrap; /* Agar tetap responsif jika layar kecil */
+  }
+  
+  .image-inputs input {
+    flex: 1 0 18%; /* Setiap input mengambil 18% dari lebar kontainer */
+    max-width: 300px;
+  }
+  
+  .harga-inputs {
+    display: flex;
+    gap: 10px; /* Menambahkan jarak antar input */
+    flex-wrap: wrap; /* Agar tetap responsif jika layar kecil */
+  }
+  
+  .harga-inputs input {
+    flex: 1 0 18%; /* Setiap input mengambil 18% dari lebar kontainer */
+    max-width:200px;/* Atur lebar maksimum input */
+  }
+  
+  .fasilitas-keterangan {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+    font-style: italic;
+  }
+  
 /* Focus effect pada form input dan select */
 /* input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus, input[type="file"]:focus {
     border-color: #007bff;
