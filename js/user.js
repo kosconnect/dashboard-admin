@@ -1,5 +1,12 @@
+// function closePopup() {
+//     document.querySelectorAll('.popup').forEach(popup => {
+//         popup.style.display = 'none';
+//     });
+// }
+
 function closePopup() {
-    document.querySelectorAll('.popup').forEach(popup => {
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
         popup.style.display = 'none';
     });
 }
@@ -132,14 +139,14 @@ function showPopupEdit(userId, fullName, email) {
 
 
 // Fungsi untuk menutup popup
-function closePopup(popupId) {
-    const popup = document.getElementById(popupId);
-    if (popup) {
-        popup.style.display = 'none'; // Sembunyikan popup
-    } else {
-        console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
-    }
-}
+// function closePopup(popupId) {
+//     const popup = document.getElementById(popupId);
+//     if (popup) {
+//         popup.style.display = 'none';
+//     } else {
+//         console.error(`Popup dengan ID "${popupId}" tidak ditemukan.`);
+//     }
+// }
 
 // Fungsi untuk menangani submit formulir Edit User
 document.getElementById('formEditUser').addEventListener('submit', function (event) {
@@ -198,6 +205,9 @@ document.getElementById('formEditUser').addEventListener('submit', function (eve
 
             // Perbarui tabel user
             fetchUsers(jwtToken);
+
+            // Tutup popup
+            closePopup();
         })
         .catch(error => {
             console.error("Gagal memperbarui user:", error);
