@@ -34,13 +34,13 @@ async function renderBoardingHouseTable(boardingHouses) {
         // Ambil detail (full_name dan category_name) untuk setiap boarding house
         const detailResponse = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`);
         const detail = await detailResponse.json();
-        
+
         // Ambil data full_name (owner) dan category_name dari detail
         const ownerName = detail[0]?.owner_fullname || "Owner Tidak Diketahui"; // Menggunakan full_name
         const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
 
-    // Membuat card untuk setiap boarding house
-    container.innerHTML += `
+        // Membuat card untuk setiap boarding house
+        container.innerHTML += `
         <div class="card">
             <img src="${images[0]}" alt="Kos Image" class="card-image">
             <div class="card-content">
@@ -52,13 +52,13 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Aturan: ${rules}</p>
 
                 <h3>Aksi</h3>
-                <button class="btn btn-add" onclick="tambahKamarKos('${boarding_house_id}')">Tambah Kamar Kos</button>
+                <button class="btn btn-add" onclick="window.location.href='edit_kos.html?id=${boarding_house_id}'">Tambah Kamar Kos</button>
                 <button class="btn btn-edit" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button> 
                 <button class="btn btn-delete" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
             </div>
         </div>
     `;
-}
+    }
 }
 
 function tambahKamarKos(boardingHouseId) {
