@@ -100,7 +100,9 @@ async function fetchOwnerIdAndFacilities() {
 
         const data = await response.json();
         console.log("Data boarding house:", data)
-        const ownerId = data?.data?.owner_id;
+
+        // Mengakses 'owner_id' yang ada dalam 'boardingHouse'
+        const ownerId = data?.boardingHouse?.owner_id;
 
         if (!ownerId) {
             console.error("Owner ID tidak ditemukan.");
