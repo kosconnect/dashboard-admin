@@ -185,11 +185,34 @@ function setStatusIcons() {
   });
 }
 
+// Ambil data kos saat halaman dimuat
 window.onload = async () => {
-  try {
-    const authToken = getJwtToken();
-    // Fetch transaksi dan render halaman
-  } catch (error) {
-    console.error("Gagal mengambil data:", error);
-  }
-};
+    try {
+      const authToken = getCookie("authToken");
+      const urlParams = new URLSearchParams(window.location.search);
+      const transactionId = urlParams.get("transaction_id");
+      const response = await fetch(
+        `https://kosconnect-server.vercel.app/api/transaction/${transactionId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data transaksi");
+      }
+  
+      const transactionData = await response.json();
+      console.log("Transaction Data:", transactionData.data); // Log untuk debugging
+      await renderTransactionDetail(transactionData.data);
+  
+      const userRole = getCookie("userRole");
+      renderHeader(authToken, userRole);
+    } catch (error) {
+      console.error("Gagal mengambil data:", error);
+    }
+  };
+  
