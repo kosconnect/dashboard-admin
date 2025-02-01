@@ -99,6 +99,7 @@ async function fetchOwnerIdAndFacilities() {
         if (!response.ok) throw new Error("Gagal mengambil data boarding house");
 
         const data = await response.json();
+        console.log("Data boarding house:", data)
         const ownerId = data?.data?.owner_id;
 
         if (!ownerId) {
