@@ -115,7 +115,7 @@ async function fetchCustomFacilities() {
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
             <button class="btn btn-primary" onclick='handleEditFacility(${JSON.stringify(fasilitas)})'><i class="fas fa-edit"></i> Edit</button>
-            <button class="btn btn-primary" onclick='openDeletePopup(${fasilitas.custom_facility_id})'><i class="fas fa-trash"></i> Hapus</button>
+            <button class="btn btn-primary" onclick="openDeletePopup(${JSON.stringify(fasilitas.custom_facility_id)})"><i class="fas fa-trash"></i> Hapus</button>
             `;
             tr.appendChild(tdAksi);
 
