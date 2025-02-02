@@ -87,7 +87,7 @@
                             <th>No</th>
                             <th>Nama Fasilitas</th>
                             <th>Harga</th>
-                            <th>Owner Id</th>
+                            <th>Owner Name</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -108,6 +108,11 @@
                 </div>
                 <h3 class="popup-subtitle">Tambah Fasilitas Custom</h3>
                 <form id="formTambahFasilitasCustom" method="POST">
+                    <label for="ownerFasilitas" class="form-label">Pilih Owner</label>
+                    <select id="ownerFasilitas" name="owner_id" required class="styled-select">
+                        <option value="" disabled selected>Pilih Owner</option>
+                        <!-- Options for owners will be populated dynamically here -->
+                    </select>
                     <label for="namaFasilitasTambah" class="form-label">Masukkan nama fasilitas!</label>
                     <input type="text" id="namaFasilitasTambah" name="name" placeholder="Nama Fasilitas" required>
 
