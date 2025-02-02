@@ -275,22 +275,25 @@ document.getElementById("formEditFasilitasCustom").addEventListener("submit", as
 // Variabel untuk menyimpan ID fasilitas custom yang akan dihapus
 let facilityToDelete = null;
 
-// Fungsi untuk membuka popup hapus dan menyimpan ID fasilitas custom yang akan dihapus
+// Fungsi untuk membuka popup hapus fasilitas dan menyimpan ID fasilitas
 function openDeletePopup(facilityId) {
-    facilityToDelete = facilityId; // Menyimpan ID fasilitas custom yang akan dihapus
-    document.getElementById("popupHapusFasilitasCustom").style.display = "block"; // Menampilkan popup
+    // Menyimpan ID fasilitas yang akan dihapus ke dalam elemen input hidden
+    document.getElementById("deleteFacilityId").value = facilityId;
+    // Menampilkan popup
+    document.getElementById("popupHapusFasilitasCustom").style.display = "block";
 }
 
 // Fungsi untuk menutup popup hapus
 function closeDeletePopup() {
-    document.getElementById("popupHapusFasilitasCustom").style.display = "none"; // Menutup popup
-    facilityToDelete = null; // Reset ID fasilitas custom yang akan dihapus
+    document.getElementById("popupHapusFasilitasCustom").style.display = "none";
 }
 
-// Fungsi untuk mengeksekusi penghapusan fasilitas custom
+// Fungsi untuk menghapus fasilitas
 async function executeDelete() {
-    if (!facilityToDelete) {
-        console.error("ID fasilitas custom tidak ditemukan.");
+    const facilityId = document.getElementById("deleteFacilityId").value;
+
+    if (!facilityId) {
+        console.error("ID fasilitas tidak ditemukan!");
         return;
     }
 
@@ -301,7 +304,7 @@ async function executeDelete() {
     }
 
     try {
-        const response = await fetch(`https://kosconnect-server.vercel.app/api/customFacilities/${facilityToDelete}`, {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/customFacilities/${facilityId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
@@ -309,13 +312,14 @@ async function executeDelete() {
             }
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const responseText = await response.text();
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${responseText}`);
 
-        alert("Fasilitas custom berhasil dihapus!");
+        alert("Fasilitas berhasil dihapus!");
         closeDeletePopup();
-        await fetchCustomFacilities(); // Refresh data setelah penghapusan
+        await fetchCustomFacilities(); // Memuat ulang daftar fasilitas
     } catch (error) {
-        console.error("Gagal menghapus fasilitas custom:", error);
+        console.error("Gagal menghapus fasilitas:", error);
         alert(`Terjadi kesalahan: ${error.message}`);
     }
 }
