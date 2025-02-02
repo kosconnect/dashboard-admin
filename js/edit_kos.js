@@ -57,8 +57,6 @@ function populateForm(data) {
     document.getElementById("categoryKos").value = data.category_id || "";
     document.getElementById("namaKos").value = data.name || "";
     document.getElementById("alamatKos").value = data.address || "";
-    document.getElementById("longitudeKos").value = data.longitude || "";
-    document.getElementById("latitudeKos").value = data.latitude || "";
     document.getElementById("descriptionKos").value = data.description || "";
     document.getElementById("rulesKos").value = data.rules || "";
 
@@ -153,8 +151,6 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     const categoryKos = document.getElementById("categoryKos").value;
     const namaKos = document.getElementById("namaKos").value;
     const alamatKos = document.getElementById("alamatKos").value;
-    const longitudeKos = document.getElementById("longitudeKos").value;
-    const latitudeKos = document.getElementById("latitudeKos").value;
     const descriptionKos = document.getElementById("descriptionKos").value;
     const rulesKos = document.getElementById("rulesKos").value;
 
@@ -181,8 +177,6 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
     formData.append("category_id", categoryKos);
     formData.append("name", namaKos);
     formData.append("address", alamatKos);
-    formData.append("longitude", longitudeKos);
-    formData.append("latitude", latitudeKos);
     formData.append("description", descriptionKos);
     formData.append("rules", rulesKos);
     formData.append("facilities", JSON.stringify(fasilitasKos));

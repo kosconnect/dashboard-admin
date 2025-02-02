@@ -52,8 +52,8 @@ async function renderBoardingHouseTable(boardingHouses) {
                 <p>Aturan: ${rules}</p>
 
                 <h3>Aksi</h3>
-                <button class="btn btn-add" onclick="window.location.href='edit_kos.html?id=${boarding_house_id}'">Tambah Kamar Kos</button>
-                <button class="btn btn-edit" onclick="editBoardingHouse('${boarding_house_id}')">Edit</button> 
+                <button class="btn btn-add" onclick="window.location.href='tambah_kamar_kos.html?id=${boarding_house_id}'">Tambah Kamar Kos</button>
+                <button class="btn btn-edit" data-id="${boarding_house_id}" onclick="redirectToPage(this, 'edit_kos.html')">Edit</button>
                 <button class="btn btn-delete" onclick="deleteBoardingHouse('${boarding_house_id}')">Hapus</button>
             </div>
         </div>
@@ -64,6 +64,11 @@ async function renderBoardingHouseTable(boardingHouses) {
 function tambahKamarKos(boardingHouseId) {
     window.location.href = `tambah_kamar_kos.html?boarding_house_id=${boardingHouseId}`;
 }
+
+function redirectToPage(button, page) {
+    const id = button.getAttribute("data-id");
+    window.location.href = `${page}?id=${id}`;
+  }
 
 // Ambil data boarding house saat halaman dimuat
 window.onload = async () => {
