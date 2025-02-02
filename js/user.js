@@ -89,21 +89,6 @@ function fetchUsers(jwtToken) {
                      <button class="btn btn-primary" onclick="showPopupEdit('${user.user_id}', \`${user.fullname}\`, \`${user.email}\`)"><i class="fas fa-edit"></i> Edit</button>
                     <button class="btn btn-primary" onclick="showPopupDelete('${user.user_id}')">
                     <i class="fas fa-trash"></i> Hapus</button>
-                    <div class="dropdown-aksi">
-                    <button class="btn btn-primary dropdown-button">
-                        <i class="fas fa-ellipsis-v"></i> Lainnya</button>
-                    <div class="dropdown-aksi-content">
-                    <button class="btn btn-primary" style="background-color: #4A90E2;" onclick="showPopupUbahRoleUser('${user.user_id}', '${user.fullname}', '${user.role}')">
-                        <i class="fas fa-user-cog"></i> Update Role
-                    </button>
-                        <button class="btn btn-primary" style="background-color: #FFBD59;" onclick="changePassword('${user.id}')">
-                            <i class="fas fa-key"></i> Change Password
-                        </button>
-                        <button class="btn btn-primary" style="background-color: #E53935;" onclick="showPopupResetPassword('${user.user_id.toString()}')">
-                            <i class="fas fa-redo"></i> Reset Password
-                        </button>
-                    </div>
-                </div>
                 `;
                 tr.appendChild(tdAksi);
 
