@@ -53,18 +53,36 @@ async function fetchBoardingHouseById(id) {
 
 // Fungsi untuk mengisi form dengan data yang didapat
 function populateForm(data) {
-    document.getElementById("ownerKos").value = data.owner_id || "";
-    document.getElementById("categoryKos").value = data.category_id || "";
-    document.getElementById("namaKos").value = data.name || "";
-    document.getElementById("alamatKos").value = data.address || "";
-    document.getElementById("descriptionKos").value = data.description || "";
-    document.getElementById("rulesKos").value = data.rules || "";
+    const boardingHouse = data.boardingHouse; // Ambil objek boardingHouse
 
-    // Set fasilitas yang sudah dipilih sebelumnya
-    const selectedFacilities = new Set((data.facilities || []).map(facility => facility.facility_id));
-    document.querySelectorAll("input[name='fasilitasKos[]']").forEach(checkbox => {
-        checkbox.checked = selectedFacilities.has(checkbox.value);
-    });
+    document.getElementById("ownerKos").value = boardingHouse.owner_id || "";
+    document.getElementById("categoryKos").value = boardingHouse.category_id || "";
+    document.getElementById("namaKos").value = boardingHouse.name || "";
+    document.getElementById("alamatKos").value = boardingHouse.address || "";
+    document.getElementById("descriptionKos").value = boardingHouse.description || "";
+    document.getElementById("rulesKos").value = boardingHouse.rules || "";
+
+    // Tandai fasilitas yang telah dipilih setelah checkbox tersedia
+    setTimeout(() => {
+        const selectedFacilities = new Set(boardingHouse.facilities_id || []);
+        document.querySelectorAll("input[name='fasilitasKos[]']").forEach(checkbox => {
+            checkbox.checked = selectedFacilities.has(checkbox.value);
+        });
+    }, 500);
+
+    // Jika ingin menampilkan gambar yang sudah ada
+    const imageContainer = document.getElementById("existingImages");
+    if (imageContainer) {
+        imageContainer.innerHTML = "";
+        boardingHouse.images.forEach(imgUrl => {
+            const imgElement = document.createElement("img");
+            imgElement.src = imgUrl;
+            imgElement.alt = "Boarding House Image";
+            imgElement.style.width = "100px";
+            imgElement.style.marginRight = "10px";
+            imageContainer.appendChild(imgElement);
+        });
+    }
 }
 
 // Fungsi untuk fetch data dropdown dan checkbox
@@ -147,39 +165,12 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
         return;
     }
 
-    const ownerKos = document.getElementById("ownerKos").value;
-    const categoryKos = document.getElementById("categoryKos").value;
-    const namaKos = document.getElementById("namaKos").value;
-    const alamatKos = document.getElementById("alamatKos").value;
-    const descriptionKos = document.getElementById("descriptionKos").value;
-    const rulesKos = document.getElementById("rulesKos").value;
+    const formData = new FormData(this);
 
-    const fasilitasKos = Array.from(document.querySelectorAll("input[name='fasilitasKos[]']:checked")).map(opt => opt.value);
-
-    const imageInputs = document.querySelectorAll("input[name='imagesKos[]']");
-
-    let imageCount = 0;
-    const formData = new FormData();
-
-    imageInputs.forEach((input) => {
-        if (input.files.length > 0) {
-            formData.append("images", input.files[0]);
-            imageCount++;
-        }
+    // Menambahkan fasilitas sebagai array, bukan string JSON
+    document.querySelectorAll("input[name='fasilitasKos[]']:checked").forEach(opt => {
+        formData.append("facilities[]", opt.value);
     });
-
-    if (imageCount > 5) {
-        alert("Anda hanya bisa mengunggah maksimal 5 gambar.");
-        return;
-    }
-
-    formData.append("owner_id", ownerKos);
-    formData.append("category_id", categoryKos);
-    formData.append("name", namaKos);
-    formData.append("address", alamatKos);
-    formData.append("description", descriptionKos);
-    formData.append("rules", rulesKos);
-    formData.append("facilities", JSON.stringify(fasilitasKos));
 
     try {
         const response = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}`, {
