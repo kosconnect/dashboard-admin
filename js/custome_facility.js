@@ -115,7 +115,7 @@ async function fetchCustomFacilities() {
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
             <button class="btn btn-primary" onclick='handleEditFacility(${JSON.stringify(fasilitas)})'><i class="fas fa-edit"></i> Edit</button>
-            <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+            <button class="btn btn-primary" onclick='openDeletePopup(${fasilitas.custom_facility_id})'><i class="fas fa-trash"></i> Hapus</button>
             `;
             tr.appendChild(tdAksi);
 
@@ -269,3 +269,53 @@ document.getElementById("formEditFasilitasCustom").addEventListener("submit", as
         alert(`Terjadi kesalahan: ${error.message}`);
     }
 });
+
+
+// DELETE
+// Variabel untuk menyimpan ID fasilitas custom yang akan dihapus
+let facilityToDelete = null;
+
+// Fungsi untuk membuka popup hapus dan menyimpan ID fasilitas custom yang akan dihapus
+function openDeletePopup(facilityId) {
+    facilityToDelete = facilityId; // Menyimpan ID fasilitas custom yang akan dihapus
+    document.getElementById("popupHapusFasilitasCustom").style.display = "block"; // Menampilkan popup
+}
+
+// Fungsi untuk menutup popup hapus
+function closeDeletePopup() {
+    document.getElementById("popupHapusFasilitasCustom").style.display = "none"; // Menutup popup
+    facilityToDelete = null; // Reset ID fasilitas custom yang akan dihapus
+}
+
+// Fungsi untuk mengeksekusi penghapusan fasilitas custom
+async function executeDelete() {
+    if (!facilityToDelete) {
+        console.error("ID fasilitas custom tidak ditemukan.");
+        return;
+    }
+
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/customFacilities/${facilityToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        alert("Fasilitas custom berhasil dihapus!");
+        closeDeletePopup();
+        await fetchCustomFacilities(); // Refresh data setelah penghapusan
+    } catch (error) {
+        console.error("Gagal menghapus fasilitas custom:", error);
+        alert(`Terjadi kesalahan: ${error.message}`);
+    }
+}
