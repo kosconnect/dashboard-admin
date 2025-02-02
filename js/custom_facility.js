@@ -308,7 +308,6 @@ async function executeDelete() {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
-                'Content-Type': 'application/json'
             }
         });
 
