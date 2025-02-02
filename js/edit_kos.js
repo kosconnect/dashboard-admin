@@ -70,19 +70,18 @@ function populateForm(data) {
         });
     }, 500);
 
-    // Jika ingin menampilkan gambar yang sudah ada
     const imageContainer = document.getElementById("existingImages");
     if (imageContainer) {
-        imageContainer.innerHTML = "";
-        boardingHouse.images.forEach(imgUrl => {
-            const imgElement = document.createElement("img");
-            imgElement.src = imgUrl;
-            imgElement.alt = "Boarding House Image";
-            imgElement.style.width = "100px";
-            imgElement.style.marginRight = "10px";
-            imageContainer.appendChild(imgElement);
+        imageContainer.innerHTML = ""; // Hapus konten lama sebelum menambahkan gambar baru
+        boardingHouse.images.forEach((image, index) => {
+            const imageElement = document.createElement("img");
+            imageElement.src = image;
+            imageElement.alt = `Gambar ${index + 1}`;
+            imageElement.style.width = "100px"; // Sesuaikan ukuran gambar jika perlu
+            imageElement.style.marginRight = "10px";
+            imageContainer.appendChild(imageElement);
         });
-    }
+    }    
 }
 
 // Fungsi untuk fetch data dropdown dan checkbox
