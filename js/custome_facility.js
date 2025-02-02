@@ -106,8 +106,8 @@ async function fetchCustomFacilities() {
 
             const tdAksi = document.createElement('td');
             tdAksi.innerHTML = `
-                <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
+            <button class="btn btn-primary" onclick='handleEditFacility(${JSON.stringify(fasilitas)})'><i class="fas fa-edit"></i> Edit</button>
+            <button class="btn btn-primary"><i class="fas fa-trash"></i> Hapus</button>
             `;
             tr.appendChild(tdAksi);
 
@@ -184,5 +184,77 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.closePopup = function () {
         document.getElementById("popupTambahFasilitasCustom").style.display = "none";
+    }
+});
+
+
+// PUT
+// Fungsi untuk membuka popup edit dan mengisi data fasilitas yang dipilih
+function openEditPopup(facility) {
+    if (!facility) {
+        console.error("Fasilitas tidak ditemukan!");
+        return;
+    }
+
+    document.getElementById("editFacilityId").value = facility.custom_facility_id;
+    document.getElementById("editNamaFasilitas").value = facility.name;
+    document.getElementById("editHargaFasilitas").value = facility.price;
+    document.getElementById("editOwnerFasilitas").value = facility.owner_id;
+
+    document.getElementById("popupEditFasilitasCustom").style.display = "block";
+}
+
+// Fungsi untuk menutup popup edit
+function closeEditPopup() {
+    document.getElementById("popupEditFasilitasCustom").style.display = "none";
+}
+
+// Fungsi untuk menangani klik tombol edit
+function handleEditFacility(facility) {
+    openEditPopup(facility);
+}
+
+// Fungsi untuk mengupdate fasilitas custom (PUT request)
+document.getElementById("formEditFasilitasCustom").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const facilityId = document.getElementById("editFacilityId").value;
+    const name = document.getElementById("editNamaFasilitas").value.trim();
+    const price = parseInt(document.getElementById("editHargaFasilitas").value, 10);
+    const ownerId = document.getElementById("editOwnerFasilitas").value;
+
+    if (!facilityId || !name || isNaN(price) || !ownerId) {
+        alert("Semua field harus diisi dengan benar!");
+        return;
+    }
+
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        console.error("Tidak ada token JWT, tidak dapat melanjutkan permintaan.");
+        return;
+    }
+
+    const formData = { name, price, owner_id: ownerId };
+
+    try {
+        const response = await fetch(`https://kosconnect-server.vercel.app/api/customFacilities/${facilityId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const responseText = await response.text();
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${responseText}`);
+
+        alert("Fasilitas custom berhasil diperbarui!");
+        closeEditPopup();
+        await fetchCustomFacilities();
+
+    } catch (error) {
+        console.error("Gagal memperbarui fasilitas custom:", error);
+        alert(`Terjadi kesalahan: ${error.message}`);
     }
 });
