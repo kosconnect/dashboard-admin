@@ -45,18 +45,26 @@ async function fetchOwners() {
 // Fungsi untuk Populate Dropdown Owner
 function populateOwnerDropdown() {
     const ownerDropdown = document.getElementById("ownerFasilitas");
-    if (!ownerDropdown) {
-        console.error("Element #ownerFasilitas tidak ditemukan!");
+    const editOwnerDropdown = document.getElementById("editOwnerFasilitas");
+
+    if (!ownerDropdown || !editOwnerDropdown) {
+        console.error("Element #ownerFasilitas atau #editOwnerFasilitas tidak ditemukan!");
         return;
     }
 
+    // Kosongkan option yang ada
     ownerDropdown.innerHTML = '<option value="" disabled selected>Pilih Owner</option>';
+    editOwnerDropdown.innerHTML = '<option value="" disabled selected>Pilih Owner</option>';
 
+    // Isi dropdown dengan pilihan owner
     ownerMap.forEach((fullname, user_id) => {
         const option = document.createElement("option");
-        option.value = user_id;
-        option.textContent = fullname;
+        option.value = user_id; // Nilai option adalah user_id
+        option.textContent = fullname; // Nama lengkap owner ditampilkan sebagai teks
+
+        // Tambahkan option ke dropdown
         ownerDropdown.appendChild(option);
+        editOwnerDropdown.appendChild(option.cloneNode(true));  // Clone untuk dropdown edit
     });
 }
 
@@ -187,8 +195,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
-// PUT
 // Fungsi untuk membuka popup edit dan mengisi data fasilitas yang dipilih
 function openEditPopup(facility) {
     if (!facility) {
@@ -199,19 +205,24 @@ function openEditPopup(facility) {
     document.getElementById("editFacilityId").value = facility.custom_facility_id;
     document.getElementById("editNamaFasilitas").value = facility.name;
     document.getElementById("editHargaFasilitas").value = facility.price;
-    document.getElementById("editOwnerFasilitas").value = facility.owner_id;
+
+    // Set selected owner di dropdown
+    const ownerDropdown = document.getElementById("editOwnerFasilitas");
+    if (ownerDropdown) {
+        ownerDropdown.value = facility.owner_id;
+    }
 
     document.getElementById("popupEditFasilitasCustom").style.display = "block";
-}
-
-// Fungsi untuk menutup popup edit
-function closeEditPopup() {
-    document.getElementById("popupEditFasilitasCustom").style.display = "none";
 }
 
 // Fungsi untuk menangani klik tombol edit
 function handleEditFacility(facility) {
     openEditPopup(facility);
+}
+
+// Fungsi untuk menutup popup edit
+function closeEditPopup() {
+    document.getElementById("popupEditFasilitasCustom").style.display = "none";
 }
 
 // Fungsi untuk mengupdate fasilitas custom (PUT request)
