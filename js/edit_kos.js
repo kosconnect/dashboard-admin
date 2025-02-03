@@ -158,34 +158,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Fungsi untuk menangani submit form (PUT update)
 document.getElementById("formTambahKos").addEventListener("submit", async function (e) {
     e.preventDefault();
-
-    if (!boarding_house_id) {
-        console.error("ID Boarding House tidak ditemukan. Tidak dapat melakukan update.");
-        return;
-    }
+    if (!boarding_house_id) return console.error("ID tidak ditemukan.");
 
     const formData = new FormData(this);
 
-    // Menambahkan fasilitas sebagai array, bukan string JSON
+    // Ambil semua fasilitas yang dipilih
+    const facilities = [];
     document.querySelectorAll("input[name='fasilitasKos[]']:checked").forEach(opt => {
-        formData.append("facilities[]", opt.value);
+        facilities.push(opt.value);
     });
+
+    // Konversi FormData menjadi objek JSON
+    const jsonData = {
+        owner_id: document.getElementById("ownerKos").value,
+        category_id: document.getElementById("categoryKos").value,
+        name: document.getElementById("namaKos").value,
+        address: document.getElementById("alamatKos").value,
+        description: document.getElementById("descriptionKos").value,
+        rules: document.getElementById("rulesKos").value,
+        facilities: facilities // Kirim sebagai array, bukan string JSON
+    };
 
     try {
         const response = await fetch(`https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}`, {
             method: "PUT",
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             },
-            body: formData
+            body: JSON.stringify(jsonData) // Kirim dalam format JSON
         });
 
-        if (!response.ok) throw new Error("Gagal memperbarui data");
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Gagal memperbarui data");
+        }
 
         alert("Boarding House berhasil diperbarui!");
         window.location.href = "manajemen_kos.html";
     } catch (error) {
         console.error("Error:", error);
-        alert("Terjadi kesalahan saat memperbarui boarding house.");
+        alert("Terjadi kesalahan: " + error.message);
     }
 });
