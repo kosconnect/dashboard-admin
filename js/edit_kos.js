@@ -170,13 +170,13 @@ document.getElementById("formTambahKos").addEventListener("submit", async functi
 
     // Konversi FormData menjadi objek JSON
     const jsonData = {
-        owner_id: document.getElementById("ownerKos").value,
-        category_id: document.getElementById("categoryKos").value,
-        name: document.getElementById("namaKos").value,
-        address: document.getElementById("alamatKos").value,
-        description: document.getElementById("descriptionKos").value,
-        rules: document.getElementById("rulesKos").value,
-        facilities: facilities // Kirim sebagai array, bukan string JSON
+        owner_id: document.getElementById("ownerKos").value || null,
+        category_id: document.getElementById("categoryKos").value || null,
+        name: document.getElementById("namaKos").value || null,
+        address: document.getElementById("alamatKos").value || null,
+        description: document.getElementById("descriptionKos").value || null,
+        rules: document.getElementById("rulesKos").value || null,
+        facilities: facilities.length ? facilities : []  // Pastikan fasilitas ada
     };
 
     try {
