@@ -74,7 +74,7 @@ async function fetchKosList(jwtToken) {
 
         // Ambil detail kamar kos untuk aturan dan deskripsi
         const roomsResponse = await fetch(
-          `https://kosconnect-server.vercel.app/api/rooms/boarding-house/${boarding_house_id}`
+          `https://kosconnect-server.vercel.app/api/rooms/${boarding_house_id}`
         );
         if (!roomsResponse.ok)
           throw new Error("Gagal mengambil data kamar kos.");
