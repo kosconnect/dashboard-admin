@@ -10,12 +10,11 @@ function getCookie(name) {
   return null;
 }
 
-// Fungsi untuk mendapatkan parameter dari URL
-function getQueryParam(param) {
+// Fungsi untuk mengambil boardingHouseID dari URL
+function getBoardingHouseIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
+  return urlParams.get("boarding_house_id");
 }
-
 // Fungsi untuk merender detail boarding house
 async function renderBoardingHouseDetail(boardingHouse) {
   const container = document.querySelector(".cards-container");

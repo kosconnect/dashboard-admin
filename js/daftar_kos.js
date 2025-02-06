@@ -42,15 +42,21 @@ function fetchKosList(jwtToken) {
         console.error("Elemen tbody tidak ditemukan di DOM.");
         return;
       }
-      tbody.innerHTML = "";
-      data.data.forEach((kos, index) => {
-        const tr = document.createElement("tr");
-        const { boarding_house_id, name, address } = kos;
+      // Gunakan Promise.all untuk menangani banyak permintaan detail kos secara paralel
+      const detailPromises = data.data.map((kos) => {
+        return fetchKosDetail(kos.boarding_house_id);
+      });
 
-        // Ambil detail kos seperti kategori dan pemilik
-        let category_name = "Kategori Tidak Diketahui";
-        let owner_fullname = "Owner Tidak Diketahui";
-        fetchKosDetail(boarding_house_id, (category_name, owner_fullname) => {
+      Promise.all(detailPromises).then((detailDataArray) => {
+        data.data.forEach((kos, index) => {
+          const detailData = detailDataArray[index]; // Ambil data detail yang sesuai
+          const tr = document.createElement("tr");
+          const { boarding_house_id, name, address } = kos;
+          const category_name =
+            detailData.category_name || "Kategori Tidak Diketahui";
+          const owner_fullname =
+            detailData.owner_fullname || "Owner Tidak Diketahui";
+
           const tdNo = document.createElement("td");
           tdNo.textContent = index + 1;
           tr.appendChild(tdNo);
