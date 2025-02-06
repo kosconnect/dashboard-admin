@@ -79,13 +79,13 @@ function loadSidebar() {
                 <li>
                     <h2 style="font-size: 14px; color: #b0bec5;">Manajemen Data Kos</h2>
                     <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
-                        <li>
-                            <a href="manajemen_kos.html">
-                                <i class="fas fa-house-user"></i> <span>Manajemen Kos</span>
-                            </a>
-                        </li>
-                        <li><a href="custom_facility.html"><i class="fas fa-bed"></i> <span>Custom Facility</span></a></li>
-                        <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Transaksi</span></a></li>
+                         <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a></li>
+                        <li><a href="user_manajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
+                        <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
+                        <li><a href="facilities.html"><i class="fa-solid fa-house"></i> <span>Fasilitas</span></a></li>
+                        <li><a href="manajemen_kos.html"><i class="fas fa-house-user"></i> <span>Manajemen Kos</span></a></li>
+                        <li><a href="manajemen_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Manajemen Kamar Kos</span></a></li>
+                        <li><a href="custom_facility.html"><i class="fas fa-bed"></i> <span>Fasilitas Custom</span></a></li>
                     </ul>
                 </li>
             </ul>
