@@ -18,54 +18,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <!-- Ganti dengan gambar -->
-                <img src="img/logokos.png" alt="Kosconnect Logo" style="width: 40px; height: 40px; margin-right: 10px;">
-                <h2>KosConnect</h2>
-            </div>
-            <ul>
-                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> <span>Beranda</span></a></li>
-                <li>
-                    <h2 style="font-size: 14px; color: #b0bec5;">Interface</h2>
-                    <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
-                        <li><a href="transaksi.html"><i class="fas fa-wallet"></i> <span>Manajemen Transaksi</span></a></li>
-                        <li><a href="user_manajemen.html"><i class="fas fa-users"></i> <span>Manajemen Pengguna</span></a></li>
-                        <li><a href="category.html"><i class="fa-solid fa-list"></i> <span>Kategori</span></a></li>
-                        <li><a href="facilities.html"><i class="fa-solid fa-house"></i> <span>Fasilitas</span></a></li>
-                        <!-- <li><a href="room_facility.html"><i class="fa-solid fa-house"></i> <span>Fasilitas Kamar</span></a></li> -->
-                        <li><a href="manajemen_kos.html"><i class="fas fa-house-user"></i> <span>Manajemen Kos</span></a></li>
-                        <li><a href="manajemen_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Manajemen Kamar Kos</span></a></li>
-                        <li><a href="custom_facility.html"><i class="fas fa-bed"></i> <span>Fasilitas Custom</span></a></li>
-                    </ul>
-                </li>
-            </ul>         
-        </div>
+        <div id="sidebar-container"></div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="dashboard-header">
-                <h1>Kategori</h1>
-                <div class="header-icons">
-                    <a href="#"><i class="fas fa-bell"></i></a>
-                    <a href="#"><i class="fas fa-cog"></i></a>
-                    <div class="user-dropdown">
-                        <div class="user-info" onclick="toggleDropdown()">
-                            <div class="top-row">
-                                <span class="name"></span> <!-- Nama pengguna akan ditambahkan secara dinamis -->
-                                <i class="fas fa-user"></i>
-                                <i class="fas fa-caret-down"></i>
-                            </div>
-                            <span class="role">Admin</span> <!-- Peran user akan ditambahkan secara dinamis -->
-                            </div>
-                        </div>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
-                    </div>                    
-                </div>
-
+      <!-- Main Content -->
+      <div class="main-content">
+        <div id="header-container"></div>
             <!-- Category Management Table -->
             <div class="category-management">
                 <h2>Manajemen Kategori</h2>
@@ -150,6 +107,6 @@
     </div>
 
     <script src="js/kategori.js"></script>
-    <script src="js/navbar.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
