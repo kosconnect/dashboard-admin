@@ -277,9 +277,14 @@ let facilityToDelete = null;
 
 // Fungsi untuk membuka popup hapus fasilitas dan menyimpan ID fasilitas
 function openDeletePopup(facilityId) {
-    // Menyimpan ID fasilitas yang akan dihapus ke dalam elemen input hidden
-    document.getElementById("deleteFacilityId").value = facilityId;
-    // Menampilkan popup
+    const deleteFacilityIdInput = document.getElementById("deleteFacilityId");
+
+    if (!deleteFacilityIdInput) {
+        console.error("Elemen input hidden untuk ID fasilitas tidak ditemukan!");
+        return;
+    }
+
+    deleteFacilityIdInput.value = facilityId; // Simpan ID fasilitas
     document.getElementById("popupHapusFasilitasCustom").style.display = "block";
 }
 
@@ -293,7 +298,7 @@ async function executeDelete() {
     const facilityId = document.getElementById("deleteFacilityId").value;
 
     if (!facilityId) {
-        console.error("ID fasilitas tidak ditemukan!");
+        alert("ID fasilitas tidak ditemukan!");
         return;
     }
 
@@ -308,11 +313,14 @@ async function executeDelete() {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
             }
         });
 
-        const responseText = await response.text();
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${responseText}`);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        }
 
         alert("Fasilitas berhasil dihapus!");
         closeDeletePopup();
