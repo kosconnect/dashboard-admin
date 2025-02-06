@@ -130,7 +130,7 @@ function loadHeader() {
                             <i class="fas fa-user"></i>
                             <i class="fas fa-caret-down"></i>
                         </div>
-                        <span class="role">Pemilik Kos</span>
+                        <span class="role">Admin</span>
                     </div>
                 </div>
                 <ul class="dropdown-menu">

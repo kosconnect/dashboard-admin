@@ -88,7 +88,7 @@ window.onload = async () => {
   try {
     const authToken = getCookie("authToken");
     const response = await fetch(
-      `https://kosconnect-server.vercel.app/api/transaction/owner`,
+      `https://kosconnect-server.vercel.app/api/transaction/`,
       {
         method: "GET",
         headers: {
