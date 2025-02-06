@@ -51,7 +51,7 @@ async function loadKamarKos(authToken) {
 
     let nomor = 1;
     for (const room of data.data) {
-      const { room_id, type, size, number_available } = room;
+      const { room_id, room_type, size, number_available } = room;
 
       console.log(`Fetching detail kamar untuk room_id: ${room_id}`);
 
@@ -61,9 +61,9 @@ async function loadKamarKos(authToken) {
         authToken,
         nomor++,
         tableBody,
-        type,
+        room_type,
         size,
-        number_available
+        number_available,
       );
     }
   } catch (error) {
@@ -111,7 +111,7 @@ async function fetchRoomDetail(
       <tr>
         <td>${nomor}</td>
         <td>${boardingHouseName}</td>
-        <td>${type}</td>
+        <td>${room_type}</td>
         <td>${size}</td>
         <td>${numberAvailable}</td>
         <td>${ownerName}</td>
