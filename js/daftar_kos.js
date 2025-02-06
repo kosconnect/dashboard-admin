@@ -92,8 +92,9 @@ function fetchKosList(jwtToken) {
 }
 
 // Fungsi untuk mengambil detail kos berdasarkan boarding_house_id
-function fetchKosDetail(boardingHouseId, callback) {
-  fetch(
+// Fungsi untuk mengambil detail kos berdasarkan boarding_house_id (diperbaiki)
+function fetchKosDetail(boardingHouseId) {
+  return fetch(
     `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`
   )
     .then((response) => {
@@ -103,17 +104,6 @@ function fetchKosDetail(boardingHouseId, callback) {
         );
       }
       return response.json();
-    })
-    .then((detailData) => {
-      const category_name =
-        detailData.category_name || "Kategori Tidak Diketahui";
-      const owner_fullname =
-        detailData.owner_fullname || "Owner Tidak Diketahui";
-      callback(category_name, owner_fullname);
-    })
-    .catch((error) => {
-      console.error("Error mengambil detail kos:", error);
-      callback("Kategori Tidak Diketahui", "Owner Tidak Diketahui");
     });
 }
 
