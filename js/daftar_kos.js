@@ -48,14 +48,15 @@ async function fetchKosList(jwtToken) {
       return;
     }
 
-    // Pastikan data yang diterima valid
-    if (!Array.isArray(data) || data.length === 0) {
+    // Periksa data.data yang ada dalam objek respons
+    const boardingHouses = data.data;
+    if (!Array.isArray(boardingHouses) || boardingHouses.length === 0) {
       console.error("Data kos tidak valid atau tidak tersedia.");
       return;
     }
 
     // Proses setiap boarding house dalam data
-    data.forEach(async (boardingHouse, index) => {
+    boardingHouses.forEach(async (boardingHouse, index) => {
       const { boarding_house_id, images, name, address, description, rules } =
         boardingHouse;
 
