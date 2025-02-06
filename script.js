@@ -115,6 +115,8 @@ function loadHeader() {
     pageTitle = "Manajemen Kamar Kos";
   } else if (path.includes("custom_facility")) {
     pageTitle = "Fasilitas Custom";
+  } else if (path.includes("detail")) {
+    pageTitle = "Fasilitas Custom";
   }
 
   const headerHTML = `

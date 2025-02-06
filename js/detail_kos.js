@@ -1,7 +1,7 @@
 // Fungsi untuk membaca nilai cookie berdasarkan nama
 function getCookie(name) {
   const cookies = document.cookie.split("; ");
-  for (let cookie of cookies) {
+  for (const cookie of cookies) {
     const [key, value] = cookie.split("=");
     if (key === name) {
       return decodeURIComponent(value);
@@ -16,7 +16,6 @@ function getQueryParam(param) {
   return urlParams.get(param);
 }
 
-// Fungsi untuk merender detail boarding house
 // Fungsi untuk merender detail boarding house
 async function renderBoardingHouseDetail(boardingHouse) {
   const container = document.querySelector(".cards-container");
@@ -44,10 +43,10 @@ async function renderBoardingHouseDetail(boardingHouse) {
     const detail = await detailResponse.json();
 
     // Ambil kategori dan owner
-    const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
+    const categoryName = detail?.category_name || "Kategori Tidak Diketahui";
     const ownerFullname =
-      detail[0]?.owner_fullname || "Nama Pemilik Tidak Diketahui";
-    const facilityList = detail[0]?.facilities || []; // Ambil fasilitas dari response
+      detail?.owner_fullname || "Nama Pemilik Tidak Diketahui";
+    const facilityList = detail?.facilities || []; // Ambil fasilitas dari response
 
     // Buat tampilan semua gambar
     const imageGallery =
