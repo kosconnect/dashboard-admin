@@ -95,20 +95,26 @@ function loadSidebar() {
 }
 
 function loadHeader() {
-  let pageTitle = "Dashboard Pemilik Kos"; // Default title
+  let pageTitle = "Dashboard Admin KosConnect"; // Default title
 
   // Ambil nama halaman dari URL atau title dokumen
   const path = window.location.pathname;
-  if (path.includes("manajemen_kamar_kos")) {
-    pageTitle = "Manajemen Kamar Kos";
-  } else if (path.includes("manajemen_kos")) {
-    pageTitle = "Manajemen Kos";
-  } else if (path.includes("custom_facility")) {
-    pageTitle = "Manajemen Fasilitas Custom";
+  if (path.includes("category")) {
+    pageTitle = "Kategori";
+  } else if (path.includes("user_management")) {
+    pageTitle = "Manajemen Pengguna";
+  } else if (path.includes("facilities")) {
+    pageTitle = "Fasilitas";
   } else if (path.includes("transaksi")) {
     pageTitle = "Manajemen Transaksi";
   } else if (path.includes("invoice")) {
     pageTitle = "Detail Transaksi";
+  } else if (path.includes("manajemen_kos")) {
+    pageTitle = "Manajemen Kos";
+  } else if (path.includes("manajemen_kamar_kos")) {
+    pageTitle = "Manajemen Kamar Kos";
+  } else if (path.includes("custom_facility")) {
+    pageTitle = "Fasilitas Custom";
   }
 
   const headerHTML = `
