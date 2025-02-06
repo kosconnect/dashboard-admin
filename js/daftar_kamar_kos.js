@@ -24,8 +24,6 @@ window.onload = function () {
 // Fungsi untuk mengambil daftar kamar kos dan render ke tabel
 async function loadKamarKos(authToken) {
   try {
-    console.log("Menggunakan authToken:", authToken);
-
     // Fetch daftar kamar
     const response = await fetch(
       "https://kosconnect-server.vercel.app/api/rooms/",
@@ -40,7 +38,6 @@ async function loadKamarKos(authToken) {
     }
 
     const data = await response.json();
-    console.log("Response Data dari /rooms:", data);
 
     if (!data || !Array.isArray(data.data)) {
       throw new Error("Format data tidak sesuai. Tidak ada array data.");
@@ -52,9 +49,6 @@ async function loadKamarKos(authToken) {
     let nomor = 1;
     for (const room of data.data) {
       const { room_id, room_type, size, number_available } = room;
-
-      console.log(`Fetching detail kamar untuk room_id: ${room_id}`);
-
       // Ambil detail kos berdasarkan room_id
       await fetchRoomDetail(
         room_id,
@@ -101,7 +95,6 @@ async function fetchRoomDetail(
     }
 
     const detail = await detailResponse.json();
-    console.log(`Detail kamar ${roomId}:`, detail);
 
     // Pastikan detail berupa array dan ada elemen pertama
     const boardingHouseName = detail.length > 0 ? detail[0]?.boarding_house_name || "Tidak Diketahui" : "Tidak Diketahui";
