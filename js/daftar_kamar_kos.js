@@ -80,7 +80,7 @@ async function fetchRoomDetail(
   authToken,
   nomor,
   tableBody,
-  type,
+  room_type,
   size,
   numberAvailable
 ) {
@@ -103,8 +103,9 @@ async function fetchRoomDetail(
     const detail = await detailResponse.json();
     console.log(`Detail kamar ${roomId}:`, detail);
 
-    const boardingHouseName = detail.boarding_house_name || "Tidak Diketahui";
-    const ownerName = detail.owner_name || "Tidak Diketahui";
+    // Pastikan detail berupa array dan ada elemen pertama
+    const boardingHouseName = detail.length > 0 ? detail[0]?.boarding_house_name || "Tidak Diketahui" : "Tidak Diketahui";
+    const ownerName = detail.length > 0 ? detail[0]?.owner_name || "Tidak Diketahui" : "Tidak Diketahui";
 
     // Tambahkan data ke tabel
     const row = `
@@ -116,7 +117,7 @@ async function fetchRoomDetail(
         <td>${numberAvailable}</td>
         <td>${ownerName}</td>
         <td>
-          <button class="btn btn-detail" onclick="lihatDetailKamar('${roomId}')">Detail</button>
+          <button class="btn btn-primary" onclick="lihatDetailKamar('${roomId}')">Detail</button>
         </td>
       </tr>
     `;
