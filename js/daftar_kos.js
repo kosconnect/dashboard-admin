@@ -22,89 +22,99 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Fungsi untuk mengambil data kos
-function fetchKosList(jwtToken) {
-  fetch("https://kosconnect-server.vercel.app/api/boardingHouses/", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${jwtToken}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+async function fetchKosList(jwtToken) {
+  try {
+    const response = await fetch(
+      "https://kosconnect-server.vercel.app/api/boardingHouses/",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          "Content-Type": "application/json",
+        },
       }
-      return response.json();
-    })
-    .then((data) => {
-      const tbody = document.getElementById("kos-table-body");
-      if (!tbody) {
-        console.error("Elemen tbody tidak ditemukan di DOM.");
-        return;
-      }
-      // Gunakan Promise.all untuk menangani banyak permintaan detail kos secara paralel
-      const detailPromises = data.data.map((kos) => {
-        return fetchKosDetail(kos.boarding_house_id);
-      });
+    );
 
-      Promise.all(detailPromises).then((detailDataArray) => {
-        data.data.forEach((kos, index) => {
-          const detailData = detailDataArray[index]; // Ambil data detail yang sesuai
-          const tr = document.createElement("tr");
-          const { boarding_house_id, name, address } = kos;
-          const category_name =
-            detailData.category_name || "Kategori Tidak Diketahui";
-          const owner_fullname =
-            detailData.owner_fullname || "Owner Tidak Diketahui";
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-          const tdNo = document.createElement("td");
-          tdNo.textContent = index + 1;
-          tr.appendChild(tdNo);
+    const data = await response.json();
+    const tbody = document.getElementById("kos-table-body");
 
-          const tdNamaKos = document.createElement("td");
-          tdNamaKos.textContent = name;
-          tr.appendChild(tdNamaKos);
+    if (!tbody) {
+      console.error("Elemen tbody tidak ditemukan di DOM.");
+      return;
+    }
 
-          const tdCategory = document.createElement("td");
-          tdCategory.textContent = category_name;
-          tr.appendChild(tdCategory);
+    // Pastikan data yang diterima valid
+    if (!data || !Array.isArray(data)) {
+      console.error("Data kos tidak valid atau tidak tersedia.");
+      return;
+    }
 
-          const tdAlamat = document.createElement("td");
-          tdAlamat.textContent = address;
-          tr.appendChild(tdAlamat);
+    // Proses setiap boarding house dalam data
+    data.forEach(async (boardingHouse, index) => {
+      const { boarding_house_id, images, name, address, description, rules } =
+        boardingHouse;
 
-          const tdPemilik = document.createElement("td");
-          tdPemilik.textContent = owner_fullname;
-          tr.appendChild(tdPemilik);
+      try {
+        const detailResponse = await fetch(
+          `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
+        );
+        const detail = await detailResponse.json();
 
-          const tdAksi = document.createElement("td");
-          tdAksi.innerHTML = `
-            <button class="btn btn-primary" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
-          `;
-          tr.appendChild(tdAksi);
-          tbody.appendChild(tr);
-        });
-      });
-    })
-    .catch((error) => {
-      console.error("Gagal mengambil data kos:", error);
-    });
-}
+        // Pastikan detail[0] tersedia sebelum mengakses properti
+        const categoryName =
+          detail.length > 0
+            ? detail[0]?.category_name
+            : "Kategori Tidak Diketahui";
+        const ownerFullname =
+          detail.length > 0
+            ? detail[0]?.owner_fullname
+            : "Owner Tidak Diketahui";
 
-// Fungsi untuk mengambil detail kos berdasarkan boarding_house_id
-// Fungsi untuk mengambil detail kos berdasarkan boarding_house_id (diperbaiki)
-function fetchKosDetail(boardingHouseId) {
-  return fetch(
-    `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          `Gagal mengambil detail untuk Kos ID: ${boardingHouseId}`
+        // Membuat elemen tr untuk menambahkan data ke dalam tabel
+        const tr = document.createElement("tr");
+
+        const tdNo = document.createElement("td");
+        tdNo.textContent = index + 1;
+        tr.appendChild(tdNo);
+
+        const tdNamaKos = document.createElement("td");
+        tdNamaKos.textContent = name;
+        tr.appendChild(tdNamaKos);
+
+        const tdCategory = document.createElement("td");
+        tdCategory.textContent = categoryName;
+        tr.appendChild(tdCategory);
+
+        const tdAlamat = document.createElement("td");
+        tdAlamat.textContent = address;
+        tr.appendChild(tdAlamat);
+
+        const tdPemilik = document.createElement("td");
+        tdPemilik.textContent = ownerFullname;
+        tr.appendChild(tdPemilik);
+
+        const tdAksi = document.createElement("td");
+        tdAksi.innerHTML = `
+          <button class="btn btn-primary" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
+        `;
+        tr.appendChild(tdAksi);
+
+        tbody.appendChild(tr);
+      } catch (error) {
+        console.error(
+          "Gagal mengambil detail untuk boarding house:",
+          boardingHouse.name,
+          error
         );
       }
-      return response.json();
     });
+  } catch (error) {
+    console.error("Gagal mengambil data kos:", error);
+  }
 }
 
 // Fungsi untuk mengarahkan ke halaman detail
