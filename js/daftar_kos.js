@@ -24,13 +24,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (const kos of kosList) {
       const { boarding_house_id, name, address } = kos;
 
+      // Inisialisasi category_name dan owner_fullname sebelum digunakan
+      let category_name = "-";
+      let owner_fullname = "-";
+
       // Ambil kategori dan nama pemilik (owner) dari API detail
       const detailResponse = await fetch(
         `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
       );
-
-      const category_name = "-";
-      const owner_fullname = "-";
 
       if (detailResponse.ok) {
         const detailData = await detailResponse.json();
