@@ -40,7 +40,7 @@ async function fetchKosList(jwtToken) {
     }
 
     const data = await response.json();
-    console.log("Data dari API:", data); // Log respons API untuk memeriksa
+    console.log("Data dari API:", data);
 
     const tbody = document.getElementById("kos-table-body");
     if (!tbody) {
@@ -48,7 +48,6 @@ async function fetchKosList(jwtToken) {
       return;
     }
 
-    // Periksa data.data yang ada dalam objek respons
     const boardingHouses = data.data;
     if (!Array.isArray(boardingHouses) || boardingHouses.length === 0) {
       console.error("Data kos tidak valid atau tidak tersedia.");
@@ -56,50 +55,53 @@ async function fetchKosList(jwtToken) {
     }
 
     // Proses setiap boarding house dalam data
-    boardingHouses.forEach(async (boardingHouse, index) => {
-      const { boarding_house_id, name, address } =
-        boardingHouse;
+    boardingHouses.forEach(async (boardingHouse) => {
+      const { boarding_house_id, name, address } = boardingHouse;
 
       try {
+        // Ambil detail boarding house
         const detailResponse = await fetch(
           `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
         );
+        if (!detailResponse.ok) throw new Error("Gagal mengambil detail kos.");
+
         const detail = await detailResponse.json();
 
-        // Pastikan detail[0] tersedia sebelum mengakses properti
         const categoryName =
-          detail.length > 0
-            ? detail[0]?.category_name
-            : "Kategori Tidak Diketahui";
-        const ownerFullname =
-          detail.length > 0
-            ? detail[0]?.owner_fullname
-            : "Owner Tidak Diketahui";
+          detail?.category_name || "Kategori Tidak Diketahui";
+        const ownerFullname = detail?.owner_fullname || "Owner Tidak Diketahui";
+        const facilityList = detail?.facilities || [];
 
-        // Membuat elemen tr untuk menambahkan data ke dalam tabel
+        // Ambil detail kamar kos untuk aturan dan deskripsi
+        const roomsResponse = await fetch(
+          `https://kosconnect-server.vercel.app/api/rooms/boarding-house/${boarding_house_id}`
+        );
+        if (!roomsResponse.ok)
+          throw new Error("Gagal mengambil data kamar kos.");
+
+        const roomsData = await roomsResponse.json();
+        const firstRoom = roomsData?.[0] || {}; // Ambil data pertama jika tersedia
+        const roomRules = firstRoom?.rules || rules;
+        const roomDescription = firstRoom?.description || description;
+
+        // Format fasilitas
+        const facilityDisplay =
+          facilityList.length > 0
+            ? facilityList.join(", ")
+            : "Tidak ada fasilitas tersedia.";
+
+        // Buat elemen tr untuk menambahkan data ke dalam tabel
         const tr = document.createElement("tr");
 
-        const tdNamaKos = document.createElement("td");
-        tdNamaKos.textContent = name;
-        tr.appendChild(tdNamaKos);
-
-        const tdCategory = document.createElement("td");
-        tdCategory.textContent = categoryName;
-        tr.appendChild(tdCategory);
-
-        const tdAlamat = document.createElement("td");
-        tdAlamat.textContent = address;
-        tr.appendChild(tdAlamat);
-
-        const tdPemilik = document.createElement("td");
-        tdPemilik.textContent = ownerFullname;
-        tr.appendChild(tdPemilik);
-
-        const tdAksi = document.createElement("td");
-        tdAksi.innerHTML = `
-          <button class="btn btn-primary" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
+        tr.innerHTML = `
+          <td>${ownerFullname}</td>
+          <td>${categoryName}</td>
+          <td>${name}</td>
+          <td>${address}</td>
+          <td>${roomRules}</td>
+          <td>${roomDescription}</td>
+          <td>${facilityDisplay}</td>
         `;
-        tr.appendChild(tdAksi);
 
         tbody.appendChild(tr);
       } catch (error) {
