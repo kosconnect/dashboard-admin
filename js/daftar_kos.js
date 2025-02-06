@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     if (!response.ok) throw new Error("Gagal mengambil data kos.");
 
-    const kosList = await response.json();
+    const responseData = await response.json(); // Ambil seluruh data
+    const kosList = responseData.data || []; // Ambil array data, jika tidak ada beri array kosong
 
     let tableContent = "";
     let nomor = 1;
@@ -16,28 +17,32 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (const kos of kosList) {
       const { boarding_house_id, name, address } = kos;
 
-      // Ambil detail kos untuk mendapatkan kategori dan owner
+      // Ambil kategori dan nama pemilik (owner) dari API detail
       const detailResponse = await fetch(
         `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
       );
-      if (!detailResponse.ok) {
-        console.error(
+
+      let category_name = "-";
+      let owner_fullname = "-";
+
+      if (detailResponse.ok) {
+        const detailData = await detailResponse.json();
+        category_name = detailData?.category_name || "-";
+        owner_fullname = detailData?.owner_fullname || "-";
+      } else {
+        console.warn(
           `Gagal mengambil detail untuk Kos ID: ${boarding_house_id}`
         );
-        continue; // Lewati kos ini jika gagal mengambil detail
       }
-
-      const detailData = await detailResponse.json();
-      const { category_name, owner_fullname } = detailData;
 
       // Tambahkan baris ke dalam tabel
       tableContent += `
                 <tr>
                     <td>${nomor++}</td>
                     <td>${name}</td>
-                    <td>${category_name || "-"}</td>
+                    <td>${category_name}</td>
                     <td>${address}</td>
-                    <td>${owner_fullname || "-"}</td>
+                    <td>${owner_fullname}</td>
                     <td>
                         <button class="btn btn-detail" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
                     </td>
