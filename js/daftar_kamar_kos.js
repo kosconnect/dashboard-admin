@@ -31,6 +31,7 @@ async function loadKamarKos() {
         headers: { Authorization: `Bearer ${authToken}` },
       }
     );
+    
 
     if (!response.ok) {
       throw new Error(`Gagal mengambil data kamar. Status: ${response.status}`);
