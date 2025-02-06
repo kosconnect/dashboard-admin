@@ -9,7 +9,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!response.ok) throw new Error("Gagal mengambil data kos.");
 
     const responseData = await response.json(); // Ambil seluruh data
-    const kosList = responseData.data || []; // Ambil array data, jika tidak ada beri array kosong
+    console.log("responseData:", responseData); // Log data untuk debugging
+
+    // Pastikan responseData.data adalah array yang valid
+    const kosList = Array.isArray(responseData.data) ? responseData.data : [];
+
+    if (kosList.length === 0) {
+      console.warn("Data kos tidak ditemukan.");
+    }
 
     let tableContent = "";
     let nomor = 1;
