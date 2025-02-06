@@ -149,9 +149,6 @@ async function fetchRoomDetail(
         <td><ul>${facilityList}</ul></td>
         <td><ul>${customFacilityList}</ul></td>
         <td>${priceDisplay}</td>
-        <td>
-          <button class="btn btn-primary" onclick="lihatDetailKamar('${roomId}')">Detail</button>
-        </td>
       </tr>
     `;
     tableBody.innerHTML += row;
