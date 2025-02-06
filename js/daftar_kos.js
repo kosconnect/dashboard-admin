@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
       );
 
-      let category_name = "-";
-      let owner_fullname = "-";
+      const category_name = "-";
+      const owner_fullname = "-";
 
       if (detailResponse.ok) {
         const detailData = await detailResponse.json();
