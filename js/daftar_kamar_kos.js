@@ -18,13 +18,12 @@ window.onload = function () {
     return;
   }
 
-  loadKamarKos(authToken); // Panggil fungsi untuk mengambil dan menampilkan data kamar kos
+  loadKamarKos(authToken);
 };
 
 // Fungsi untuk mengambil daftar kamar kos dan render ke tabel
 async function loadKamarKos(authToken) {
   try {
-    // Fetch daftar kamar
     const response = await fetch(
       "https://kosconnect-server.vercel.app/api/rooms/",
       {
@@ -44,12 +43,11 @@ async function loadKamarKos(authToken) {
     }
 
     const tableBody = document.getElementById("table-body");
-    tableBody.innerHTML = ""; // Kosongkan tabel sebelum memasukkan data
+    tableBody.innerHTML = "";
 
     let nomor = 1;
     for (const room of data.data) {
-      const { room_id, room_type, size, number_available } = room;
-      // Ambil detail kos berdasarkan room_id
+      const { room_id, room_type, size, number_available, price } = room;
       await fetchRoomDetail(
         room_id,
         authToken,
@@ -58,13 +56,14 @@ async function loadKamarKos(authToken) {
         room_type,
         size,
         number_available,
+        price
       );
     }
   } catch (error) {
     console.error("Gagal mengambil data:", error);
     const tableBody = document.getElementById("table-body");
     tableBody.innerHTML =
-      "<tr><td colspan='7'>Gagal memuat data kamar.</td></tr>";
+      "<tr><td colspan='8'>Gagal memuat data kamar.</td></tr>";
   }
 }
 
@@ -76,7 +75,8 @@ async function fetchRoomDetail(
   tableBody,
   room_type,
   size,
-  numberAvailable
+  numberAvailable,
+  price
 ) {
   try {
     const detailResponse = await fetch(
@@ -95,10 +95,47 @@ async function fetchRoomDetail(
     }
 
     const detail = await detailResponse.json();
+    const boardingHouseName =
+      detail[0]?.boarding_house_name || "Tidak Diketahui";
+    const ownerName = detail[0]?.owner_name || "Tidak Diketahui";
+    const roomFacilities = detail[0]?.room_facilities || [];
+    const customFacilities = detail[0]?.custom_facility_details || [];
 
-    // Pastikan detail berupa array dan ada elemen pertama
-    const boardingHouseName = detail.length > 0 ? detail[0]?.boarding_house_name || "Tidak Diketahui" : "Tidak Diketahui";
-    const ownerName = detail.length > 0 ? detail[0]?.owner_name || "Tidak Diketahui" : "Tidak Diketahui";
+    // Konversi harga berdasarkan jenis sewa
+    let priceDisplay = "<ul>";
+    if (price && typeof price === "object") {
+      const priceTypes = {
+        monthly: "bulan",
+        quarterly: "3 bulan",
+        semi_annual: "6 bulan",
+        yearly: "tahun",
+      };
+      Object.entries(priceTypes).forEach(([key, label]) => {
+        if (price[key]) {
+          priceDisplay += `<li>Rp ${price[key].toLocaleString(
+            "id-ID"
+          )} / ${label}</li>`;
+        }
+      });
+    }
+    priceDisplay += "</ul>";
+
+    const facilityList =
+      roomFacilities.length > 0
+        ? roomFacilities.map((facility) => `<li>${facility}</li>`).join("")
+        : "Tidak ada fasilitas";
+
+    const customFacilityList =
+      customFacilities.length > 0
+        ? customFacilities
+            .map(
+              (facility) =>
+                `<li>${facility.name} - Rp ${facility.price.toLocaleString(
+                  "id-ID"
+                )}</li>`
+            )
+            .join("")
+        : "Tidak ada fasilitas custom";
 
     // Tambahkan data ke tabel
     const row = `
@@ -109,6 +146,9 @@ async function fetchRoomDetail(
         <td>${size}</td>
         <td>${numberAvailable}</td>
         <td>${ownerName}</td>
+        <td><ul>${facilityList}</ul></td>
+        <td><ul>${customFacilityList}</ul></td>
+        <td>${priceDisplay}</td>
         <td>
           <button class="btn btn-primary" onclick="lihatDetailKamar('${roomId}')">Detail</button>
         </td>

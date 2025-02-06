@@ -937,20 +937,6 @@ textarea {
     font-style: italic;
 }
 
-
-/* .feedback-card .actions button {
-    background-color: #84B8C6;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.feedback-card .actions button:hover {
-    background-color: #70a2b2;
-} */
-
 /* Responsif */
 @media (max-width: 768px) {
     .sidebar {

@@ -56,7 +56,7 @@ async function fetchKosList(jwtToken) {
 
     // Proses setiap boarding house dalam data
     boardingHouses.forEach(async (boardingHouse) => {
-      const { boarding_house_id, name, address } = boardingHouse;
+      const { boarding_house_id, name, address, rules, description } = boardingHouse;
 
       try {
         // Ambil detail boarding house
@@ -73,16 +73,13 @@ async function fetchKosList(jwtToken) {
         const facilityList = detail?.facilities || [];
 
         // Ambil detail kamar kos untuk aturan dan deskripsi
-        const roomsResponse = await fetch(
-          `https://kosconnect-server.vercel.app/api/rooms/${boarding_house_id}`
+        const boardingHouseResponse = await fetch(
+          `https://kosconnect-server.vercel.app/api/boardingHouses/`
         );
-        if (!roomsResponse.ok)
+        if (!boardingHouseResponse.ok)
           throw new Error("Gagal mengambil data kamar kos.");
 
-        const roomsData = await roomsResponse.json();
-        const firstRoom = roomsData?.[0] || {}; // Ambil data pertama jika tersedia
-        const roomRules = firstRoom?.rules || rules;
-        const roomDescription = firstRoom?.description || description;
+        const boardingHouseData = await boardingHouseResponse.json();
 
         // Format fasilitas
         const facilityDisplay =
@@ -98,8 +95,8 @@ async function fetchKosList(jwtToken) {
           <td>${categoryName}</td>
           <td>${name}</td>
           <td>${address}</td>
-          <td>${roomRules}</td>
-          <td>${roomDescription}</td>
+          <td>${rules}</td>
+          <td>${description}</td>
           <td>${facilityDisplay}</td>
         `;
 
