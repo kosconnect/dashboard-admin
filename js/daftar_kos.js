@@ -40,15 +40,16 @@ async function fetchKosList(jwtToken) {
     }
 
     const data = await response.json();
-    const tbody = document.getElementById("kos-table-body");
+    console.log("Data dari API:", data); // Log respons API untuk memeriksa
 
+    const tbody = document.getElementById("kos-table-body");
     if (!tbody) {
       console.error("Elemen tbody tidak ditemukan di DOM.");
       return;
     }
 
     // Pastikan data yang diterima valid
-    if (!data || !Array.isArray(data)) {
+    if (!Array.isArray(data) || data.length === 0) {
       console.error("Data kos tidak valid atau tidak tersedia.");
       return;
     }
