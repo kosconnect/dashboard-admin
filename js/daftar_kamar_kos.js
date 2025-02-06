@@ -10,17 +10,20 @@ function getCookie(name) {
   return null;
 }
 
-// Fungsi untuk mendapatkan daftar kamar kos dan render ke tabel
-async function loadKamarKos() {
+// Fungsi utama yang dijalankan ketika halaman dimuat
+window.onload = function () {
+  const authToken = getCookie("authToken");
+  if (!authToken) {
+    console.error("Token otentikasi tidak ditemukan! Pastikan sudah login.");
+    return;
+  }
+
+  loadKamarKos(authToken); // Panggil fungsi untuk mengambil dan menampilkan data kamar kos
+};
+
+// Fungsi untuk mengambil daftar kamar kos dan render ke tabel
+async function loadKamarKos(authToken) {
   try {
-    const authToken = getCookie("authToken");
-
-    if (!authToken) {
-      throw new Error(
-        "Token otentikasi tidak ditemukan! Pastikan sudah login."
-      );
-    }
-
     console.log("Menggunakan authToken:", authToken);
 
     // Fetch daftar kamar
@@ -31,7 +34,6 @@ async function loadKamarKos() {
         headers: { Authorization: `Bearer ${authToken}` },
       }
     );
-    
 
     if (!response.ok) {
       throw new Error(`Gagal mengambil data kamar. Status: ${response.status}`);
@@ -54,43 +56,15 @@ async function loadKamarKos() {
       console.log(`Fetching detail kamar untuk room_id: ${room_id}`);
 
       // Ambil detail kos berdasarkan room_id
-      const detailResponse = await fetch(
-        `https://kosconnect-server.vercel.app/api/rooms/${room_id}/detail`,
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${authToken}` },
-        }
+      await fetchRoomDetail(
+        room_id,
+        authToken,
+        nomor++,
+        tableBody,
+        type,
+        size,
+        number_available
       );
-
-      if (!detailResponse.ok) {
-        console.warn(
-          `Gagal mengambil detail kamar ${room_id}. Status: ${detailResponse.status}`
-        );
-        continue; // Skip kamar yang gagal diambil detailnya
-      }
-
-      const detail = await detailResponse.json();
-      console.log(`Detail kamar ${room_id}:`, detail);
-
-      // Ambil informasi tambahan dari detail
-      const boardingHouseName = detail.boarding_house_name || "Tidak Diketahui";
-      const ownerName = detail.owner_name || "Tidak Diketahui";
-
-      // Tambahkan data ke tabel
-      const row = `
-        <tr>
-            <td>${nomor++}</td>
-            <td>${boardingHouseName}</td>
-            <td>${type}</td>
-            <td>${size}</td>
-            <td>${number_available}</td>
-            <td>${ownerName}</td>
-            <td>
-                <button class="btn btn-detail" onclick="lihatDetailKamar('${room_id}')">Detail</button>
-            </td>
-        </tr>
-      `;
-      tableBody.innerHTML += row;
     }
   } catch (error) {
     console.error("Gagal mengambil data:", error);
@@ -100,10 +74,59 @@ async function loadKamarKos() {
   }
 }
 
+// Fungsi untuk mengambil detail kamar berdasarkan room_id
+async function fetchRoomDetail(
+  roomId,
+  authToken,
+  nomor,
+  tableBody,
+  type,
+  size,
+  numberAvailable
+) {
+  try {
+    const detailResponse = await fetch(
+      `https://kosconnect-server.vercel.app/api/rooms/${roomId}/detail`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${authToken}` },
+      }
+    );
+
+    if (!detailResponse.ok) {
+      console.warn(
+        `Gagal mengambil detail kamar ${roomId}. Status: ${detailResponse.status}`
+      );
+      return;
+    }
+
+    const detail = await detailResponse.json();
+    console.log(`Detail kamar ${roomId}:`, detail);
+
+    const boardingHouseName = detail.boarding_house_name || "Tidak Diketahui";
+    const ownerName = detail.owner_name || "Tidak Diketahui";
+
+    // Tambahkan data ke tabel
+    const row = `
+      <tr>
+        <td>${nomor}</td>
+        <td>${boardingHouseName}</td>
+        <td>${type}</td>
+        <td>${size}</td>
+        <td>${numberAvailable}</td>
+        <td>${ownerName}</td>
+        <td>
+          <button class="btn btn-detail" onclick="lihatDetailKamar('${roomId}')">Detail</button>
+        </td>
+      </tr>
+    `;
+    tableBody.innerHTML += row;
+  } catch (error) {
+    console.error(`Error saat mengambil detail kamar ${roomId}:`, error);
+  }
+}
+
 // Fungsi untuk melihat detail kamar
 function lihatDetailKamar(roomId) {
   window.location.href = `detail_kamar.html?room_id=${roomId}`;
 }
-
-// Ambil data saat halaman dimuat
-window.onload = loadKamarKos;
