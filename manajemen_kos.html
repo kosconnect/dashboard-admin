@@ -10,9 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -20,30 +18,40 @@
 
 <body>
     <div class="container">
-         <div id="sidebar-container"></div>
+        <div id="sidebar-container"></div>
 
-      <!-- Main Content -->
-      <div class="main-content">
-        <div id="header-container"></div>
-
-            <!-- Tombol Tambah Kategori -->
-            <!-- <div class="button-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                <a href="tambah_kos.html">
-                    <button class="btn btn-primary">Tambah Kos</button>
-                </a>
-            </div> -->
-
+        <!-- Main Content -->
+        <div class="main-content">
+            <div id="header-container"></div>
             <div class="main-container">
                 <div class="header">
                     <h2>Daftar Kos</h2>
                 </div>
-                <div class="cards-container">
-                    <!-- Card akan diisi oleh JavaScript -->
+
+                <!-- Tabel Daftar Kos -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Kos</th>
+                                <th>Kategori</th>
+                                <th>Alamat</th>
+                                <th>Owner</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kos-table-body">
+                            <!-- Isi tabel akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
 
-
-                <script src="js/manajemen_kos.js"></script>
+                <script src="js/daftar_kos.js"></script>
                 <script src="script.js"></script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
