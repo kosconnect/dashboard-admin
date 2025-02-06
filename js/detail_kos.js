@@ -106,7 +106,7 @@ async function renderBoardingHouseDetail(boardingHouse) {
 // Fungsi untuk memuat data boarding house berdasarkan ID
 async function loadBoardingHouseDetail() {
   try {
-    const boardingHouseId = getQueryParam("boarding_house_id");
+    const boardingHouseId = getBoardingHouseIdFromURL();
     if (!boardingHouseId)
       throw new Error("ID boarding house tidak ditemukan di URL.");
 
