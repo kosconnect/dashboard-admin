@@ -13,19 +13,18 @@ function getCookie(name) {
 // Fungsi untuk mengambil boardingHouseID dari URL
 function getBoardingHouseIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("boarding_house_id");
+  const boardingHouseId = urlParams.get("boarding_house_id");
+  console.log("boardingHouseId dari URL:", boardingHouseId); // Debugging
+  return boardingHouseId;
 }
+
 // Fungsi untuk merender detail boarding house
 async function renderBoardingHouseDetail(boardingHouse) {
   const container = document.querySelector(".cards-container");
   container.innerHTML = ""; // Kosongkan container sebelum diisi
 
   if (!boardingHouse) {
-    container.innerHTML = `
-        <div class="card">
-            <p>Data boarding house tidak ditemukan.</p>
-        </div>
-      `;
+    container.innerHTML = `<div class="card"><p>Data boarding house tidak ditemukan.</p></div>`;
     return;
   }
 
@@ -33,13 +32,20 @@ async function renderBoardingHouseDetail(boardingHouse) {
     boardingHouse;
 
   try {
+    if (!boarding_house_id)
+      throw new Error("boarding_house_id tidak ditemukan!");
+
+    console.log("Fetching detail dengan ID:", boarding_house_id); // Debugging
+
     // Ambil detail boarding house
     const detailResponse = await fetch(
       `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
     );
+
     if (!detailResponse.ok) throw new Error("Gagal mengambil detail kos.");
 
     const detail = await detailResponse.json();
+    console.log("Detail response:", detail); // Debugging
 
     // Ambil kategori dan owner
     const categoryName = detail?.category_name || "Kategori Tidak Diketahui";
@@ -111,6 +117,8 @@ async function loadBoardingHouseDetail() {
       throw new Error("ID boarding house tidak ditemukan di URL.");
 
     const authToken = getCookie("authToken");
+    console.log("Auth Token:", authToken); // Debugging
+
     const response = await fetch(
       `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}`,
       {
@@ -122,6 +130,8 @@ async function loadBoardingHouseDetail() {
     if (!response.ok) throw new Error("Gagal mengambil data boarding house");
 
     const boardingHouse = await response.json();
+    console.log("Boarding house data:", boardingHouse); // Debugging
+
     await renderBoardingHouseDetail(boardingHouse);
   } catch (error) {
     console.error("Terjadi kesalahan:", error);

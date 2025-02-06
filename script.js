@@ -101,23 +101,25 @@ function loadHeader() {
   const path = window.location.pathname;
   if (path.includes("category")) {
     pageTitle = "Kategori";
-  } else if (path.includes("user_management")) {
+  } else if (path.includes("manajemen_pengguna")) {
     pageTitle = "Manajemen Pengguna";
   } else if (path.includes("facilities")) {
     pageTitle = "Fasilitas";
-  } else if (path.includes("transaksi")) {
+  } else if (path.includes("manajemen_transaksi")) {
     pageTitle = "Manajemen Transaksi";
   } else if (path.includes("invoice")) {
     pageTitle = "Detail Transaksi";
   } else if (path.includes("manajemen_kos")) {
     pageTitle = "Manajemen Kos";
+  } else if (path.includes("detail_kos")) {
+    pageTitle = "Manajemen Kos";
   } else if (path.includes("manajemen_kamar_kos")) {
     pageTitle = "Manajemen Kamar Kos";
+  } else if (path.includes("detail_kamar_kos")) {
+    pageTitle = "Detail Kamar Kos";
   } else if (path.includes("custom_facility")) {
     pageTitle = "Fasilitas Custom";
-  } else if (path.includes("detail")) {
-    pageTitle = "Fasilitas Custom";
-  }
+  } 
 
   const headerHTML = `
         <div class="dashboard-header">
