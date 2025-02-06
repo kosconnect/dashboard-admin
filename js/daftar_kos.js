@@ -8,10 +8,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     if (!response.ok) throw new Error("Gagal mengambil data kos.");
 
-    const responseData = await response.json(); // Ambil seluruh data
-    console.log("responseData:", responseData); // Log data untuk debugging
+    const responseData = await response.json();
+    console.log("responseData:", responseData); // Debugging
 
-    // Pastikan responseData.data adalah array yang valid
     const kosList = Array.isArray(responseData.data) ? responseData.data : [];
 
     if (kosList.length === 0) {
@@ -24,38 +23,48 @@ document.addEventListener("DOMContentLoaded", async function () {
     for (const kos of kosList) {
       const { boarding_house_id, name, address } = kos;
 
-      // Inisialisasi category_name dan owner_fullname sebelum digunakan
-      let category_name = "-";
-      let owner_fullname = "-";
+      let category_name = "Kategori Tidak Diketahui";
+      let owner_fullname = "Owner Tidak Diketahui";
 
-      // Ambil kategori dan nama pemilik (owner) dari API detail
-      const detailResponse = await fetch(
-        `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
-      );
+      try {
+        // Fetch detail boarding house
+        const detailResponse = await fetch(
+          `https://kosconnect-server.vercel.app/api/boardingHouses/${boarding_house_id}/detail`
+        );
 
-      if (detailResponse.ok) {
-        const detailData = await detailResponse.json();
-        category_name = detailData?.category_name || "-";
-        owner_fullname = detailData?.owner_fullname || "-";
-      } else {
-        console.warn(
-          `Gagal mengambil detail untuk Kos ID: ${boarding_house_id}`
+        if (detailResponse.ok) {
+          const detailData = await detailResponse.json();
+          category_name = detailData?.category_name ?? category_name;
+          owner_fullname = detailData?.owner_fullname ?? owner_fullname;
+
+          console.log(
+            `Kos ID: ${boarding_house_id} | Kategori: ${category_name} | Owner: ${owner_fullname}`
+          );
+        } else {
+          console.warn(
+            `Gagal mengambil detail untuk Kos ID: ${boarding_house_id}, Status: ${detailResponse.status}`
+          );
+        }
+      } catch (err) {
+        console.error(
+          `Error saat mengambil detail kos ID ${boarding_house_id}:`,
+          err
         );
       }
 
       // Tambahkan baris ke dalam tabel
       tableContent += `
-                <tr>
-                    <td>${nomor++}</td>
-                    <td>${name}</td>
-                    <td>${category_name}</td>
-                    <td>${address}</td>
-                    <td>${owner_fullname}</td>
-                    <td>
-                        <button class="btn btn-detail" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
-                    </td>
-                </tr>
-            `;
+        <tr>
+          <td>${nomor++}</td>
+          <td>${name}</td>
+          <td>${category_name}</td>
+          <td>${address}</td>
+          <td>${owner_fullname}</td>
+          <td>
+            <button class="btn btn-detail" onclick="lihatDetail('${boarding_house_id}')">Detail</button>
+          </td>
+        </tr>
+      `;
     }
 
     tableBody.innerHTML = tableContent;
