@@ -17,6 +17,7 @@ function getQueryParam(param) {
 }
 
 // Fungsi untuk merender detail boarding house
+// Fungsi untuk merender detail boarding house
 async function renderBoardingHouseDetail(boardingHouse) {
   const container = document.querySelector(".cards-container");
   container.innerHTML = ""; // Kosongkan container sebelum diisi
@@ -43,10 +44,10 @@ async function renderBoardingHouseDetail(boardingHouse) {
     const detail = await detailResponse.json();
 
     // Ambil kategori dan owner
-    const categoryName = detail.category_name || "Kategori Tidak Diketahui";
+    const categoryName = detail[0]?.category_name || "Kategori Tidak Diketahui";
     const ownerFullname =
-      detail.owner_fullname || "Nama Pemilik Tidak Diketahui";
-    const facilityList = detail.facilities || [];
+      detail[0]?.owner_fullname || "Nama Pemilik Tidak Diketahui";
+    const facilityList = detail[0]?.facilities || []; // Ambil fasilitas dari response
 
     // Buat tampilan semua gambar
     const imageGallery =
