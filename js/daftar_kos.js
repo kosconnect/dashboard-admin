@@ -57,7 +57,7 @@ async function fetchKosList(jwtToken) {
 
     // Proses setiap boarding house dalam data
     boardingHouses.forEach(async (boardingHouse, index) => {
-      const { boarding_house_id, images, name, address, description, rules } =
+      const { boarding_house_id, name, address } =
         boardingHouse;
 
       try {
@@ -78,10 +78,6 @@ async function fetchKosList(jwtToken) {
 
         // Membuat elemen tr untuk menambahkan data ke dalam tabel
         const tr = document.createElement("tr");
-
-        const tdNo = document.createElement("td");
-        tdNo.textContent = index + 1;
-        tr.appendChild(tdNo);
 
         const tdNamaKos = document.createElement("td");
         tdNamaKos.textContent = name;
