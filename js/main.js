@@ -42,19 +42,15 @@ async function getTransaksiDanPendapatan() {
     const data = await response.json();
 
     if (Array.isArray(data.data)) {
-      document.getElemenById(
-        "total-transaksi"
-      ).innerText = `${data.data.length} Transaksi`;
-      const settlementTransactions = data.data.filter(
-        (t) => t.payment_status === "settlement"
-      );
-      const totalPendapatan = settlementTransactions.reduce(
-        (sum, t) => sum + t.total,
-        0
-      );
-      document.getElementById(
-        "total-pendapatan"
-      ).innerText = `Rp ${totalPendapatan.toLocaleString("id-ID")}`;
+      // Update jumlah transaksi
+      document.getElementById("total-transaksi").innerText = `${data.data.length} Transaksi`;
+
+      // Filter transaksi yang memiliki payment_status = "settlement"
+      const settlementTransactions = data.data.filter((t) => t.payment_status === "settlement");
+      const totalPendapatan = settlementTransactions.reduce((sum, t) => sum + t.total, 0);
+
+      // Update total pendapatan
+      document.getElementById("total-pendapatan").innerText = `Rp ${totalPendapatan.toLocaleString("id-ID")}`;
     } else {
       console.error("Data transaksi tidak dalam format array", data);
     }
@@ -76,9 +72,11 @@ async function getUserCounts() {
     );
     const data = await response.json();
 
-    if (Array.isArray(data.data)) {
-      const owners = data.data.filter((user) => user.role === "owner").length;
-      const users = data.data.filter((user) => user.role === "user").length;
+    if (Array.isArray(data.users)) {
+      const owners = data.users.filter((user) => user.role === "owner").length;
+      const users = data.users.filter((user) => user.role === "user").length;
+
+      // Perbaiki pemilihan elemen dengan ID yang benar
       document.getElementById("total-pemilik").innerText = owners;
       document.getElementById("total-user").innerText = users;
     } else {
@@ -90,6 +88,8 @@ async function getUserCounts() {
 }
 
 // Panggil semua fungsi
+document.addEventListener("DOMContentLoaded", function () {
 getTotalKos();
 getTransaksiDanPendapatan();
 getUserCounts();
+});
