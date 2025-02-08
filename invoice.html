@@ -20,25 +20,34 @@
 
 <body>
     <div class="container">
-      <div id="sidebar-container"></div>
+        <div id="sidebar-container"></div>
 
-      <!-- Main Content -->
-      <div class="main-content">
+        <!-- Main Content -->
+        <!-- <div class="main-content">
         <div id="header-container"></div>
                 </div>
 
                 <div class="navigation">
-                    <a href="transaksi.html" class="btn btn-primary" style="text-decoration: none;">
+                    <a href="manajemen_transaksi.html" class="btn btn-primary" style="text-decoration: none;">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
-                </div>
+                </div> -->
 
-                <div id="invoice"></div>
+        <div class="container-wrapper">
+            <main class="main-container">
+                <h2>Detail Pesanan</h2>
+                <div class="navigation">
+                    <a href="manajemen_transaksi.html" class="btn btn-primary" style="text-decoration: none;">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                    <div id="invoice"></div>
+            </main>
+        </div>
 
-                <!-- Memanggil file JS -->
-                <script defer src="js/invoice.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script src="script.js"></script>
+        <!-- Memanggil file JS -->
+        <script defer src="js/invoice.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>

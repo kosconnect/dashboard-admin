@@ -937,6 +937,30 @@ textarea {
     font-style: italic;
 }
 
+.main-container {
+    flex: 3;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #ffffff;
+    margin: 20px auto;
+    /* Menggunakan margin auto untuk membuat elemen di tengah */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    position: relative;
+}
+
+.container-wrapper {
+    display: flex;
+    gap: 20px;
+    max-width: 1600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
 /* Responsif */
 @media (max-width: 768px) {
     .sidebar {
