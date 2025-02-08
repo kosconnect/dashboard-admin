@@ -42,8 +42,8 @@ async function getTransaksiDanPendapatan() {
     const data = await response.json();
 
     if (Array.isArray(data.data)) {
-      document.querySelector(
-        ".widget-info"
+      document.getElemenById(
+        "total-transaksi"
       ).innerText = `${data.data.length} Transaksi`;
       const settlementTransactions = data.data.filter(
         (t) => t.payment_status === "settlement"
@@ -52,9 +52,9 @@ async function getTransaksiDanPendapatan() {
         (sum, t) => sum + t.total,
         0
       );
-      document.querySelectorAll(
-        ".widget-info"
-      )[1].innerText = `Rp ${totalPendapatan.toLocaleString("id-ID")}`;
+      document.getElementById(
+        "total-pendapatan"
+      ).innerText = `Rp ${totalPendapatan.toLocaleString("id-ID")}`;
     } else {
       console.error("Data transaksi tidak dalam format array", data);
     }
@@ -79,8 +79,8 @@ async function getUserCounts() {
     if (Array.isArray(data.data)) {
       const owners = data.data.filter((user) => user.role === "owner").length;
       const users = data.data.filter((user) => user.role === "user").length;
-      document.querySelectorAll(".widget-info")[2].innerText = owners;
-      document.querySelectorAll(".widget-info")[3].innerText = users;
+      document.getElementById("total-pemilik").innerText = owners;
+      document.getElementById("total-user").innerText = users;
     } else {
       console.error("Data pengguna tidak dalam format array", data);
     }
