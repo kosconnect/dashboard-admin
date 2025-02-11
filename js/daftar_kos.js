@@ -27,10 +27,10 @@ async function loadBoardingHouses() {
     tableBody.innerHTML = ""; // Kosongkan isi tabel sebelum menambahkan data
 
     let nomor = 1;
-    for (const boardingHouse of data.data) {
+    const fetchPromises = data.data.map((boardingHouse) => {
       const { boarding_house_id, name, address, rules, description } =
         boardingHouse;
-      await fetchBoardingHouseDetail(
+      return fetchBoardingHouseDetail(
         boarding_house_id,
         nomor++,
         tableBody,
@@ -39,12 +39,14 @@ async function loadBoardingHouses() {
         rules,
         description
       );
-    }
+    });
+
+    await Promise.all(fetchPromises); // Menjalankan semua request secara paralel
   } catch (error) {
     console.error("Gagal mengambil data kos:", error);
     const tableBody = document.getElementById("kos-table-body");
     tableBody.innerHTML =
-      "<tr><td colspan='7'>Gagal memuat data kos.</td></tr>";
+      "<tr><td colspan='8'>Gagal memuat data kos.</td></tr>";
   }
 }
 
@@ -71,16 +73,27 @@ async function fetchBoardingHouseDetail(
       return;
     }
 
-    const detail = await detailResponse.json();
+    const detailData = await detailResponse.json();
+
+    if (!Array.isArray(detailData) || detailData.length === 0) {
+      console.warn(`Detail untuk ${boardingHouseId} kosong atau bukan array.`);
+      return;
+    }
+
+    const detail = detailData[0]; // Ambil elemen pertama dari array
     console.log(`Detail kos ${boardingHouseId} berhasil diambil:`, detail);
 
     const categoryName = detail?.category_name || "Kategori Tidak Diketahui";
     const ownerFullname = detail?.owner_fullname || "Owner Tidak Diketahui";
-    const facilityList = detail?.facilities || [];
+    const facilityList = Array.isArray(detail?.facilities)
+      ? detail.facilities
+      : [];
 
     const facilityDisplay =
       facilityList.length > 0
-        ? facilityList.map((facility) => `<li>${facility}</li>`).join("")
+        ? `<ul>${facilityList
+            .map((facility) => `<li>${facility}</li>`)
+            .join("")}</ul>`
         : "Tidak ada fasilitas tersedia.";
 
     // Tambahkan data ke tabel
@@ -93,7 +106,7 @@ async function fetchBoardingHouseDetail(
         <td>${address}</td>
         <td>${rules || "-"}</td>
         <td>${description || "-"}</td>
-        <td><ul>${facilityDisplay}</ul></td>
+        <td>${facilityDisplay}</td>
       </tr>
     `;
     tableBody.insertAdjacentHTML("beforeend", row);
