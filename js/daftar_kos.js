@@ -1,34 +1,15 @@
-// Fungsi untuk membaca nilai cookie berdasarkan nama
-function getCookie(name) {
-  const cookies = document.cookie.split("; ");
-  for (const cookie of cookies) {
-    const [key, value] = cookie.split("=");
-    if (key === name) {
-      return decodeURIComponent(value);
-    }
-  }
-  return null;
-}
-
 // Fungsi utama yang dijalankan ketika halaman dimuat
 window.onload = function () {
-  const authToken = getCookie("authToken");
-  if (!authToken) {
-    console.error("Token otentikasi tidak ditemukan! Pastikan sudah login.");
-    return;
-  }
-  loadBoardingHouses(authToken);
+  console.log("Halaman dimuat, mulai fetch data kos...");
+  loadBoardingHouses();
 };
 
 // Fungsi untuk mengambil daftar kos dan render ke tabel
-async function loadBoardingHouses(authToken) {
+async function loadBoardingHouses() {
   try {
+    console.log("Fetching data dari boardingHouses...");
     const response = await fetch(
-      "https://kosconnect-server.vercel.app/api/boardingHouses/",
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
-      }
+      "https://kosconnect-server.vercel.app/api/boardingHouses/"
     );
 
     if (!response.ok) {
@@ -36,13 +17,14 @@ async function loadBoardingHouses(authToken) {
     }
 
     const data = await response.json();
+    console.log("Data berhasil diambil:", data);
 
     if (!data || !Array.isArray(data.data)) {
       throw new Error("Format data tidak sesuai. Tidak ada array data.");
     }
 
     const tableBody = document.getElementById("kos-table-body");
-    tableBody.innerHTML = "";
+    tableBody.innerHTML = ""; // Kosongkan isi tabel sebelum menambahkan data
 
     let nomor = 1;
     for (const boardingHouse of data.data) {
@@ -50,7 +32,6 @@ async function loadBoardingHouses(authToken) {
         boardingHouse;
       await fetchBoardingHouseDetail(
         boarding_house_id,
-        authToken,
         nomor++,
         tableBody,
         name,
@@ -70,7 +51,6 @@ async function loadBoardingHouses(authToken) {
 // Fungsi untuk mengambil detail boarding house berdasarkan boarding_house_id
 async function fetchBoardingHouseDetail(
   boardingHouseId,
-  authToken,
   nomor,
   tableBody,
   name,
@@ -79,12 +59,9 @@ async function fetchBoardingHouseDetail(
   description
 ) {
   try {
+    console.log(`Fetching detail untuk boardingHouseId: ${boardingHouseId}...`);
     const detailResponse = await fetch(
-      `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
-      }
+      `https://kosconnect-server.vercel.app/api/boardingHouses/${boardingHouseId}/detail`
     );
 
     if (!detailResponse.ok) {
@@ -95,6 +72,8 @@ async function fetchBoardingHouseDetail(
     }
 
     const detail = await detailResponse.json();
+    console.log(`Detail kos ${boardingHouseId} berhasil diambil:`, detail);
+
     const categoryName = detail?.category_name || "Kategori Tidak Diketahui";
     const ownerFullname = detail?.owner_fullname || "Owner Tidak Diketahui";
     const facilityList = detail?.facilities || [];
@@ -112,18 +91,13 @@ async function fetchBoardingHouseDetail(
         <td>${categoryName}</td>
         <td>${name}</td>
         <td>${address}</td>
-        <td>${rules}</td>
-        <td>${description}</td>
+        <td>${rules || "-"}</td>
+        <td>${description || "-"}</td>
         <td><ul>${facilityDisplay}</ul></td>
       </tr>
     `;
-    tableBody.innerHTML += row;
+    tableBody.insertAdjacentHTML("beforeend", row);
   } catch (error) {
     console.error(`Error saat mengambil detail kos ${boardingHouseId}:`, error);
   }
-}
-
-// Fungsi untuk melihat detail kos
-function lihatDetailKos(boardingHouseId) {
-  window.location.href = `detail_kos.html?boarding_house_id=${boardingHouseId}`;
 }
