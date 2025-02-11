@@ -115,9 +115,6 @@ async function fetchBoardingHouseDetail(
         <td>${rules}</td>
         <td>${description}</td>
         <td><ul>${facilityDisplay}</ul></td>
-        <td>
-          <button class="btn btn-primary" onclick="lihatDetailKos('${boardingHouseId}')">Detail</button>
-        </td>
       </tr>
     `;
     tableBody.innerHTML += row;
