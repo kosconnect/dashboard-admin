@@ -79,8 +79,8 @@ function loadSidebar() {
                 <li>
                     <h2 style="font-size: 14px; color: #b0bec5;">Manajemen Data Kos</h2>
                     <ul style="list-style: none; padding-left: 20px; margin: 10px 0;">
-                        <li><a href="manajemen_kos.html"><i class="fas fa-house-user"></i> <span>Manajemen Kos</span></a></li>
-                        <li><a href="manajemen_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Manajemen Kamar Kos</span></a></li>
+                        <li><a href="data_kos.html"><i class="fas fa-house-user"></i> <span>Data Kos</span></a></li>
+                        <li><a href="data_kamar_kos.html"><i class="fa-solid fa-door-open"></i> <span>Data Kamar Kos</span></a></li>
                         <li><a href="custom_facility.html"><i class="fas fa-bed"></i> <span>Fasilitas Custom</span></a></li>
                     </ul>
                 </li>
