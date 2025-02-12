@@ -109,14 +109,10 @@ function loadHeader() {
     pageTitle = "Manajemen Transaksi";
   } else if (path.includes("invoice")) {
     pageTitle = "Detail Transaksi";
-  } else if (path.includes("manajemen_kos")) {
-    pageTitle = "Manajemen Kos";
-  } else if (path.includes("detail_kos")) {
-    pageTitle = "Manajemen Kos";
-  } else if (path.includes("manajemen_kamar_kos")) {
-    pageTitle = "Manajemen Kamar Kos";
-  } else if (path.includes("detail_kamar_kos")) {
-    pageTitle = "Detail Kamar Kos";
+  } else if (path.includes("data_kos")) {
+    pageTitle = "Data Kos";
+  } else if (path.includes("data_kamar_kos")) {
+    pageTitle = "Data Kamar Kos";
   } else if (path.includes("custom_facility")) {
     pageTitle = "Fasilitas Custom";
   } 
