@@ -95,7 +95,7 @@ function loadSidebar() {
 }
 
 function loadHeader() {
-  let pageTitle = "Dashboard Admin KosConnect"; // Default title
+  let pageTitle = "Beranda Admin KosConnect"; // Default title
 
   // Ambil nama halaman dari URL atau title dokumen
   const path = window.location.pathname;
